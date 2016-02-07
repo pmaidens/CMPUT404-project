@@ -1,0 +1,26 @@
+{
+  "name": "cmput-404-project",
+  "version": "0.0.1",
+  "authors": [
+    "Peter Maidens"
+  ],
+  "description": "A distributed Blogging System",
+  "main": "js/app.js",
+  "moduleType": [
+    "amd",
+    "es6",
+    "globals"
+  ],
+  "keywords": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6"
+  }
+}
