@@ -6,12 +6,11 @@ var buffer = require("vinyl-buffer");
 var browserify = require("browserify");
 var watchify = require("watchify");
 var babelify = require("babelify");
-var connect = require("gulp-connect");
 var sass = require("gulp-sass");
 var less = require("gulp-less");
 var merge = require("merge-stream");
 var concat = require("gulp-concat");
-var fs = require("fs");
+var server = require("gulp-express");
 /* eslint-enable no-undef */
 
 var paths = {
@@ -21,7 +20,7 @@ var paths = {
     buildFile: "bundle.js",
     sassSrc: "sass/**/*.scss",
     styleLoc: "css/"
-}
+};
 
 function compile(watch) {
     var bundler = watchify(browserify(paths.mainFile, { debug: true }).transform(babelify, {presets: ["es2015", "react"]}));
@@ -29,12 +28,15 @@ function compile(watch) {
     function rebundle() {
         console.log("[INFO]  Compiling and Bundling Javascript.");
         bundler.bundle()
-        .on("error", function(err) { console.error(err); this.emit("end"); })
-        .pipe(source(paths.buildFile))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest(paths.buildLoc));
+            .on("error", function(err) { console.error(err); this.emit("end"); })
+            .pipe(source(paths.buildFile))
+            .pipe(buffer())
+            .pipe(sourcemaps.init({ loadMaps: true }))
+            .pipe(sourcemaps.write("./"))
+            .pipe(gulp.dest(paths.buildLoc))
+            .on("end", function () {
+                console.log("[INFO]  Finished Compiling and Bundling Javascript");
+            });
     }
 
     if (watch) {
@@ -57,7 +59,7 @@ function styles(watch) {
             .pipe(concat("less-files.less"));
         merge(sassStream, bootstrapStream)
             .pipe(concat("main.css"))
-            .pipe(gulp.dest(paths.styleLoc))
+            .pipe(gulp.dest(paths.styleLoc));
     }
 
     if (watch) {
@@ -74,7 +76,10 @@ function watch() {
 
 gulp.task("build", function() { return compile(); });
 gulp.task("watch", function() { return watch(); });
-gulp.task("connect", function() {connect.server(); });
 gulp.task("styles", function() { return styles(); });
+gulp.task("server", function () {
+    server.run(["server.js"]);
+    // gulp.watch([server.js], server.notify);
+});
 
-gulp.task("default", ["watch", "connect"]);
+gulp.task("default", ["watch", "server"]);

@@ -15,12 +15,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-// const render = () => {
-//     ReactDOM.render(
-//         <App/>,
-//         document.getElementById("mount-point")
-//     );
-// };
-//
-// render();
