@@ -14,11 +14,13 @@ class App extends React.Component {
     }
 }
 
-const render = () => {
-    ReactDOM.render(
-        <App/>,
-        document.getElementById("mount-point")
-    );
-};
+export default App;
 
-render();
+// const render = () => {
+//     ReactDOM.render(
+//         <App/>,
+//         document.getElementById("mount-point")
+//     );
+// };
+//
+// render();

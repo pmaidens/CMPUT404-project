@@ -16,7 +16,7 @@ var fs = require("fs");
 
 var paths = {
     bootstrapLess: "./bower_components/bootstrap/less/bootstrap.less",
-    mainFile: "./js/app.js",
+    mainFile: "./index.js",
     buildLoc: "./build",
     buildFile: "bundle.js",
     sassSrc: "sass/**/*.scss",
