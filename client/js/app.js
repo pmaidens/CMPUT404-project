@@ -9,7 +9,7 @@ class App extends React.Component {
         return (
             <div>
                 <HeaderBar />
-                Hello World!
+                {this.props.children}
             </div>
         );
     }
