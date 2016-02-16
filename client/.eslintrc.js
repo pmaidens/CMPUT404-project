@@ -2,7 +2,8 @@ module.exports = {
     "rules": {
         "indent": [
             2,
-            4
+            4,
+            {"SwitchCase": 1}
         ],
         "quotes": [
             2,
@@ -24,7 +25,8 @@ module.exports = {
     "extends": "eslint:recommended",
     "ecmaFeatures": {
         "jsx": true,
-        "experimentalObjectRestSpread": true
+        "experimentalObjectRestSpread": true,
+        "modules": true
     },
     "plugins": [
         "react"

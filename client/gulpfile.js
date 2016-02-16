@@ -23,10 +23,10 @@ var paths = {
 };
 
 function compile(watch) {
-    var bundler = watchify(browserify(paths.mainFile, { debug: true }).transform(babelify, {presets: ["es2015", "react"]}));
+    var bundler = watchify(browserify(paths.mainFile, { debug: true }).transform(babelify, {presets: ["es2015", "react"],"plugins": ["transform-object-rest-spread"]}));
 
     function rebundle() {
-        console.log("[INFO]  Compiling and Bundling Javascript.");
+        console.log("[INFO]  Compiling and Bundling Javascript. Please Standby...");
         bundler.bundle()
             .on("error", function(err) { console.error(err); this.emit("end"); })
             .pipe(source(paths.buildFile))
