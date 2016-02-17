@@ -17,7 +17,7 @@ module.exports = function(config){
 
         frameworks: ["jasmine"],
 
-        browsers : process.env.ENV === "travis" ? ["PhantomJS"] : ["Chrome"],
+        browsers : ["Firefox"],
 
         plugins : [
             "karma-chrome-launcher",
@@ -29,7 +29,9 @@ module.exports = function(config){
         junitReporter : {
             outputFile: "test_out/unit.xml",
             suite: "unit"
-        }
+        },
+
+        single_run: true
 
     });
 };
