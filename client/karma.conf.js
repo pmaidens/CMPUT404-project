@@ -17,7 +17,7 @@ module.exports = function(config){
 
         frameworks: ["jasmine"],
 
-        browsers : process.env.ENV === "travis" ? ["PhantomJS"] : ["Chrome"],
+        browsers : ["Firefox"],
 
         plugins : [
             "karma-chrome-launcher",
