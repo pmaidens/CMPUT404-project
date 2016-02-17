@@ -1,15 +1,17 @@
-'use strict';
+/*eslint-env node, qunit, mocha */
 
-describe('myApp.version module', function() {
-  beforeEach(module('myApp.version'));
+"use strict";
 
-  describe('interpolate filter', function() {
-    beforeEach(module(function($provide) {
-      $provide.value('version', 'TEST_VER');
-    }));
+describe("myApp.version module", function() {
+    beforeEach(module("myApp.version"));
 
-    it('should replace VERSION', inject(function(interpolateFilter) {
-      expect(interpolateFilter('before %VERSION% after')).toEqual('before TEST_VER after');
-    }));
-  });
+    describe("interpolate filter", function() {
+        beforeEach(module(function($provide) {
+            $provide.value("version", "TEST_VER");
+        }));
+
+        it("should replace VERSION", inject(function(interpolateFilter) {
+            expect(interpolateFilter("before %VERSION% after")).toEqual("before TEST_VER after");
+        }));
+    });
 });
