@@ -2,15 +2,25 @@
 
 var express = require("express");
 var path = require("path");
+var url = require("url");
 
 var app = express();
 
-// serve our static stuff like index.css
 app.use(express.static(__dirname));
 
-// send all requests to index.html so browserHistory in React Router works
 app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "index.html"));
+    var resource = url.parse(req.url).pathname;
+    console.log(resource);
+    if(~resource.indexOf("node_modules") || ~resource.indexOf("bower_components")) {
+        res.sendFile(path.join(__dirname));
+    } else {
+        if(resource.slice(-1) !== "/") {
+            res.sendFile(path.join(__dirname + "/app" + resource));
+        } else {
+            res.sendFile(path.join(__dirname + "/app" + resource, "index.html"));
+        }
+
+    }
 });
 
 var PORT = process.env.PORT || 8080;

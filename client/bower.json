@@ -1,6 +1,6 @@
 {
   "name": "cmput-404-project",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "authors": [
     "Peter Maidens"
   ],
@@ -21,6 +21,11 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.6"
+    "bootstrap": "~3.3.6",
+    "angular": "~1.4.0",
+    "angular-route": "~1.4.0",
+    "angular-loader": "~1.4.0",
+    "angular-mocks": "~1.4.0",
+    "html5-boilerplate": "~5.2.0"
   }
 }

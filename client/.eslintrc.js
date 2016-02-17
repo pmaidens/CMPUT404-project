@@ -1,3 +1,5 @@
+/*eslint-env node*/
+
 module.exports = {
     "rules": {
         "indent": [
@@ -28,7 +30,8 @@ module.exports = {
         "experimentalObjectRestSpread": true,
         "modules": true
     },
-    "plugins": [
-        "react"
-    ]
+    "globals": {
+        "angular": true,
+        "inject": true
+    }
 };

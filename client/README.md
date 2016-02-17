@@ -1,4 +1,4 @@
-Distributed Blogging System Client 
+Distributed Blogging System Client
 ==================================
 
 Installation
@@ -6,4 +6,4 @@ Installation
 
 1. `npm install`
 2. `bower install`
-3. `gulp`
+3. `npm start`
