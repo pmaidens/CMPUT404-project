@@ -1,14 +1,19 @@
 language: python
 python:
-  - "2.7"
+- '2.7'
 before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 script:
-  - cd client
-  - npm run test-single-run
-  - cd ../server
-# command to install dependencies
-# install: "pip install -r requirements.txt"
-# command to run tests
-# script: nosetests
+- cd client
+- npm run test-single-run
+- cd ..
+notifications:
+  email:
+  - pmaidens@ualberta.ca
+  - kchow3@ualberta.ca
+  - bkhunter@ualberta.ca
+  - sjpartri@ualberta.ca
+  - bpeychof@ualberta.ca
+  slack:
+    secure: kQs72eT3fZJPgbKgOJhKkktq36/OA7iSNVrkKM52PuO7MGlS1Qp6P0xUCxU7u4sZwap9+DcnmeYBRgKFs57nVKFxMw7NWl327Xzx1khL163M9amXXjjLNTMEQL+U+kDnsCvNfnq5UTXI37zCKNFs7bs53sM25H5TFXxgbVNLp0JGWlicd3FDbJ+KBzBKlH4qbzfB0/uOpawgZcl152v6PM3iQKHR33217GuAN1/c+ljNFYHrzHnlkw8jkNcJAj55lqyJlieJg1FZMoa2/gXnyBjM6bgb9ISgZrTumlHIM6zvAAoR2yVqHh1XJbyFY6pmP5P9DGsHT8uABSvEmWJNgnE96N3FMzhIQ85Xo558EjVbwoVfK67t4vO9lS8zfvrcsJZRxwAdMdGlw+HoAaUVta9psOEQV0ayV3WNpf5ZwTv+bucok/B2jXjbYzHugJHNJHxHV/7+JyamvcSE/TBjJ23FOcfwvtFDuz2RGBRvzPd2XgEJa0buTtWz21wzEFOUOSlM7EVqnlZnbDZaA1HeYfLcDm0i+LH4Pgfanbs70Uvesfra+FHgBM4vsVzUaAu64AE6ynVGWqq93pHJQePpHDY6yn2G+Q47H3MPFdeMo2tuHnnbQhUUSbu4APweyLhwz3HX37jU2Vav0lqyTp1DA4ivXquF9mAKsT5sKVHF7Zo=
