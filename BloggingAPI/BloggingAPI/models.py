@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User, UserManager
 from django.contrib.postgres.fields import ArrayField
-from django.db.models.signals import post_save
+# from django.db.models.signals import post_save
 
 class Author(models.Model):
     user = models.OneToOneField(User)
@@ -15,9 +15,9 @@ class Author(models.Model):
 
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
-            Author.objects.create(user=instance)
+            Author.objects.get_or_create(user=instance)
 
-    post_save.connect(create_user_profile, sender=User)
+    # post_save.connect(create_user_profile, sender=User)
 
 class Post(models.Model):
 
