@@ -1,9 +1,30 @@
 <div class="container">
     <p>
-        This is the partial for view 1.
+        Write something earthshattering!
     </p>
-    <textarea data-ng-model="postContent" name="postContent" data-ng-maxlength="9000"></textarea>
-
+    <input type="text" data-ng-model="title" data-ng-trim="true" placeholder="Title"></input>
+    <br/>
+    <input type="text" data-ng-model="description" data-ng-trim="true" placeholder="Description"></input>
+    <br/>
+    <select data-ng-model="contentType">
+        <option value="plain">Plain Text</option>
+        <option value="x-markdown">Markdown</option>
+        <option value="html">HTML</option>
+    </select>
+    <br/>
+    <input type="text" data-ng-model="categories" data-ng-trim="true" placeholder="Categories"></input>
+    <br/>
+    <textarea data-ng-model="content" data-ng-maxlength="9000" placeholder="Post Content"></textarea>
+    <br/>
+    Who can see your post?
+    <select data-ng-model="visibility">
+        <option value="PUBLIC">Everyone</option>
+        <option value="FOAF">Friends of Friends</option>
+        <option value="FRIENDS">Friends</option>
+        <option value="PRIVATE">Only Me</option>
+        <option value="SERVERONLY">Server Users</option>
+    </select>
+    <br/>
     <button data-ng-click="SubmitPost()">Submit</button>
 
 </div>
