@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("myApp.postStream", ["ngRoute", "myApp.services.postFetch"])
+angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 
 .config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/stream", {
@@ -9,9 +9,16 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postFetch"])
     });
 }])
 
-.controller("PostStreamController", function($scope, postFetch) {
+.controller("PostStreamController", function($scope, postHandler) {
 	$scope.posts = [];
-	postFetch.getPosts().then(function(result) {
+	postHandler.getPosts().then(function(result) {
 		$scope.posts = result.posts;
-	})
+	});
+
+	$scope.deletePost = function(post) {
+		post.disabled = true;
+		postHandler.deletePost(post.id).then(function(result) {
+			$scope.posts = result.posts;
+		});
+	};
 });

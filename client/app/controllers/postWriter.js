@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("myApp.postWriter", ["ngRoute"])
+angular.module("myApp.postWriter", ["ngRoute", "myApp.services.postHandler"])
 
 .config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/write", {
@@ -9,7 +9,7 @@ angular.module("myApp.postWriter", ["ngRoute"])
     });
 }])
 
-.controller("postWriter", function($scope, $http) {
+.controller("postWriter", function($scope, $http, postHandler) {
     
     function separateCategories(inputValue) {
         return inputValue.split(",").map(function (category) {
@@ -21,19 +21,28 @@ angular.module("myApp.postWriter", ["ngRoute"])
 
     $scope.SubmitPost = function () {
         // TODO: Change this object to whatever it needs to be
-        $http({
-            method: "POST",
-            url: "base/server/url/authors/123/posts",
-            data: {
-                author: 123,
-                title: $scope.title || "",
-                description: $scope.description || "",
-                contentType: $scope.contentType,
-                categories: separateCategories($scope.categories || ""),
-                visibility: $scope.visibility,
-                content: $scope.content || ""
-            }
+        postHandler.createPost({
+            author: 123,
+            title: $scope.title || "",
+            description: $scope.description || "",
+            contentType: $scope.contentType,
+            categories: separateCategories($scope.categories || ""),
+            visibility: $scope.visibility,
+            content: $scope.content || ""
         });
+        // $http({
+        //     method: "POST",
+        //     url: "base/server/url/authors/123/posts",
+        //     data: {
+        //         author: 123,
+        //         title: $scope.title || "",
+        //         description: $scope.description || "",
+        //         contentType: $scope.contentType,
+        //         categories: separateCategories($scope.categories || ""),
+        //         visibility: $scope.visibility,
+        //         content: $scope.content || ""
+        //     }
+        // });
     };
 
     $scope.visibility = $scope.visibility || "PUBLIC";

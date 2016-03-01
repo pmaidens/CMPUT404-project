@@ -1,5 +1,6 @@
 <div data-ng-repeat="post in posts">
 	<h3 data-ng-bind="post.title"></h3>
+	<button data-ng-click="deletePost(post)" data-ng-disabled="post.disabled">Delete Post</button>
 	<h5 data-ng-bind="post.author.displayName"></h5>
 	<h6 data-ng-bind="post.description"></h6>
 	<div data-ng-bind="post.content"></div>
