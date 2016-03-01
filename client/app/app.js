@@ -4,9 +4,9 @@
 angular.module("myApp", [
     "ngRoute",
     "myApp.postWriter",
-    "myApp.view2",
+    "myApp.postStream",
     "myApp.version"
 ]).
 config(["$routeProvider", function($routeProvider) {
-    $routeProvider.otherwise({redirectTo: "/write"});
+    $routeProvider.otherwise({redirectTo: "/stream"});
 }]);

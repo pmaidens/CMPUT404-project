@@ -33,14 +33,14 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#/view1">Write a Post <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#/view2">View 2</a></li>
+                    <li class="active"><a href="#/write">Write a Post <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#/stream">My Stream</a></li>
                     <li class="dropdown">
                         <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Go to... <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#/view1">View 1</a></li>
+                            <li><a href="#/write">Write a Post</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#/view2">View 2</a></li>
+                            <li><a href="#/stream">My Stream</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -62,9 +62,10 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="app.js"></script>
     <script src="controllers/postWriter.js"></script>
-    <script src="view2/view2.js"></script>
+    <script src="controllers/postStream.js"></script>
     <script src="components/version/version.js"></script>
     <script src="components/version/version-directive.js"></script>
     <script src="components/version/interpolate-filter.js"></script>
+    <script src="services/postFetchService.js"></script>
 </body>
 </html>

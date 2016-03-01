@@ -10,6 +10,7 @@ angular.module("myApp.postWriter", ["ngRoute"])
 }])
 
 .controller("postWriter", function($scope, $http) {
+    
     function separateCategories(inputValue) {
         return inputValue.split(",").map(function (category) {
             return category.trim();
@@ -17,6 +18,7 @@ angular.module("myApp.postWriter", ["ngRoute"])
             return !!category;
         });
     }
+
     $scope.SubmitPost = function () {
         // TODO: Change this object to whatever it needs to be
         $http({
@@ -33,6 +35,7 @@ angular.module("myApp.postWriter", ["ngRoute"])
             }
         });
     };
+
     $scope.visibility = $scope.visibility || "PUBLIC";
     $scope.contentType = $scope.contentType || "plain";
 });
