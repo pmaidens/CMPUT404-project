@@ -1,7 +1,12 @@
 from rest_framework import serializers
 from .models import *
 
-#Author Serializer
+#Author Serializers
+class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Friend
+        fields = ('id', 'host', 'display_name', 'url')
+
 class AuthorSerializer(serializers.ModelSerializer):
 
     display_name = serializers.CharField(source='user.username', read_only=True)
@@ -9,11 +14,11 @@ class AuthorSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source='user.last_name')
     email = serializers.CharField(source='user.email')
 
-    friendList = serializers.ListField(source='friends')
+    friends = AuthorFriendSerializer(many=True)
 
     class Meta:
         model = Author
-        fields = ('id', 'host', 'display_name', 'url', 'friendList', 'github',
+        fields = ('id', 'host', 'display_name', 'url', 'friends', 'github',
           'first_name', 'last_name', 'email', 'bio')
         read_only_fields = ('id', 'host', 'url')
 

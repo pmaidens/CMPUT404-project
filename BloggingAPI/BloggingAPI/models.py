@@ -6,11 +6,11 @@ from django.contrib.postgres.fields import ArrayField
 
 class Author(models.Model):
     user = models.OneToOneField(User)
-    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # profile_img = models.ImageField(default=None)
     host = models.CharField(max_length=2000, blank=False)
     url = models.CharField(max_length=2000, blank=False)
-    friends = models.ManyToManyField('self', blank=True)
+    friends = models.ManyToManyField('Friend', blank=True)
     github = models.CharField(max_length=2000, default=None, blank=True, null=True)
     bio = models.TextField(default=None, blank=True, null=True)
 
@@ -19,6 +19,12 @@ class Author(models.Model):
             Author.objects.get_or_create(user=instance)
 
     # post_save.connect(create_user_profile, sender=User)
+
+class Friend(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    host = models.CharField(max_length=2000, blank=False)
+    display_name = models.CharField(max_length=30, blank=False)
+    url = models.CharField(max_length=2000, blank=False)
 
 class Post(models.Model):
 
@@ -30,7 +36,7 @@ class Post(models.Model):
         ('SERVERONLY', 'SERVERONLY'),
     )
 
-    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(Author)
     source = models.CharField(default=None, max_length=2000)
     origin = models.CharField(default=None, max_length=2000)
@@ -46,7 +52,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(Author)
     contentType = models.CharField(default='text/plain', max_length=255)
     comment = models.TextField(default=None, blank=True, null=True)
