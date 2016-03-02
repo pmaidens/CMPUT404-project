@@ -10,8 +10,9 @@ class Author(models.Model):
     # profile_img = models.ImageField(default=None)
     host = models.CharField(max_length=2000, blank=False)
     url = models.CharField(max_length=2000, blank=False)
-    github = models.CharField(max_length=2000, default=None, blank=True, null=True)
     friends = models.ManyToManyField('self', blank=True)
+    github = models.CharField(max_length=2000, default=None, blank=True, null=True)
+    bio = models.TextField(default=None, blank=True, null=True)
 
     def create_user_profile(sender, instance, created, **kwargs):
         if created:

@@ -1,8 +1,8 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from .serializers import *
 
-class AuthorViewSet(viewsets.ModelViewSet):
+class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
 
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
@@ -18,28 +18,28 @@ class AuthorViewSet(viewsets.ModelViewSet):
     #     return Response({'message': 'Account could not be created with received data.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PostsViewSet(viewsets.ModelViewSet):
-
-    queryset = Post.objects.all()
-    serializer_class = PostsSerializer
-
-
-class CurrentAuthorPostsViewSet(viewsets.ModelViewSet):
-
-    queryset = Post.objects.all()
-    serializer_class = PostsSerializer
-
-
-class AuthorPostsViewSet(viewsets.ModelViewSet):
-
-    queryset = Post.objects.all()
-    serializer_class = PostsSerializer
-
-
-class PostCommentsViewSet(viewsets.ModelViewSet):
-
-    queryset = Post.objects.all()
-    serializer_class = PostsSerializer
+# class PostsViewSet(viewsets.ModelViewSet):
+#
+#     queryset = Post.objects.all()
+#     serializer_class = PostsSerializer
+#
+#
+# class CurrentAuthorPostsViewSet(viewsets.ModelViewSet):
+#
+#     queryset = Post.objects.all()
+#     serializer_class = PostsSerializer
+#
+#
+# class AuthorPostsViewSet(viewsets.ModelViewSet):
+#
+#     queryset = Post.objects.all()
+#     serializer_class = PostsSerializer
+#
+#
+# class PostCommentsViewSet(viewsets.ModelViewSet):
+#
+#     queryset = Post.objects.all()
+#     serializer_class = PostsSerializer
 
 
 # class FriendsViewSet(viewsets.ModelViewSet):
