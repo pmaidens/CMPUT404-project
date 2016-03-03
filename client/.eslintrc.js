@@ -35,6 +35,9 @@ module.exports = {
     },
     "globals": {
         "angular": true,
-        "inject": true
+        "inject": true,
+        "browser": true,
+        "element": true,
+        "by": true
     }
 };

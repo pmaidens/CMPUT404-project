@@ -8,10 +8,16 @@ describe("myApp.postStream module", function() {
 
     describe("PostStream controller", function(){
 
-        it("should ....", inject(function($controller) {
+        var scope, postStream;
+
+        beforeEach(inject(function ($rootScope, $controller) {
+            scope = $rootScope.$new();
+            postStream = $controller("PostStreamController", {$scope: scope});
+        }));
+
+        it("should ....", inject(function() {
             //spec body
-            var postStreamController = $controller("PostStreamController");
-            expect(postStreamController).toBeDefined();
+            expect(postStream).toBeDefined();
         }));
 
     });

@@ -6,10 +6,15 @@ describe("myApp.postWriter module", function() {
     beforeEach(module("myApp.postWriter"));
 
     describe("postWriter controller", function(){
+        var scope, postWriter;
 
-        it("should ....", inject(function($controller) {
+        beforeEach(inject(function ($rootScope, $controller) {
+            scope = $rootScope.$new();
+            postWriter = $controller("PostWriterController", {$scope: scope});
+        }));
+
+        it("should ....", inject(function() {
             //spec body
-            var postWriter = $controller("postWriter");
             expect(postWriter).toBeDefined();
         }));
 

@@ -10,16 +10,16 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 }])
 
 .controller("PostStreamController", function($scope, postHandler) {
-	$scope.user = {id: "de305d54-75b4-431b-adb2-eb6b9e546013"};
-	$scope.posts = [];
-	postHandler.getPosts().then(function(result) {
-		$scope.posts = result.posts;
-	});
+    $scope.user = {id: "de305d54-75b4-431b-adb2-eb6b9e546013"};
+    $scope.posts = [];
+    postHandler.getPosts().then(function(result) {
+        $scope.posts = result.posts;
+    });
 
-	$scope.deletePost = function(post) {
-		post.disabled = true;
-		postHandler.deletePost(post.id).then(function(result) {
-			$scope.posts = result.posts;
-		});
-	};
+    $scope.deletePost = function(post) {
+        post.disabled = true;
+        postHandler.deletePost(post.id).then(function(result) {
+            $scope.posts = result.posts;
+        });
+    };
 });

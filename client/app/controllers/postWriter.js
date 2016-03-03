@@ -5,12 +5,12 @@ angular.module("myApp.postWriter", ["ngRoute", "myApp.services.postHandler"])
 .config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/write", {
         templateUrl: "partials/postWriter.html",
-        controller: "postWriter"
+        controller: "PostWriterController"
     });
 }])
 
-.controller("postWriter", function($scope, $http, postHandler) {
-    
+.controller("PostWriterController", function($scope, $http, postHandler) {
+
     function separateCategories(inputValue) {
         return inputValue.split(",").map(function (category) {
             return category.trim();
