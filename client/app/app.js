@@ -5,7 +5,8 @@ angular.module("myApp", [
     "ngRoute",
     "myApp.postWriter",
     "myApp.postStream",
-    "myApp.version"
+    "myApp.version",
+    "btford.markdown"
 ]).
 config(["$routeProvider", function($routeProvider) {
     $routeProvider.otherwise({redirectTo: "/stream"});
