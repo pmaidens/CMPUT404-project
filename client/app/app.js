@@ -3,10 +3,11 @@
 // Declare app level module which depends on views, and components
 angular.module("myApp", [
     "ngRoute",
+    "btford.markdown",
     "myApp.postWriter",
     "myApp.postStream",
-    "myApp.version",
-    "btford.markdown"
+    "myApp.profile",
+    "myApp.version"
 ]).
 config(["$routeProvider", function($routeProvider) {
     $routeProvider.otherwise({redirectTo: "/stream"});
