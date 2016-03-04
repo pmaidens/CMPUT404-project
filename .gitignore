@@ -2,3 +2,5 @@ bower_components/
 node_modules/
 npm-debug.log
 C:\\nppdf32Log\\debuglog.txt
+*.pyc
+.DS_Store
