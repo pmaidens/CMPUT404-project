@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("myApp.directives.postStream", ["myApp.services.postHandler"])
+angular.module("myApp.directives.postStream", [])
 .directive("postStream", function () {
     return {
         restrict: "E",
