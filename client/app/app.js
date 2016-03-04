@@ -7,7 +7,8 @@ angular.module("myApp", [
     "myApp.postWriter",
     "myApp.postStream",
     "myApp.profile",
-    "myApp.version"
+    "myApp.version",
+    "myApp.navbar"
 ]).
 config(["$routeProvider", function($routeProvider) {
     $routeProvider.otherwise({redirectTo: "/stream"});

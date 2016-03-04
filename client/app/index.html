@@ -17,7 +17,7 @@
     <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-default">
+    <nav data-ng-controller="NavbarController" class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -32,7 +32,7 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav navbar-left">
                     <li class="active"><a href="#/write">Write a Post <span class="sr-only">(current)</span></a></li>
                     <li><a href="#/stream">My Stream</a></li>
                     <li class="dropdown">
@@ -43,6 +43,10 @@
                             <li><a href="#/profile">My Profile</a></li>
                         </ul>
                     </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li data-ng-show="!valid" data-ng-click="login()"><a href="#/login">Login</a></li>
+                    <li data-ng-show="valid" data-ng-click="logout()"><a href="">Logout</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -70,6 +74,7 @@
     <script src="controllers/postWriter.js"></script>
     <script src="controllers/postStream.js"></script>
     <script src="controllers/profile.js"></script>
+    <script src="controllers/navbar.js"></script>
 
     <script src="directives/postStream.js"></script>
 
