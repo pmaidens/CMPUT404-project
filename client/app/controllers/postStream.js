@@ -10,9 +10,18 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 }])
 
 .controller("PostStreamController", function($scope, postHandler) {
+    var targetAuthorId;
     $scope.user = {id: "de305d54-75b4-431b-adb2-eb6b9e546013"};
     $scope.posts = [];
-    postHandler.getPosts().then(function(result) {
+
+    // If something else tells us what authorId to use, then
+    // we know that we should load the posts of that user.
+    // Otherwise, we should just load all the posts the current
+    // signed in user can see.
+    if($scope.postStream && $scope.postStream.authorId) {
+        targetAuthorId = {id: $scope.postStream.authorId};
+    }
+    postHandler.getPosts(targetAuthorId).then(function(result) {
         $scope.posts = result.posts;
     });
 

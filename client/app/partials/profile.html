@@ -1,0 +1,16 @@
+<div class="profile">
+    <div class="displayName">
+        <h1 data-ng-show="!editing">{{ author.displayName }}</h1>
+        <input type="text" data-ng-model="author.displayName" data-ng-show="editing"></input>
+    </div>
+    <div class="github">
+        <div data-ng-show="!editing">{{ author.github }}</div>
+        <input type="text" data-ng-model="author.github" data-ng-show="editing"></input>
+    </div>
+    <div class="editButtons">
+        <button data-ng-click="clickEdit()" data-ng-show="!editing">Edit</button>
+        <button data-ng-click="submitAuthor()" data-ng-show="editing">Submit</button>
+    </div>
+</div>
+<hr />
+<post-stream data-ng-controller="PostStreamController"></post-stream>

@@ -1,6 +1,46 @@
+"use strict";
+
 angular.module("myApp.services.postHandler", [])
 .service("postHandler", function($q) {
     this.posts = [];
+    var generateId = function() {
+        return Math.random(1, 1000);
+    };
+    this.getPosts = function (authorId) {
+        var url = "base/posts/url/" + (authorId || "");//eslint-disable-line no-unused-vars
+        // return $http.get("some/url/posts", {author: authorId});
+        return $q(function(resolve/*, reject*/) {
+            setTimeout(function() {
+                STUBgetPosts.posts.forEach(function(post) {
+                    if(!this.posts.some(function(current) {return current.id === post.id;})) {
+                        this.posts.push(post);
+                    }
+                }.bind(this));
+                STUBgetPosts.posts = this.posts;
+                resolve(STUBgetPosts);
+            }.bind(this), 1000);
+        }.bind(this));
+    };
+    this.deletePost = function(id) {
+        return $q(function(resolve/*, reject*/) {
+            setTimeout(function() {
+                this.posts = this.posts.filter(function(post) {
+                    return post.id !== id;
+                });
+                STUBgetPosts.posts = this.posts;
+                resolve(STUBgetPosts);
+            }.bind(this), 1000);
+        }.bind(this));
+    };
+    this.createPost = function(post) {
+        return $q(function(resolve/*, reject*/) {
+            setTimeout(function() {
+                post.id = generateId();
+                this.posts.push(post);
+                resolve({status: 200});
+            }.bind(this), 1000);
+        }.bind(this));
+    };
     var STUBgetPosts = {
         "query": "posts",
         "count": 105,
@@ -46,42 +86,5 @@ angular.module("myApp.services.postHandler", [])
                 "visibility":"PUBLIC"
             }
         ]
-    };
-    var generateId = function() {
-        return Math.random(1, 1000);
-    };
-    this.getPosts = function (/*authorId*/) {
-        // return $http.get("some/url/posts", {author: authorId});
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function() {
-                STUBgetPosts.posts.forEach(function(post) {
-                    if(!this.posts.some(function(current) {return current.id === post.id;})) {
-                        this.posts.push(post);
-                    }
-                }.bind(this));
-                STUBgetPosts.posts = this.posts;
-                resolve(STUBgetPosts);
-            }.bind(this), 1000);
-        }.bind(this));
-    };
-    this.deletePost = function(id) {
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function() {
-                this.posts = this.posts.filter(function(post) {
-                    return post.id !== id;
-                });
-                STUBgetPosts.posts = this.posts;
-                resolve(STUBgetPosts);
-            }.bind(this), 1000);
-        }.bind(this));
-    };
-    this.createPost = function(post) {
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function() {
-                post.id = generateId();
-                this.posts.push(post);
-                resolve({status: 200});
-            }.bind(this), 1000);
-        }.bind(this));
     };
 });
