@@ -22,6 +22,7 @@ class AuthorSerializer(serializers.ModelSerializer):
           'first_name', 'last_name', 'email', 'bio')
 
 #Serializers for Posts
+#This serializer is to show the nested author object in a GET request
 class PostAuthorSerializer(serializers.HyperlinkedModelSerializer):
 
     displayname = serializers.CharField(source='user.username')
@@ -30,6 +31,7 @@ class PostAuthorSerializer(serializers.HyperlinkedModelSerializer):
         model = Author
         fields = ('id', 'host', 'displayname', 'url', 'github')
 
+#This serializer is to show the nested comment objects in a GET request
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
@@ -40,7 +42,9 @@ class PostsSerializer(serializers.ModelSerializer):
 
     count = serializers.SerializerMethodField()
     comments = PostCommentSerializer(many=True, read_only=True)
-    author = PostAuthorSerializer()
+    #For GET request show the author object
+    author = PostAuthorSerializer(read_only=True)
+    #For POST/PUT take in the author id as the author object
 
     class Meta:
         model = Post
