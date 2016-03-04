@@ -46,14 +46,12 @@ class Post(models.Model):
     content = models.TextField(default=None, blank=True, null=True)
     date_created = models.DateField()
     categories = ArrayField(models.CharField(default=None, max_length=255), default=None)
-    image = models.ImageField(default=None)
-    count = models.IntegerField(default=None)
+    #image = models.ImageField(default=None)
     visibility = models.CharField(default='PUBLIC', max_length=255, choices=visibility_choices)
-
+    comments = models.ForeignKey('Comment', on_delete=models.CASCADE, blank=True, default=None, null=True)
 
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(Author)
     contentType = models.CharField(default='text/plain', max_length=255)
     comment = models.TextField(default=None, blank=True, null=True)
-    parent_post = models.ForeignKey(Post)

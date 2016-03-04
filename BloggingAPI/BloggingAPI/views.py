@@ -18,12 +18,12 @@ class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.L
     #     return Response({'message': 'Account could not be created with received data.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class PostsViewSet(viewsets.ModelViewSet):
-#
-#     queryset = Post.objects.all()
-#     serializer_class = PostsSerializer
-#
-#
+class PostsViewSet(viewsets.ModelViewSet):
+
+    queryset = Post.objects.all()
+    serializer_class = PostsSerializer
+
+
 # class CurrentAuthorPostsViewSet(viewsets.ModelViewSet):
 #
 #     queryset = Post.objects.all()

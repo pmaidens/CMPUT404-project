@@ -13,7 +13,7 @@ apiRouter.register(r'author', AuthorViewSet)
 
 # http://service/posts
 # http://service/posts/{POST_ID}
-# apiRouter.register(r'posts', PostsViewSet)
+apiRouter.register(r'posts', PostsViewSet)
 
 # http://service/author/posts
 # apiRouter.register(r'author/posts', CurrentAuthorPostsViewSet)
