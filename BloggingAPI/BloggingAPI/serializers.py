@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import *
 
-#Author Serializers
+#Serializers for Author
 class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Friend
@@ -21,17 +21,26 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ('id', 'host', 'displayname', 'url', 'friends', 'github',
           'first_name', 'last_name', 'email', 'bio')
 
-#Post Serializer
+#Serializers for Posts
+class PostAuthorSerializer(serializers.HyperlinkedModelSerializer):
+
+    displayname = serializers.CharField(source='user.username')
+
+    class Meta:
+        model = Author
+        fields = ('id', 'host', 'displayname', 'url', 'github')
+
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
-        fields = ('_all_')
+        fields = '__all__'
 
 
 class PostsSerializer(serializers.ModelSerializer):
 
     count = serializers.SerializerMethodField()
     comments = PostCommentSerializer(many=True, read_only=True)
+    author = PostAuthorSerializer()
 
     class Meta:
         model = Post
@@ -45,7 +54,7 @@ class PostsSerializer(serializers.ModelSerializer):
             return 0
         return obj.comments.count()
 
-#Comment Serializer
+#Serializer for Comments
 class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
