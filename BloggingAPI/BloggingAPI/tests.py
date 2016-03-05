@@ -51,21 +51,26 @@ class friendTestCase(TestCase):
 class commentTestCase(TestCase):
 
     def setUp(self):
-        self.commentID = uuid.uuid4()
+        self.commentID1 = uuid.uuid4()
+        self.commentID2 = uuid.uuid4()
         self.authorID = uuid.uuid4()
 
         self.testUser = User.objects.create_user(username='author', email='author@test.com', password='top_secret!!')
         self.testAuthor = Author.objects.create(user = self.testUser, id = self.authorID,host='hostname',url='www.example.com',github= 'www.github.com',bio='test bio')
 
-        Comment.objects.create(id = self.commentID, author = self.testAuthor, contentType = 'text/plain', comment = 'nice comment!')
+        Comment.objects.create(id = self.commentID1, author = self.testAuthor, contentType = 'text/plain', comment = 'nice comment!')
+        Comment.objects.create(id = self.commentID2, author = self.testAuthor, contentType = 'text/markdown', comment = '###nice comment!###')
         
     def test_comment_attributes(self):
-        test = Comment.objects.get(id = self.commentID)
+        test_plainText = Comment.objects.get(id = self.commentID1)
+        test_markdown =  Comment.objects.get(id = self.commentID2)
 
-        self.assertEqual(test.id, self.commentID)
-        self.assertEqual(test.author, self.testAuthor)
-        self.assertEqual(test.contentType, 'text/plain')
-        self.assertEqual(test.comment, 'nice comment!')
+        self.assertEqual(test_plainText.id, self.commentID1)
+        self.assertEqual(test_plainText.author, self.testAuthor)
+        self.assertEqual(test_plainText.contentType, 'text/plain')
+        self.assertEqual(test_plainText.comment, 'nice comment!')
+        
+        self.assertEqual(test_markdown.contentType, 'text/markdown')
 
 
 class PostTestCase(TestCase):
@@ -82,6 +87,10 @@ class PostTestCase(TestCase):
         self.id3 = uuid.uuid4()
         self.id4 = uuid.uuid4()
         self.id5 = uuid.uuid4()
+
+        self.sampleDesc = "Post about my day"
+        self.date = datetime.now()
+        
 
         visibility_choices = (
             ('PUBLIC', 'PUBLIC'),
@@ -101,7 +110,76 @@ class PostTestCase(TestCase):
         self.testComment1 = Comment.objects.create(id = commentID1, author = self.testAuthor, contentType = 'text/plain', comment = 'nice comment!')
         self.testComment2 = Comment.objects.create(id = commentID2, author = self.commentAuthor, contentType = 'text/plain', comment = 'I like this!')
 
+
         Post.objects.create(id = id1, author = self.testAuthor, source = "source1", origin = "origin1",
-                            description = "Post about my day",contentType = "text/plain", title = "myday", 
-                            content = "I had a good day",date_created = datetime.now(), categories = "DayPosts",
+                            description = self.sampleDesc,contentType = "text/plain", title = "myday", 
+                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
                             visibility = visibility_choices[0][0], comments = self.testComment1)
+
+        Post.objects.create(id = id2, author = self.testAuthor, source = "source1", origin = "origin1",
+                            description = "Post about my day",contentType = "text/plain", title = "myday", 
+                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
+                            visibility = visibility_choices[1][1], comments = self.testComment2)
+
+        Post.objects.create(id = id3, author = self.testAuthor, source = "source1", origin = "origin1",
+                            description = "Post about my day",contentType = "text/plain", title = "myday", 
+                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
+                            visibility = visibility_choices[2][2], comments = self.testComment1)
+
+        Post.objects.create(id = id4, author = self.testAuthor, source = "source1", origin = "origin1",
+                            description = "Post about my day",contentType = "text/plain", title = "myday", 
+                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
+                            visibility = visibility_choices[3][3], comments = self.testComment2)
+
+        Post.objects.create(id = id5, author = self.testAuthor, source = "source1", origin = "origin1",
+                            description = "Post about my day",contentType = "text/plain", title = "myday", 
+                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
+                            visibility = visibility_choices[4][4], comments = self.testComment1)
+
+        def test_post_attributes(self):
+            test = Post.objects.get(id = self.id1)
+
+            self.assertEqual(test.id,self.id1)
+            self.assertEqual(test.author,self.testAuthor)
+            self.assertEqual(test.source,"source1")
+            self.assertEqual(test.origin,"origin1")
+            self.assertEqual(test.description,self.sampleDesc)
+            self.assertEqual(test.contentType,"text/plain")
+            self.assertEqual(test.title,"myday")
+            self.assertEqual(test.content,"I had a good day")
+            self.assertEqual(test.date_created,self.date)
+            self.assertEqual(test.categories,"DayPosts")
+            self.assertEqual(test.visibilities,visibility_choices[0][0])
+            self.assertEqual(test.comments,self.testComment1)
+            
+
+        #Will have more to test here soon
+
+        def test_Public(self):
+            test = Post.objects.get(id = self.id1)
+            self.assertEqual(test.visibilities,visibility_choice[0][0])
+
+        def test_FOAF(self):
+            test = Post.objects.get(id = self.id2)
+            self.assertEqual(test.visibilities,visibility_choice[1][1])
+
+        
+        def test_Friends(self):
+            test = Post.objects.get(id = self.id3)
+            self.assertEqual(test.visibilities,visibility_choice[2][2])
+            
+
+            
+        def test_Private(self):
+            test = Post.objects.get(id = self.id4)
+            self.assertEqual(test.visibilities,visibility_choice[3][3])
+
+            
+        def test_Server_Only(self):
+            test = Post.objects.get(id = self.id5)
+            self.assertEqual(test.visibilities,visibility_choice[4][4])
+            
+            
+
+
+            
