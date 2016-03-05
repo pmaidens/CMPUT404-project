@@ -37,14 +37,13 @@ class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
         model = Comment
         fields = '__all__'
 
-
-class PostsSerializer(serializers.ModelSerializer):
+#This serializer is for displaying posts in the API
+class ViewPostsSerializer(serializers.ModelSerializer):
 
     count = serializers.SerializerMethodField()
     comments = PostCommentSerializer(many=True, read_only=True)
     #For GET request show the author object
     author = PostAuthorSerializer(read_only=True)
-    #For POST/PUT take in the author id as the author object
 
     class Meta:
         model = Post
@@ -57,6 +56,16 @@ class PostsSerializer(serializers.ModelSerializer):
         if obj.comments == None:
             return 0
         return obj.comments.count()
+
+#This serializer is for creating or editing posts in the API
+class EditPostsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = ('title', 'source', 'origin', 'description', 'contentType',
+          'content', 'author', 'categories', 'date_created',
+          'id', 'visibility')
+
 
 #Serializer for Comments
 class CommentSerializer(serializers.ModelSerializer):

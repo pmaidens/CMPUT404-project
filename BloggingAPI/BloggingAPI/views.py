@@ -21,7 +21,15 @@ class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.L
 class PostsViewSet(viewsets.ModelViewSet):
 
     queryset = Post.objects.all()
-    serializer_class = PostsSerializer
+
+    def get_serializer_class(self):
+        serializer_class = ViewPostsSerializer
+        if self.request.method == 'POST':
+            serializer_class = EditPostsSerializer
+        elif self.request.method == 'PUT':
+            serializer_class = EditPostsSerializer
+
+        return serializer_class
 
 
 # class CurrentAuthorPostsViewSet(viewsets.ModelViewSet):
