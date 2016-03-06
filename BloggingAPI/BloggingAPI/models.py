@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User, UserManager
 from django.contrib.postgres.fields import ArrayField
+from datetime import datetime 
 # from django.db.models.signals import post_save
 
 class Author(models.Model):
@@ -44,7 +45,7 @@ class Post(models.Model):
     contentType = models.CharField(default='text/plain', max_length=255)
     title = models.CharField(max_length=255)
     content = models.TextField(default=None, blank=True, null=True)
-    date_created = models.DateField()
+    date_created = models.DateTimeField(default=datetime.now, blank=True)
     categories = ArrayField(models.CharField(default=None, max_length=255), default=None)
     #image = models.ImageField(default=None)
     visibility = models.CharField(default='PUBLIC', max_length=255, choices=visibility_choices)
@@ -55,3 +56,4 @@ class Comment(models.Model):
     author = models.ForeignKey(Author)
     contentType = models.CharField(default='text/plain', max_length=255)
     comment = models.TextField(default=None, blank=True, null=True)
+    date_created = models.DateTimeField(default=datetime.now, blank=True)

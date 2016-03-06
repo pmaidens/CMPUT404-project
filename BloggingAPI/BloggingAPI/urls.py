@@ -23,8 +23,8 @@ apiRouter.register(r'posts', PostsViewSet)
 # posts_router.register(r'posts', AuthorPostsViewSet)
 
 # http://service/posts/{post_id}/comments
-# comments_router = routers.NestedSimpleRouter(apiRouter, r'posts', lookup='posts')
-# comments_router.register(r'comments', PostCommentsViewSet)
+comments_router = routers.NestedSimpleRouter(apiRouter, r'posts', lookup='posts')
+comments_router.register(r'comments', PostCommentsViewSet)
 
 # http://service/friends/<authorid>
 # apiRouter.register(r'friends', FriendsViewSet)
@@ -40,5 +40,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include(apiRouter.urls)),
     # url(r'^', include(posts_router.urls)),
-    # url(r'^', include(comments_router.urls)),
+    url(r'^', include(comments_router.urls)),
 ]

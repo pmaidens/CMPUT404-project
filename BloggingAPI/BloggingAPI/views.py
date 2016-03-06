@@ -44,10 +44,11 @@ class PostsViewSet(viewsets.ModelViewSet):
 #     serializer_class = PostsSerializer
 #
 #
-# class PostCommentsViewSet(viewsets.ModelViewSet):
-#
-#     queryset = Post.objects.all()
-#     serializer_class = PostsSerializer
+
+class PostCommentsViewSet(viewsets.ModelViewSet):
+
+    queryset = Post.objects.all()
+    serializer_class = CommentSerializer
 
 
 # class FriendsViewSet(viewsets.ModelViewSet):

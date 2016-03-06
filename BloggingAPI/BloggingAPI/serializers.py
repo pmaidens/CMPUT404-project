@@ -44,11 +44,12 @@ class ViewPostsSerializer(serializers.ModelSerializer):
     comments = PostCommentSerializer(many=True, read_only=True)
     #For GET request show the author object
     author = PostAuthorSerializer(read_only=True)
+    published = serializers.DateTimeField(source='date_created')
 
     class Meta:
         model = Post
         fields = ('title', 'source', 'origin', 'description', 'contentType',
-          'content', 'author', 'categories', 'count', 'comments', 'date_created',
+          'content', 'author', 'categories', 'count', 'comments', 'published',
           'id', 'visibility')
 
 
@@ -60,15 +61,22 @@ class ViewPostsSerializer(serializers.ModelSerializer):
 #This serializer is for creating or editing posts in the API
 class EditPostsSerializer(serializers.ModelSerializer):
 
+    published = serializers.DateTimeField(source='date_created')
+
     class Meta:
         model = Post
         fields = ('title', 'source', 'origin', 'description', 'contentType',
-          'content', 'author', 'categories', 'date_created',
+          'content', 'author', 'categories', 'published',
           'id', 'visibility')
 
 
 #Serializer for Comments
 class CommentSerializer(serializers.ModelSerializer):
 
+    guid = serializers.UUIDField(source='id')
+    author = PostAuthorSerializer(read_only=True)
+    pubDate = serializers.DateTimeField(source='date_created')
+
     class Meta:
         model = Comment
+        fields = ('author', 'comment', 'date_created', 'pubDate', 'guid')
