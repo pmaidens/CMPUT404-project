@@ -9,10 +9,11 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
     });
 }])
 
-.controller("PostStreamController", function($scope, postHandler) {
+.controller("PostStreamController", function($scope, $http, postHandler) {
     var targetAuthorId;
     $scope.user = {id: "de305d54-75b4-431b-adb2-eb6b9e546013"};
     $scope.posts = [];
+    $scope.git_username = "sjpartri";  // This will have to be changed "hard-coded for now"
 
     // If something else tells us what authorId to use, then
     // we know that we should load the posts of that user.
@@ -29,7 +30,31 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
               'content', 'author', 'categories', 'visibility')
 			access them like result[1].title
 		*/
+        $scope.posts = result.posts;
+        loadGit();
     });
+
+    // Make a http call to the github api to get all user information
+    // associated with the git_username
+
+    var loadGit = function () {
+    $http.get("https://api.github.com/users/"+$scope.git_username)
+        .success(function(gitdata) {
+            $scope.gitUserData = gitdata;
+            loadRepos();
+        });
+    }
+    // Http call for github repos (not too sure what Abram means by "activity")
+    // ** May need to make additional calls
+
+    var loadRepos = function () {
+    $http.get($scope.gitUserData.repos_url)
+        .success(function(repo_data){
+                $scope.repoData = repo_data;
+                $scope.allPost = angular.extend($scope.posts, $scope.repoData);
+                console.log($scope.allPost);
+    });
+    }
 
     $scope.deletePost = function(post) {
         post.disabled = true;
