@@ -56,17 +56,6 @@ class PostCommentsViewSet(viewsets.ModelViewSet):
             serializer_class = UpdateCommentSerializer
         return serializer_class
 
-    def list(self, request, posts_pk=None):
-        queryset = Comment.objects.filter(id=posts_pk)
-        serializer = ViewCommentSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None, posts_pk=None):
-        queryset = Comment.objects.filter(id=pk, post=posts_pk)
-        comment = get_object_or_404(queryset, id=pk)
-        serializer = ViewCommentSerializer(comment)
-        return Response(serializer.data)
-
 # class FriendsViewSet(viewsets.ModelViewSet):
 #
 #     queryset = Post.objects.all()

@@ -33,9 +33,13 @@ class PostAuthorSerializer(serializers.HyperlinkedModelSerializer):
 
 #This serializer is to show the nested comment objects in a GET request
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
+
+    author = PostAuthorSerializer(read_only=True)
+    published = serializers.DateTimeField(source='date_created')
+
     class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ('author', 'comment', 'contentType', 'published', 'id')
 
 #This serializer is for displaying posts in the API
 class ViewPostsSerializer(serializers.ModelSerializer):
@@ -60,15 +64,10 @@ class ViewPostsSerializer(serializers.ModelSerializer):
 
 #This serializer is for creating or editing posts in the API
 class UpdatePostsSerializer(serializers.ModelSerializer):
-
-    published = serializers.DateTimeField(source='date_created')
-
     class Meta:
         model = Post
         fields = ('title', 'source', 'origin', 'description', 'contentType',
-          'content', 'author', 'categories', 'published',
-          'id', 'visibility')
-
+              'content', 'author', 'categories', 'visibility')
 
 #Serializer for Comments
 #This serializer is for viewing comments of a post
@@ -87,4 +86,4 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('author', 'comment')
+        fields = ('author', 'comment', 'post')
