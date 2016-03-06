@@ -1,7 +1,74 @@
-import uuid, datetime
+import uuid, json
+from django.utils import timezone
+from datetime import datetime
 from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Author, Friend, Post, Comment
+from rest_framework import status
+from rest_framework.test import  APITestCase, APIClient
+
+def getObject(request, id):
+    obj = MyModel.objects.get(pk=id)
+    data = serializers.serialize('json', [obj,])
+    struct = json.loads(data)
+    data = json.dumps(struct[0])
+    return HttpResponse(data, mimetype='application/json')
+
+
+class restTest(APITestCase):
+
+    def setUp(self):
+        self.testUser = User.objects.create_user(username='test', email='test@test.com', password='top_secret')
+        self.authID = uuid.uuid4()
+        self.authObj = Author.objects.create(user = self.testUser, id = self.authID,host='hostname',url='www.example.com',github= 'www.github.com',bio='test bio')
+
+        self.client = APIClient()
+        now = str(datetime.now())
+        self.data = {"title":"post","source":"src","origin":"origin","description":"neat","categories":["cool"],"published":now,"author":self.authID}
+
+    def testPost(self):
+        self.client.force_authenticate(user = self.testUser)
+
+        postUrl = '/posts/'
+        postResponse = self.client.post(postUrl,self.data,format='json')
+     
+        self.assertEqual(postResponse.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Post.objects.count(), 1)
+        self.assertEqual(Post.objects.get().title, 'post')
+
+        postID = Post.objects.get().id
+
+        # Test that we can get what we just Posted
+        getUrl = '/posts/' + str(postID) + '/'
+        getResponse = self.client.get(getUrl)
+        self.assertEqual(getResponse.status_code,status.HTTP_200_OK)
+
+        # Test PUT to posted entity -- should overwrite        
+        self.data["title"] = "new title"
+        self.data["description"] = "not neat!"
+
+        putResponse = self.client.put(getUrl,self.data,format='json')
+        self.assertEqual(putResponse.status_code, status.HTTP_200_OK)
+        self.assertEqual(Post.objects.count(), 1) # ensure nothing new was made
+
+        # ensure the changes are reflected
+        self.assertEqual(Post.objects.get().title, 'new title')
+        self.assertEqual(Post.objects.get().source, 'src')
+        self.assertEqual(Post.objects.get().description, 'not neat!')
+
+
+        
+        #----We currently don't allow posting to created entities
+        # updatePostResponse = self.client.post(getUrl,self.data,format='json')
+        # print updatePostResponse.data
+        # # and test again
+        # self.assertEqual(updatePostResponse.status_code, status.HTTP_201_CREATED)
+        # self.assertEqual(Post.objects.count(), 1)
+        # self.assertEqual(Post.objects.get().title, 'post')
+        
+
+        
+        
 
 
 class AuthorTestCase(TestCase):
@@ -179,7 +246,9 @@ class PostTestCase(TestCase):
             test = Post.objects.get(id = self.id5)
             self.assertEqual(test.visibilities,visibility_choice[4][4])
             
-            
+          
+
+  
 
 
             
