@@ -1,0 +1,4 @@
+#!/bin/bash
+
+python "$OPENSHIFT_REPO_DIR"/manage.py makemigrations BloggingAPI
+python "$OPENSHIFT_REPO_DIR"/manage.py migrate --noinput
