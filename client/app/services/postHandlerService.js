@@ -1,13 +1,14 @@
 "use strict";
 
-angular.module("myApp.services.postHandler", [ngRouter])
+angular.module("myApp.services.postHandler", ["ngRoute"])
 .service("postHandler", function($q,$http,$route) {
     this.posts = [];
     var generateId = function() {
         return Math.random(1, 1000);
     };
     this.getPosts = function (authorId) {
-        var url = "/api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
+		//TODO change the url to the proper url 
+        var url = "http://localhost:8000/api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
         // return $http.get("some/url/posts", {author: authorId});
         return $q(function(resolve/*, reject*/) {
             setTimeout(function() {
@@ -22,14 +23,16 @@ angular.module("myApp.services.postHandler", [ngRouter])
         }.bind(this));
     };
     this.deletePost = function(id) {
-        return $http.delete('/api/posts/'+id).then(function(){
+		//TODO change the url to the proper url
+        return $http.delete('http://localhost:8000/api/posts/'+id).then(function(){
 
 			$route.reload();
 
 		});
     };
     this.createPost = function(post) {
-        return $http.post("/api/posts/",post);
+		//TODO change the url to the proper url
+        return $http.post("http://localhost:8000/api/posts/",post);
 
     };
 
