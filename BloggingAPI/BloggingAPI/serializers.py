@@ -59,7 +59,7 @@ class ViewPostsSerializer(serializers.ModelSerializer):
         return obj.comments.count()
 
 #This serializer is for creating or editing posts in the API
-class EditPostsSerializer(serializers.ModelSerializer):
+class UpdatePostsSerializer(serializers.ModelSerializer):
 
     published = serializers.DateTimeField(source='date_created')
 
@@ -71,7 +71,8 @@ class EditPostsSerializer(serializers.ModelSerializer):
 
 
 #Serializer for Comments
-class CommentSerializer(serializers.ModelSerializer):
+#This serializer is for viewing comments of a post
+class ViewCommentSerializer(serializers.ModelSerializer):
 
     guid = serializers.UUIDField(source='id')
     author = PostAuthorSerializer(read_only=True)
@@ -79,4 +80,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('author', 'comment', 'date_created', 'pubDate', 'guid')
+        fields = ('author', 'comment', 'pubDate', 'guid')
+
+#This serializer is for creating and editing a comment of a post
+class UpdateCommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = ('author', 'comment')

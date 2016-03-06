@@ -25,10 +25,9 @@ class PostsViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         serializer_class = ViewPostsSerializer
         if self.request.method == 'POST':
-            serializer_class = EditPostsSerializer
+            serializer_class = UpdatePostsSerializer
         elif self.request.method == 'PUT':
-            serializer_class = EditPostsSerializer
-
+            serializer_class = UpdatePostsSerializer
         return serializer_class
 
 
@@ -47,9 +46,26 @@ class PostsViewSet(viewsets.ModelViewSet):
 
 class PostCommentsViewSet(viewsets.ModelViewSet):
 
-    queryset = Post.objects.all()
-    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
 
+    def get_serializer_class(self):
+        serializer_class = ViewCommentSerializer
+        if self.request.method == 'POST':
+            serializer_class = UpdateCommentSerializer
+        elif self.request.method == 'PUT':
+            serializer_class = UpdateCommentSerializer
+        return serializer_class
+
+    def list(self, request, posts_pk=None):
+        queryset = Comment.objects.filter(id=posts_pk)
+        serializer = ViewCommentSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None, posts_pk=None):
+        queryset = Comment.objects.filter(id=pk, post=posts_pk)
+        comment = get_object_or_404(queryset, id=pk)
+        serializer = ViewCommentSerializer(comment)
+        return Response(serializer.data)
 
 # class FriendsViewSet(viewsets.ModelViewSet):
 #
