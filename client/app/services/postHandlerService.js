@@ -1,13 +1,14 @@
 "use strict";
 
-angular.module("myApp.services.postHandler", [])
-.service("postHandler", function($q) {
+angular.module("myApp.services.postHandler", ["ngRoute"])
+.service("postHandler", function($q,$http,$route) {
     this.posts = [];
     var generateId = function() {
         return Math.random(1, 1000);
     };
     this.getPosts = function (authorId) {
-        var url = "base/posts/url/" + (authorId || "");//eslint-disable-line no-unused-vars
+		//TODO change the url to the proper url 
+        var url = "http://localhost:8000/api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
         // return $http.get("some/url/posts", {author: authorId});
         return $q(function(resolve/*, reject*/) {
             setTimeout(function() {
@@ -22,25 +23,19 @@ angular.module("myApp.services.postHandler", [])
         }.bind(this));
     };
     this.deletePost = function(id) {
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function() {
-                this.posts = this.posts.filter(function(post) {
-                    return post.id !== id;
-                });
-                STUBgetPosts.posts = this.posts;
-                resolve(STUBgetPosts);
-            }.bind(this), 1000);
-        }.bind(this));
+		//TODO change the url to the proper url
+        return $http.delete('http://localhost:8000/api/posts/'+id).then(function(){
+
+			$route.reload();
+
+		});
     };
     this.createPost = function(post) {
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function() {
-                post.id = generateId();
-                this.posts.push(post);
-                resolve({status: 200});
-            }.bind(this), 1000);
-        }.bind(this));
+		//TODO change the url to the proper url
+        return $http.post("http://localhost:8000/api/posts/",post);
+
     };
+
     var STUBgetPosts = {
         "query": "posts",
         "count": 105,

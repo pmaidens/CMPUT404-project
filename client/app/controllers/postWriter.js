@@ -22,7 +22,9 @@ angular.module("myApp.postWriter", ["ngRoute", "myApp.services.postHandler"])
     $scope.SubmitPost = function () {
         // TODO: Change this object to whatever it needs to be
         postHandler.createPost({
-            author: 123,
+            author: "46c07967-b790-4d6f-baf0-44a7b1a6cb45",
+			source:"someSource",
+			origin:"anOrigin",
             title: $scope.title || "",
             description: $scope.description || "",
             contentType: $scope.contentType,
