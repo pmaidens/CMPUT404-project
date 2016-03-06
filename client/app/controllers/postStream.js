@@ -52,8 +52,8 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
     $http.get($scope.gitUserData.repos_url)
         .success(function(repo_data){
                 $scope.repoData = repo_data;
-                //$scope.allPost = angular.extend($scope.posts, $scope.repoData);
-                //console.log($scope.allPost);
+
+                $scope.allPost = $scope.posts.concat($scope.repoData);
     });
     }
 

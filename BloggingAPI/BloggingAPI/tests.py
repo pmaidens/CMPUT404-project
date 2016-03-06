@@ -1,7 +1,70 @@
-import uuid, datetime
+import uuid, json
+from django.utils import timezone
+from datetime import datetime
 from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Author, Friend, Post, Comment
+from rest_framework import status
+from rest_framework.test import  APITestCase, APIClient
+
+def getObject(request, id):
+    obj = MyModel.objects.get(pk=id)
+    data = serializers.serialize('json', [obj,])
+    struct = json.loads(data)
+    data = json.dumps(struct[0])
+    return HttpResponse(data, mimetype='application/json')
+
+
+class apiTest(APITestCase):
+
+    def setUp(self):
+        self.testUser = User.objects.create_user(username='test', email='test@test.com', password='top_secret')
+        self.authID = uuid.uuid4()
+        self.authObj = Author.objects.create(user = self.testUser, id = self.authID,host='hostname',url='www.example.com',github= 'www.github.com',bio='test bio')
+
+        self.client = APIClient()
+        now = str(datetime.now())
+        
+        self.data = {"title":"post","source":"src","origin":"origin","description":"neat","categories":["cool"],"published":now,"author":self.authID}
+
+    def testPost(self):
+        self.client.force_authenticate(user = self.testUser)
+
+        postUrl = '/api/posts/'
+        postResponse = self.client.post(postUrl,self.data,format='json')
+     
+        self.assertEqual(postResponse.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Post.objects.count(), 1)
+        self.assertEqual(Post.objects.get().title, 'post')
+
+        postID = Post.objects.get().id
+
+        # Test that we can get what we just Posted
+        getUrl = '/api/posts/' + str(postID) + '/'
+        getResponse = self.client.get(getUrl)
+        self.assertEqual(getResponse.status_code,status.HTTP_200_OK)
+
+        # Test PUT to posted entity -- should overwrite        
+        self.data["title"] = "new title"
+        self.data["description"] = "not neat!"
+
+        putResponse = self.client.put(getUrl,self.data,format='json')
+        self.assertEqual(putResponse.status_code, status.HTTP_200_OK)
+        self.assertEqual(Post.objects.count(), 1) # ensure nothing new was made
+
+        # ensure the changes are reflected
+        self.assertEqual(Post.objects.get().title, 'new title')
+        self.assertEqual(Post.objects.get().source, 'src')
+        self.assertEqual(Post.objects.get().description, 'not neat!')
+
+    def testGet(self):
+        
+        # Test that a get from nothing returns a 404
+        randID = str(uuid.uuid4())
+        getUrl = '/api/posts/' + randID + '/'
+        response = self.client.get(getUrl)
+        
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class AuthorTestCase(TestCase):
@@ -53,13 +116,20 @@ class commentTestCase(TestCase):
     def setUp(self):
         self.commentID1 = uuid.uuid4()
         self.commentID2 = uuid.uuid4()
+        self.postID = uuid.uuid4()
         self.authorID = uuid.uuid4()
+        self.date = timezone.now()
 
         self.testUser = User.objects.create_user(username='author', email='author@test.com', password='top_secret!!')
         self.testAuthor = Author.objects.create(user = self.testUser, id = self.authorID,host='hostname',url='www.example.com',github= 'www.github.com',bio='test bio')
 
-        Comment.objects.create(id = self.commentID1, author = self.testAuthor, contentType = 'text/plain', comment = 'nice comment!')
-        Comment.objects.create(id = self.commentID2, author = self.testAuthor, contentType = 'text/markdown', comment = '###nice comment!###')
+        self.testPost = Post.objects.create(id = self.postID, author = self.testAuthor, source = "source1", origin = "origin1",
+                            description = "",contentType = "text/plain", title = "myday", 
+                            content = "I had a good day",date_created = self.date, categories = ["Day Posts"],
+                            visibility = 'PUBLIC')
+
+        Comment.objects.create(id = self.commentID1, post = self.testPost, author = self.testAuthor, contentType = 'text/plain', comment = 'nice comment!')
+        Comment.objects.create(id = self.commentID2, post = self.testPost, author = self.testAuthor, contentType = 'text/markdown', comment = '###nice comment!###')
         
     def test_comment_attributes(self):
         test_plainText = Comment.objects.get(id = self.commentID1)
@@ -113,27 +183,27 @@ class PostTestCase(TestCase):
 
         Post.objects.create(id = id1, author = self.testAuthor, source = "source1", origin = "origin1",
                             description = self.sampleDesc,contentType = "text/plain", title = "myday", 
-                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
+                            content = "I had a good day",date_created = self.date, categories = ["DayPosts"],
                             visibility = visibility_choices[0][0], comments = self.testComment1)
 
         Post.objects.create(id = id2, author = self.testAuthor, source = "source1", origin = "origin1",
                             description = "Post about my day",contentType = "text/plain", title = "myday", 
-                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
+                            content = "I had a good day",date_created = self.date, categories = ["DayPosts"],
                             visibility = visibility_choices[1][1], comments = self.testComment2)
 
         Post.objects.create(id = id3, author = self.testAuthor, source = "source1", origin = "origin1",
                             description = "Post about my day",contentType = "text/plain", title = "myday", 
-                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
+                            content = "I had a good day",date_created = self.date, categories = ["DayPosts"],
                             visibility = visibility_choices[2][2], comments = self.testComment1)
 
         Post.objects.create(id = id4, author = self.testAuthor, source = "source1", origin = "origin1",
                             description = "Post about my day",contentType = "text/plain", title = "myday", 
-                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
+                            content = "I had a good day",date_created = self.date, categories = ["DayPosts"],
                             visibility = visibility_choices[3][3], comments = self.testComment2)
 
         Post.objects.create(id = id5, author = self.testAuthor, source = "source1", origin = "origin1",
                             description = "Post about my day",contentType = "text/plain", title = "myday", 
-                            content = "I had a good day",date_created = self.date, categories = "DayPosts",
+                            content = "I had a good day",date_created = self.date, categories = ["DayPosts"],
                             visibility = visibility_choices[4][4], comments = self.testComment1)
 
         def test_post_attributes(self):
@@ -168,18 +238,18 @@ class PostTestCase(TestCase):
             test = Post.objects.get(id = self.id3)
             self.assertEqual(test.visibilities,visibility_choice[2][2])
             
-
             
         def test_Private(self):
             test = Post.objects.get(id = self.id4)
             self.assertEqual(test.visibilities,visibility_choice[3][3])
 
-            
         def test_Server_Only(self):
             test = Post.objects.get(id = self.id5)
             self.assertEqual(test.visibilities,visibility_choice[4][4])
             
-            
+          
+
+  
 
 
             

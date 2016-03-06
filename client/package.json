@@ -19,7 +19,7 @@
     "shelljs": "^0.2.6"
   },
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "HOME=$OPENSHIFT_REPO_DIR bower install || bower install",
     "prestart": "npm install",
     "start": "node server.js ./app",
     "pretest": "npm install",
@@ -35,5 +35,6 @@
   "dependencies": {
     "font-awesome": "^4.5.0",
     "octicons": "^3.5.0"
-  }
+  },
+  "main": "server.js"
 }
