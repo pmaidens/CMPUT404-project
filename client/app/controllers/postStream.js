@@ -22,13 +22,21 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
         targetAuthorId = {id: $scope.postStream.authorId};
     }
     postHandler.getPosts(targetAuthorId).then(function(result) {
-        $scope.posts = result.posts;
+        $scope.posts = result;
+		//result[1] for example has these fields: 
+		/*
+			(title', 'source', 'origin', 'description', 'contentType',
+              'content', 'author', 'categories', 'visibility')
+			access them like result[1].title
+		*/
     });
 
     $scope.deletePost = function(post) {
         post.disabled = true;
         postHandler.deletePost(post.id).then(function(result) {
-            $scope.posts = result.posts;
+			//postHandlerService should reload the page
+			
+
         });
     };
 });

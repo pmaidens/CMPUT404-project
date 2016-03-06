@@ -1,13 +1,13 @@
 "use strict";
 
-angular.module("myApp.services.postHandler", [])
-.service("postHandler", function($q) {
+angular.module("myApp.services.postHandler", [ngRouter])
+.service("postHandler", function($q,$http,$route) {
     this.posts = [];
     var generateId = function() {
         return Math.random(1, 1000);
     };
     this.getPosts = function (authorId) {
-        var url = "base/posts/url/" + (authorId || "");//eslint-disable-line no-unused-vars
+        var url = "/api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
         // return $http.get("some/url/posts", {author: authorId});
         return $q(function(resolve/*, reject*/) {
             setTimeout(function() {
@@ -22,25 +22,17 @@ angular.module("myApp.services.postHandler", [])
         }.bind(this));
     };
     this.deletePost = function(id) {
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function() {
-                this.posts = this.posts.filter(function(post) {
-                    return post.id !== id;
-                });
-                STUBgetPosts.posts = this.posts;
-                resolve(STUBgetPosts);
-            }.bind(this), 1000);
-        }.bind(this));
+        return $http.delete('/api/posts/'+id).then(function(){
+
+			$route.reload();
+
+		});
     };
     this.createPost = function(post) {
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function() {
-                post.id = generateId();
-                this.posts.push(post);
-                resolve({status: 200});
-            }.bind(this), 1000);
-        }.bind(this));
+        return $http.post("/api/posts/",post);
+
     };
+
     var STUBgetPosts = {
         "query": "posts",
         "count": 105,
