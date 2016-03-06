@@ -22,6 +22,15 @@ class PostsViewSet(viewsets.ModelViewSet):
 
     queryset = Post.objects.all()
 
+    def get_queryset(self):
+        queryset = Post.objects.all()
+        visibility = self.request.query_params.get('visibility', None)
+        if visibility is not None:
+            queryset = queryset.filter(visibility=visibility)
+        else:
+            queryset = Post.objects.all().filter(visibility='PUBLIC')
+        return queryset
+
     def get_serializer_class(self):
         serializer_class = ViewPostsSerializer
         if self.request.method == 'POST':
