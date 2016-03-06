@@ -11,7 +11,7 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 
 .controller("PostStreamController", function($scope, $http, postHandler) {
     var targetAuthorId;
-    $scope.user = {id: "de305d54-75b4-431b-adb2-eb6b9e546013"};
+    $scope.user = {id: "46c07967-b790-4d6f-baf0-44a7b1a6cb45"}
     $scope.posts = [];
     $scope.git_username = "sjpartri";  // This will have to be changed "hard-coded for now"
 
@@ -23,14 +23,15 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
         targetAuthorId = {id: $scope.postStream.authorId};
     }
     postHandler.getPosts(targetAuthorId).then(function(result) {
-        $scope.posts = result;
+        $scope.posts = result.data;
 		//result[1] for example has these fields: 
 		/*
 			(title', 'source', 'origin', 'description', 'contentType',
               'content', 'author', 'categories', 'visibility')
 			access them like result[1].title
 		*/
-        $scope.posts = result.posts;
+        //$scope.posts = result.posts;
+		//console.log(result.data);
         loadGit();
     });
 
@@ -51,8 +52,8 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
     $http.get($scope.gitUserData.repos_url)
         .success(function(repo_data){
                 $scope.repoData = repo_data;
-                $scope.allPost = angular.extend($scope.posts, $scope.repoData);
-                console.log($scope.allPost);
+                //$scope.allPost = angular.extend($scope.posts, $scope.repoData);
+                //console.log($scope.allPost);
     });
     }
 

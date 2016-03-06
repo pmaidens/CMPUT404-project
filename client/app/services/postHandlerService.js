@@ -9,24 +9,19 @@ angular.module("myApp.services.postHandler", ["ngRoute"])
     this.getPosts = function (authorId) {
 		//TODO change the url to the proper url 
         var url = "http://localhost:8000/api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
-        // return $http.get("some/url/posts", {author: authorId});
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function() {
-                STUBgetPosts.posts.forEach(function(post) {
-                    if(!this.posts.some(function(current) {return current.id === post.id;})) {
-                        this.posts.push(post);
-                    }
-                }.bind(this));
-                STUBgetPosts.posts = this.posts;
-                resolve(STUBgetPosts);
-            }.bind(this), 1000);
-        }.bind(this));
+        return $http.get(url, {author: authorId});
+  ;
     };
     this.deletePost = function(id) {
 		//TODO change the url to the proper url
-        return $http.delete('http://localhost:8000/api/posts/'+id).then(function(){
+		//make sure you have the slash at the end
+        return $http.delete('http://localhost:8000/api/posts/'+id+"/").then(function(){
 
 			$route.reload();
+
+		},function(err){
+
+			console.log(err);
 
 		});
     };

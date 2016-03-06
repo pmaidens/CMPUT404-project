@@ -1,6 +1,7 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from .serializers import *
+from rest_framework.permissions import  AllowAny
 
 class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
 
@@ -21,6 +22,7 @@ class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.L
 class PostsViewSet(viewsets.ModelViewSet):
 
     queryset = Post.objects.all()
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         queryset = Post.objects.all()
@@ -37,6 +39,8 @@ class PostsViewSet(viewsets.ModelViewSet):
             serializer_class = UpdatePostsSerializer
         elif self.request.method == 'PUT':
             serializer_class = UpdatePostsSerializer
+        elif self.request.method == 'DELETE':
+            serializer_class = UpdatePostsSerializer
         return serializer_class
 
 
@@ -51,7 +55,7 @@ class PostsViewSet(viewsets.ModelViewSet):
 #     queryset = Post.objects.all()
 #     serializer_class = PostsSerializer
 #
-#
+	#
 
 class PostCommentsViewSet(viewsets.ModelViewSet):
 
