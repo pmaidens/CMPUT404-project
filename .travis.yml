@@ -5,7 +5,7 @@ before_script:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 script:
-- cd client
+- cd front
 - npm run test-single-run
 - cd ..
 notifications:
@@ -17,3 +17,15 @@ notifications:
   - bpeychof@ualberta.ca
   slack:
     secure: kQs72eT3fZJPgbKgOJhKkktq36/OA7iSNVrkKM52PuO7MGlS1Qp6P0xUCxU7u4sZwap9+DcnmeYBRgKFs57nVKFxMw7NWl327Xzx1khL163M9amXXjjLNTMEQL+U+kDnsCvNfnq5UTXI37zCKNFs7bs53sM25H5TFXxgbVNLp0JGWlicd3FDbJ+KBzBKlH4qbzfB0/uOpawgZcl152v6PM3iQKHR33217GuAN1/c+ljNFYHrzHnlkw8jkNcJAj55lqyJlieJg1FZMoa2/gXnyBjM6bgb9ISgZrTumlHIM6zvAAoR2yVqHh1XJbyFY6pmP5P9DGsHT8uABSvEmWJNgnE96N3FMzhIQ85Xo558EjVbwoVfK67t4vO9lS8zfvrcsJZRxwAdMdGlw+HoAaUVta9psOEQV0ayV3WNpf5ZwTv+bucok/B2jXjbYzHugJHNJHxHV/7+JyamvcSE/TBjJ23FOcfwvtFDuz2RGBRvzPd2XgEJa0buTtWz21wzEFOUOSlM7EVqnlZnbDZaA1HeYfLcDm0i+LH4Pgfanbs70Uvesfra+FHgBM4vsVzUaAu64AE6ynVGWqq93pHJQePpHDY6yn2G+Q47H3MPFdeMo2tuHnnbQhUUSbu4APweyLhwz3HX37jU2Vav0lqyTp1DA4ivXquF9mAKsT5sKVHF7Zo=
+deploy:
+  provider: openshift
+  user: pmaidensintuit@gmail.com
+  password:
+    secure: JvgJ958/F+WRGJVu654weuXTSwvPP8J8Vbfi5Mr+1fxMaPgse6Ze9lzC/vqc3G1B1n6LVTWfBOP971e9ySeomWCXphQMybGGpP/LIn1m23g9IhLuEMueh2Xu5Qagv6kDzfe0WgSPgsi5flcX4+ajKE5bww6bozyQld5iT/tKixxwyBMFtAdHvUGKggzzQ4DtUFLZXL845ZWDDvbIa80Hb/1h0XMKl9n73BU6kMX7V6d19ovSABNQbbPmTw3aN3oSj2I8aDN6T/eMo1QcwwSYO6a8CK1flVgjJ/UyFk0lmAv0hLfMCVifPUG2C2cUxFz9JG6KAoQ64ad/Azo78/aHd28OyhSJIJQI9i2PfkqMYAef7OYfby5Rm8ffbYrELXOzHfVbOKHSnj+j0Uoz33MaFR86yQOV71FGF2Cmmqz/6d375jXHHZmeK3dXj0vehNtt5ejEW5HN9A2PLz1jaib20Ymc+UAZN4CqVfqkinv+JD9BeOijyudUAqXcTjorqMswZ2L+QNHoAhfzfnSWA/pkMgI34JGzmXTk6DGvfOlK+kT308Ix+wgF+toXiO8GEHxcdMPXjWq84R2GW+pAehqVlcNyMzEVbzdRpSuigPBsR8vVseP/c3yBfPTDDHhVExv3vuVcmGKPNYZJ2ve2G5KxE5fTxexX/cJLOLgOc57AqFo=
+  app:
+    master: project
+    front: front
+  domain: c404
+  on:
+    repo: pmaidens/CMPUT404-project
+    branch: peter
