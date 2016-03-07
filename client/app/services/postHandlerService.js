@@ -37,7 +37,8 @@ angular.module("myApp.services.postHandler", ["ngRoute"])
     this.editPost = function(post){
 
 	//TODO 
-	//maybe put the posts fields into a form 
+	//maybe put the posts fields into a form
+	return $http.put("http://localhost:8000/api/posts/"+post.id+"/");
 
 
     };
