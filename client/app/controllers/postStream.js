@@ -13,6 +13,7 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
     var targetAuthorId;
     $scope.user = {id: "46c07967-b790-4d6f-baf0-44a7b1a6cb45"}
     $scope.posts = [];
+    //TODO change to author.github 
     $scope.git_username = "sjpartri";  // This will have to be changed "hard-coded for now"
 
     // If something else tells us what authorId to use, then
@@ -30,7 +31,6 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
               'content', 'author', 'categories', 'visibility')
 			access them like result[1].title
 		*/
-        //$scope.posts = result.posts;
 		//console.log(result.data);
         loadGit();
     });
@@ -64,5 +64,10 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 			
 
         });
+    };
+    $scope.editPost = function(post){
+
+	postHandler.editPost(post);
+
     };
 });

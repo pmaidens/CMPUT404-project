@@ -3,6 +3,9 @@
 angular.module("myApp.services.postHandler", ["ngRoute"])
 .service("postHandler", function($q,$http,$route) {
     this.posts = [];
+
+
+   //this isn't being used right now
     var generateId = function() {
         return Math.random(1, 1000);
     };
@@ -28,6 +31,14 @@ angular.module("myApp.services.postHandler", ["ngRoute"])
     this.createPost = function(post) {
 		//TODO change the url to the proper url
         return $http.post("http://localhost:8000/api/posts/",post);
+
+    };
+
+    this.editPost = function(post){
+
+	//TODO 
+	//maybe put the posts fields into a form 
+
 
     };
 
