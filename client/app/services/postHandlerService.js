@@ -10,14 +10,14 @@ angular.module("myApp.services.postHandler", ["ngRoute"])
         return Math.random(1, 1000);
     };
     this.getPosts = function (authorId) {
-		//TODO change the url to the proper url 
+	//TODO change the url to the proper url 
         var url = "http://localhost:8000/api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
         return $http.get(url, {author: authorId});
   ;
     };
     this.deletePost = function(id) {
-		//TODO change the url to the proper url
-		//make sure you have the slash at the end
+	//TODO change the url to the proper url
+	//make sure you have the slash at the end
         return $http.delete('http://localhost:8000/api/posts/'+id+"/").then(function(){
 
 			$route.reload();
@@ -29,7 +29,7 @@ angular.module("myApp.services.postHandler", ["ngRoute"])
 		});
     };
     this.createPost = function(post) {
-		//TODO change the url to the proper url
+	//TODO change the url to the proper url
         return $http.post("http://localhost:8000/api/posts/",post);
 
     };

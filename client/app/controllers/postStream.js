@@ -32,6 +32,10 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 			access them like result[1].title
 		*/
 		//console.log(result.data);
+	//in $scope.posts we have to add our friend's posts as well. 
+	/*
+
+	 */
         loadGit();
     });
 
@@ -39,11 +43,28 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
     // associated with the git_username
 
     var loadGit = function () {
-    $http.get("https://api.github.com/users/"+$scope.git_username)
-        .success(function(gitdata) {
-            $scope.gitUserData = gitdata;
-            loadRepos();
-        });
+	
+	//change $scope.git_username to the author's github user name
+	/*
+
+
+	  $http.get('http://localhost:8000/api/author'+$scope.postStream.authorId+'/').then(function(authData){
+
+
+	  var githubUserName = authData.github.split('/')[2];
+	  //i dunno if this works but i think it should
+	  $scope.git_username = githubuserName;
+
+	  });
+
+
+	 */
+
+	$http.get("https://api.github.com/users/"+$scope.git_username)
+            .success(function(gitdata) {
+		$scope.gitUserData = gitdata;
+		loadRepos();
+            });
     }
     // Http call for github repos (not too sure what Abram means by "activity")
     // ** May need to make additional calls
