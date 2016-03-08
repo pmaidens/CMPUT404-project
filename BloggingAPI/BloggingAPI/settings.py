@@ -27,6 +27,8 @@ DEBUG = True
 
 LOCAL_ENV=False
 
+SITE_ID=1
+
 ALLOWED_HOSTS = []
 
 

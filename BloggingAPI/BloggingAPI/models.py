@@ -2,24 +2,28 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User, UserManager
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.sites.models import Site
 from datetime import datetime
-# from django.db.models.signals import post_save
+from django.db.models.signals import post_save
 
 class Author(models.Model):
     user = models.OneToOneField(User)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # profile_img = models.ImageField(default=None)
-    host = models.CharField(max_length=2000, blank=False)
-    url = models.CharField(max_length=2000, blank=False)
+    host = models.CharField(max_length=2000)
+    url = models.CharField(max_length=2000)
     friends = models.ManyToManyField('Friend', blank=True)
     github = models.CharField(max_length=2000, default=None, blank=True, null=True)
     bio = models.TextField(default=None, blank=True, null=True)
 
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
-            Author.objects.get_or_create(user=instance)
+            #set the host to current domain and url to host/author/id
+            current_host = Site.objects.get_current().domain
+            author_url = current_host + '/author/' + str(id)
+            Author.objects.get_or_create(user=instance, host=current_host, url=author_url)
 
-    # post_save.connect(create_user_profile, sender=User)
+    post_save.connect(create_user_profile, sender=User)
 
 class Friend(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
