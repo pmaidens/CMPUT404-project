@@ -38,7 +38,6 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url('^registration/', include('registration.urls')),
     url(r'^api/', include(apiRouter.urls)),
     # url(r'^', include(posts_router.urls)),
     url(r'^api/', include(comments_router.urls)),

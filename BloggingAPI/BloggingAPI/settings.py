@@ -25,6 +25,8 @@ SECRET_KEY = 'hxzm3as(en_2nuu&@o!%u79^zky-#w@uc34n6cbfdk36l@$8(q'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+LOCAL_ENV=False
+
 ALLOWED_HOSTS = []
 
 
@@ -39,9 +41,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'registration',
-    'registration.supplements.default',
-    "mailer",
     'BloggingAPI',
 )
 
@@ -74,7 +73,7 @@ CORS_ALLOW_METHODS = (
 
 
 #change this to url of frontend
-#https://github.com/ottoyiu/django-cors-headers for more info 
+#https://github.com/ottoyiu/django-cors-headers for more info
 
 
 ROOT_URLCONF = 'BloggingAPI.urls'
@@ -101,18 +100,28 @@ WSGI_APPLICATION = 'BloggingAPI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'project',
-        'USER': 'adminux1q3pu',
-        'PASSWORD': 'DZzjTF25jQMV',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-
-
+if LOCAL_ENV:
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+	        'NAME': 'myproject',
+	        'USER': 'myprojectuser',
+	        'PASSWORD': 'password',
+	        'HOST': 'localhost',
+	        'PORT': '',
+	    }
+	}
+else:
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+	        'NAME': 'project',
+	        'USER': 'adminv1qe31f',
+	        'PASSWORD': '9PdcQ2wcf7IA',
+	        'HOST': 'localhost',
+	        'PORT': '5432',
+	    }
+	}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -139,5 +148,3 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     )
 }
-
-EMAIL_BACKEND = "mailer.backend.DbBackend"
