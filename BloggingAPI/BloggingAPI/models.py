@@ -19,9 +19,10 @@ class Author(models.Model):
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             #set the host to current domain and url to host/author/id
+            generated_id = uuid.uuid4()
             current_host = Site.objects.get_current().domain
-            author_url = current_host + '/author/' + str(id)
-            Author.objects.get_or_create(user=instance, host=current_host, url=author_url)
+            author_url = current_host + '/author/' + str(generated_id)
+            Author.objects.get_or_create(user=instance, id=generated_id, host=current_host, url=author_url)
 
     post_save.connect(create_user_profile, sender=User)
 
