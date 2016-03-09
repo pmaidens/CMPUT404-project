@@ -5,6 +5,15 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.sites.models import Site
 from datetime import datetime
 from django.db.models.signals import post_save
+from allauth.account.signals import user_signed_up
+from django.dispatch import receiver
+
+@receiver(user_signed_up)
+def user_signed_up_(request, user, **kwargs):
+    #set the user to non active and have admin approve
+    user.is_active = False
+    user.save()
+
 
 class Author(models.Model):
     user = models.OneToOneField(User)
