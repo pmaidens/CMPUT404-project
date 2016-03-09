@@ -27,7 +27,7 @@ comments_router = routers.NestedSimpleRouter(apiRouter, r'posts', lookup='posts'
 comments_router.register(r'comments', PostCommentsViewSet, base_name='comments')
 
 # http://service/friends/<authorid>
-# apiRouter.register(r'friends', FriendsViewSet)
+apiRouter.register(r'friends', FriendsViewSet)
 
 # http://service/friendrequest
 # apiRouter.register(r'friendrequest', FriendRequestViewSet)

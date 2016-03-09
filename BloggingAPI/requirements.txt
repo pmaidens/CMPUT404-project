@@ -7,4 +7,4 @@ pillow
 drf-nested-routers
 django-cors-headers
 django-rest-auth
-allauth
+django-allauth

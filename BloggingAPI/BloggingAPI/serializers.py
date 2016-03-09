@@ -87,3 +87,9 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('author', 'comment', 'post')
+
+class FriendSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Friend
+        fields = ('id','author_id','host','display_name','url')
