@@ -150,18 +150,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'BloggingAPI', 'static')
-STATIC_DIRS = (
-    os.path.join(BASE_DIR, "BloggingAPI/static"),
-    os.path.join(os.environ['OPENSHIFT_PYTHON_DIR'], '/virtenv/lib/python2.7/site-packages/rest_framework/static')
-
-)
 
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework.authentication.BasicAuthentication',
-# 		'rest_framework.authentication.TokenAuthentication',
-#     )
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+		'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
