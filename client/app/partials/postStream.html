@@ -12,7 +12,7 @@
 
     <div class="panel-body">
     <div class="list-group">
-        <div ng-repeat="post in allPost | orderBy:'createdate':true" class="list-group-item ">
+        <div ng-repeat="post in allPost | orderBy:'createdate':true" class="list-group-item custom-list-group-item">
             <div ng-if="post.html_url" class="row">
 
                 <div class="col-md-8">
@@ -81,7 +81,7 @@
                                 <h6>Published: {{post.published}}</h6>
                                 <div btf-markdown="post.content"></div>
 
-                                <div class="list-group-item">
+                                <div class="list-group-item custom-list-group-item">
                                 <h4> Comment Section </h4>   
                                 <br>
                                 <button ng-hide="showComments" ng-click="showComments=true">View Comments</button>
@@ -91,7 +91,7 @@
                                       <div class="list-group-item ">
                                         <i>Author {{comment.author.displayname}} wrote...</i>
                                         <br><br>
-                                        <h4>"{{comment.comment}}"</h4>
+                                        <h4 font-align="center">"{{comment.comment}}"</h4>
                                         <br>
                                         <small><i>Published on {{comment.published}} Author's gihub @ {{comment.author.github}}</i></small>
                                       </div>
