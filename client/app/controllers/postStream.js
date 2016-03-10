@@ -11,8 +11,9 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 
 .controller("PostStreamController", function($scope, $http, postHandler) {
     var targetAuthorId;
-    $scope.user = {id: "de305d54-75b4-431b-adb2-eb6b9e546013"};
+    $scope.user = {id: "46c07967-b790-4d6f-baf0-44a7b1a6cb45"}
     $scope.posts = [];
+    //TODO change to author.github 
     $scope.git_username = "sjpartri";  // This will have to be changed "hard-coded for now"
 
     // If something else tells us what authorId to use, then
@@ -23,14 +24,18 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
         targetAuthorId = {id: $scope.postStream.authorId};
     }
     postHandler.getPosts(targetAuthorId).then(function(result) {
-        $scope.posts = result;
+        $scope.posts = result.data;
 		//result[1] for example has these fields: 
 		/*
 			(title', 'source', 'origin', 'description', 'contentType',
               'content', 'author', 'categories', 'visibility')
 			access them like result[1].title
 		*/
-        $scope.posts = result.posts;
+		//console.log(result.data);
+	//in $scope.posts we have to add our friend's posts as well. 
+	/*
+
+	 */
         loadGit();
     });
 
@@ -38,11 +43,28 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
     // associated with the git_username
 
     var loadGit = function () {
-    $http.get("https://api.github.com/users/"+$scope.git_username)
-        .success(function(gitdata) {
-            $scope.gitUserData = gitdata;
-            loadRepos();
-        });
+	
+	//change $scope.git_username to the author's github user name
+	/*
+
+
+	  $http.get('http://localhost:8000/api/author'+$scope.postStream.authorId+'/').then(function(authData){
+
+
+	  var githubUserName = authData.github.split('/')[2];
+	  //i dunno if this works but i think it should
+	  $scope.git_username = githubuserName;
+
+	  });
+
+
+	 */
+
+	$http.get("https://api.github.com/users/"+$scope.git_username)
+            .success(function(gitdata) {
+		$scope.gitUserData = gitdata;
+		loadRepos();
+            });
     }
     // Http call for github repos (not too sure what Abram means by "activity")
     // ** May need to make additional calls
@@ -51,8 +73,8 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
     $http.get($scope.gitUserData.repos_url)
         .success(function(repo_data){
                 $scope.repoData = repo_data;
-                $scope.allPost = angular.extend($scope.posts, $scope.repoData);
-                console.log($scope.allPost);
+
+                $scope.allPost = $scope.posts.concat($scope.repoData);
     });
     }
 
@@ -63,5 +85,10 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 			
 
         });
+    };
+    $scope.editPost = function(post){
+
+	postHandler.editPost(post);
+
     };
 });

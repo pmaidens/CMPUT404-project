@@ -3,36 +3,43 @@
 angular.module("myApp.services.postHandler", ["ngRoute"])
 .service("postHandler", function($q,$http,$route) {
     this.posts = [];
+
+
+   //this isn't being used right now
     var generateId = function() {
         return Math.random(1, 1000);
     };
     this.getPosts = function (authorId) {
-		//TODO change the url to the proper url 
+	//TODO change the url to the proper url 
         var url = "http://localhost:8000/api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
-        // return $http.get("some/url/posts", {author: authorId});
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function() {
-                STUBgetPosts.posts.forEach(function(post) {
-                    if(!this.posts.some(function(current) {return current.id === post.id;})) {
-                        this.posts.push(post);
-                    }
-                }.bind(this));
-                STUBgetPosts.posts = this.posts;
-                resolve(STUBgetPosts);
-            }.bind(this), 1000);
-        }.bind(this));
+        return $http.get(url, {author: authorId});
+  ;
     };
     this.deletePost = function(id) {
-		//TODO change the url to the proper url
-        return $http.delete('http://localhost:8000/api/posts/'+id).then(function(){
+	//TODO change the url to the proper url
+	//make sure you have the slash at the end
+        return $http.delete('http://localhost:8000/api/posts/'+id+"/").then(function(){
 
 			$route.reload();
+
+		},function(err){
+
+			console.log(err);
 
 		});
     };
     this.createPost = function(post) {
-		//TODO change the url to the proper url
+	//TODO change the url to the proper url
         return $http.post("http://localhost:8000/api/posts/",post);
+
+    };
+
+    this.editPost = function(post){
+
+	//TODO 
+	//maybe put the posts fields into a form
+	return $http.put("http://localhost:8000/api/posts/"+post.id+"/");
+
 
     };
 

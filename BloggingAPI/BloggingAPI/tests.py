@@ -7,15 +7,7 @@ from .models import Author, Friend, Post, Comment
 from rest_framework import status
 from rest_framework.test import  APITestCase, APIClient
 
-def getObject(request, id):
-    obj = MyModel.objects.get(pk=id)
-    data = serializers.serialize('json', [obj,])
-    struct = json.loads(data)
-    data = json.dumps(struct[0])
-    return HttpResponse(data, mimetype='application/json')
-
-
-class apiTest(APITestCase):
+class apiTestPosts(APITestCase):
 
     def setUp(self):
         self.testUser = User.objects.create_user(username='test', email='test@test.com', password='top_secret')
@@ -23,15 +15,16 @@ class apiTest(APITestCase):
         self.authObj = Author.objects.create(user = self.testUser, id = self.authID,host='hostname',url='www.example.com',github= 'www.github.com',bio='test bio')
 
         self.client = APIClient()
+
+    def test_post_and_put(self):
         now = str(datetime.now())
-        
-        self.data = {"title":"post","source":"src","origin":"origin","description":"neat","categories":["cool"],"published":now,"author":self.authID}
+        data = {"title":"post","source":"src","origin":"origin","description":"neat","categories":["cool"],"published":now,"author":self.authID}
 
-    def testPost(self):
         self.client.force_authenticate(user = self.testUser)
-
         postUrl = '/api/posts/'
-        postResponse = self.client.post(postUrl,self.data,format='json')
+
+        # Post data
+        postResponse = self.client.post(postUrl,data,format='json')
      
         self.assertEqual(postResponse.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Post.objects.count(), 1)
@@ -44,11 +37,11 @@ class apiTest(APITestCase):
         getResponse = self.client.get(getUrl)
         self.assertEqual(getResponse.status_code,status.HTTP_200_OK)
 
-        # Test PUT to posted entity -- should overwrite        
-        self.data["title"] = "new title"
-        self.data["description"] = "not neat!"
+        # Test PUT to posted entity -- should update        
+        data["title"] = "new title"
+        data["description"] = "not neat!"
 
-        putResponse = self.client.put(getUrl,self.data,format='json')
+        putResponse = self.client.put(getUrl,data,format='json')
         self.assertEqual(putResponse.status_code, status.HTTP_200_OK)
         self.assertEqual(Post.objects.count(), 1) # ensure nothing new was made
 
@@ -62,10 +55,72 @@ class apiTest(APITestCase):
         # Test that a get from nothing returns a 404
         randID = str(uuid.uuid4())
         getUrl = '/api/posts/' + randID + '/'
-        response = self.client.get(getUrl)
         
+        response = self.client.get(getUrl)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+        # Get without a postfixed postID
+        response = self.client.get('/api/posts/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # TODO check body contents, post, then run the same tests
+        # I.E ensure it can get multiple posts
+        
+
+class apiTestFriends(APITestCase):
+
+    def setUp(self):
+        self.testUser = User.objects.create_user(username='test', email='test@test.com', password='top_secret')
+        self.authID = uuid.uuid4()
+        self.authObj = Author.objects.create(user = self.testUser, id = self.authID,host='hostname',url='www.example.com',github= 'www.github.com',bio='test bio')
+
+        self.client = APIClient()
+
+    def testVisibility(self):
+        # have an author object in self.authObj
+        # and a user object in  self.testUser
+        
+        # create two authors for the authorObj, one is a friend one isn't
+        fID = uuid.uuid4()
+        eID = uuid.uuid4()
+        friendID1 = uuid.uuid4()
+        friendID2 = uuid.uuid4()
+
+        url1 = "http://127.0.0.1:8000/api/authors/" + str(fID) + '/'
+        url2 = "http://127.0.0.1:8000/api/authors/" + str(eID) + '/'
+        
+        
+        self.friendUser = User.objects.create_user(username='friend', email='friend@test.com', password='top_secretf')
+        self.testAuthor = Author.objects.create(user = self.friendUser, id = fID,host='hostname',url='www.friend.com',github= 'www.github.com',bio='friend bio')
+
+        self.enemyUser = User.objects.create_user(username='enemy', email='enemy@test.com', password='top_secrete')
+        self.testAuthor = Author.objects.create(user = self.enemyUser, id = eID,host='hostname',url='www.enemy.com',github= 'www.github.com',bio='friend bio')
+
+        self.friend1 = Friend.objects.create(id = friendID1,author_id = fID,host = "local",display_name = "friend",url = url1)
+        self.friend2 = Friend.objects.create(id = friendID2,author_id = eID,host = "local",display_name = "friend",url = url2)
+
+        self.authObj.friends.add(self.friend1)
+
+        # SO querying with friend id 1, logged in as authObj shows friends of friend id1?
+
+        # a reponse if friends or not
+        # ask a service http://service/friends/<authorid>
+
+        #responds with:
+            #{
+             #   "query":"friends",
+                # Array of Author UUIDs
+              #  "authors":[
+               #     "de305d54-75b4-431b-adb2-eb6b9e546013",
+                #    "ae345d54-75b4-431b-adb2-fb6b9e547891"
+                #],
+                # boolean true or false
+                #"friends": true
+                #}
+
+
+        getUrl = 'http://127.0.0.1:8000/friends/' + str(self.authID) + '/'
+        response = self.client.get(getUrl)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 class AuthorTestCase(TestCase):
 
@@ -95,9 +150,22 @@ class AuthorTestCase(TestCase):
 class friendTestCase(TestCase):
 
     def setUp(self):
+        url = '127.0.0.1:8000/api/friends/' # this needs to be changed to the openshift URL
+        self.id1 = uuid.uuid4()
+        self.id2 = uuid.uuid4()
+        
+        self.friendUser1 = User.objects.create_user(username='friend1', email='friend1@test.com', password='top_secret1')
+        self.Author1 = Author.objects.create(user = self.friendUser1, id = self.id1, host='hostname', 
+                                             url='http://127.0.0.1:8000/api/friends/.com', github= 'www.github.com',bio='test bio')
 
+        self.friendUser2 = User.objects.create_user(username='friend2', email='friend2@test.com', password='top_secret2')
+        self.Author2 = Author.objects.create(user = self.friendUser2, id = self.id2, host='hostname', 
+                                             url='www.example.com', github= 'www.github.com',bio='test bio')
+
+        # each friend object will point to the other author (1->2 , 2->1)
         self.friendID = uuid.uuid4()
-        Friend.objects.create(id = self.friendID, host = "host", display_name = "Loose Lips Tony", url = "http://127.0.0.1:8000")
+        Friend.objects.create(id = self.friendID, author_id = self.id1, host = "host", display_name = "Loose Lips Tony", url = "http://127.0.0.1:8000")
+        
 
     def test_friend_attributes(self):
         """Test the friend atttributes"""
@@ -109,6 +177,7 @@ class friendTestCase(TestCase):
         self.assertEqual(test.host,"host")
         self.assertEqual(test.display_name,dispName)
         self.assertEqual(test.url,"http://127.0.0.1:8000")
+        self.assertEqual(test.author_id,self.id1)
 
 
 class commentTestCase(TestCase):

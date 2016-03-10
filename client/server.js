@@ -22,7 +22,7 @@ app.get("*", function (req, res) {
     }
 });
 
-var PORT = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080;
+var PORT = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8081;
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 app.listen(PORT, server_ip_address, function() {
     console.log("Production Express server running at " + server_ip_address + ":" + PORT);

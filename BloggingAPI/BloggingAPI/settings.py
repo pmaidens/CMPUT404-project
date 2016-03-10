@@ -25,32 +25,64 @@ SECRET_KEY = 'hxzm3as(en_2nuu&@o!%u79^zky-#w@uc34n6cbfdk36l@$8(q'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+LOCAL_ENV=False
+
+SITE_ID=1
+
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = (
+	'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'django.contrib.sites',
     'rest_framework',
+	'rest_framework.authtoken',
+	'rest_auth',
+	'allauth',
+    'allauth.account',
+    'rest_auth.registration',
     'BloggingAPI',
 )
 
 MIDDLEWARE_CLASSES = (
+
+	'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = (
+        'GET',
+        'POST',
+        'PUT',
+        'PATCH',
+        'DELETE',
+        'OPTIONS'
+    )
+
+
+
+
+#change this to url of frontend
+#https://github.com/ottoyiu/django-cors-headers for more info
+
 
 ROOT_URLCONF = 'BloggingAPI.urls'
 
@@ -79,6 +111,17 @@ WSGI_APPLICATION = 'BloggingAPI.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'myproject',
+        'USER': 'myprojectuser',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'project',
         'USER': os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME'],
         'PASSWORD': os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD'],
@@ -87,7 +130,28 @@ DATABASES = {
     }
 }
 
-
+if LOCAL_ENV:
+	DATABASES = {
+    		'default': {
+        		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        		'NAME': 'project',
+        		'USER': os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME'],
+        		'PASSWORD': os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD'],
+        		'HOST': os.environ['OPENSHIFT_POSTGRESQL_DB_HOST'],
+        		'PORT': os.environ['OPENSHIFT_POSTGRESQL_DB_PORT'],
+    		}
+	}
+else:
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+	        'NAME': 'project',
+	        'USER': 'adminux1q3pu',
+	        'PASSWORD': 'DZzjTF25jQMV',
+	        'HOST': 'localhost',
+	        'PORT': '5432',
+	    }
+	}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -107,3 +171,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+		'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
