@@ -1,16 +1,16 @@
-    
-    <h2>Post Stream + GitHub Integration: </h2>
-    		</span>
-    <h4>
-    	GitHub Account Associated With: <i>{{gitUserData.name}} @ </i>
-        <a href="{{gitUserData.html_url}}" class="btn btn-default">
-    <span class="octicon octicon-mark-github"></span>
-            {{gitUserData.login}}
-        </a>
-    </h4>
+
+<h2>Post Stream + GitHub Integration: </h2>
+</span>
+<h4>
+    GitHub Account Associated With: <i>{{gitUserData.name}} @ </i>
+    <a href="{{gitUserData.html_url}}" class="btn btn-default">
+        <span class="octicon octicon-mark-github"></span>
+        {{gitUserData.login}}
+    </a>
+</h4>
 
 
-    <div class="panel-body">
+<div class="panel-body">
     <div class="list-group">
         <div ng-repeat="post in allPost | orderBy:'createdate':true" class="list-group-item ">
             <div ng-if="post.html_url" class="row">
@@ -27,91 +27,68 @@
                         <small>{{post.description}}</small>
                     </h4>
 
-                    
+
                 </div>
                 <div class="col-md-4">
                     <dl class="dl-horizontal">
-                      <dt>Last Updated:</dt>
-                      <dd>{{post.updated_at | date : short : timezone}}</dd>
-                      <dt>Created:</dt>
-                      <dd>{{post.created_at| date : short : timezone}}</dd>
+                        <dt>Last Updated:</dt>
+                        <dd>{{post.updated_at | date : short : timezone}}</dd>
+                        <dt>Created:</dt>
+                        <dd>{{post.created_at| date : short : timezone}}</dd>
                     </dl>
                 </div>
             </div>
-
-             <div ng-if="post.title" class="row">
-
+            <div ng-if="post.title" class="row">
                 <div class="col-md-8">
-             
-                        <span>
-
-                                <h3><span class="mega-octicon octicon-book"></span> {{post.title}}</h3>
-                                <button data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
-								<!--data-ng-click should probably be a function that shows a little form filled out with old post info for the user to update.
-								When the user is done editing their post then we should call editPost(post)-->
-								<button data-ng-click="canEditPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">
-                                Edit Post</button>
-																<input type = "text" placeholder = '{{post.title}}' data-ng-model='post.title' data-ng-show='post.canEdit'>
-																<br data-ng-show='post.canEdit'/>
-																<input type = 'text' placeholder = '{{post.description}}' data-ng-model='post.description' data-ng-show='post.canEdit'>
-																<br data-ng-show='post.canEdit'/>
-																<select placeholder='{{post.contentType}}' data-ng-model='post.contentType' data-ng-show='post.canEdit'>
-																	<option value='plain'>Plain text</option>
-																	<option value='x-markdown'>Markdown</option>
-																	<option value='html'>HTML</option>
-																</select>																>
-																<br data-ng-show='post.canEdit'/>
-																<input type = 'text' placeholder='{{post.categories}}' data-ng-model='post.categories' data-ng-show='post.canEdit'/>
-																<br data-ng-show='post.canEdit'/>
-																<select placeholder='{{post.visibility}}' data-ng-model='post.visibility' data-ng-show='post.canEdit'>
-																	<option value="PUBLIC">Everyone</option>
-																	<option value="FOAF">Friends of Friends</option>
-																	<option value="FRIENDS">Friends</option>
-																	<option value="PRIVATE">Only Me</option>
-																	<option value="SERVERONLY">Server Users</option>
-
-																</select>
-
-																
-																
-																
-                                
-                                <h4>{{post.author.displayName}}</h4>
-                                <h3>{{post.description}}</h3>
-                                <h6>Published: {{post.published}}</h6>
-                                <div btf-markdown="post.content"></div>
-
-                                <div class="list-group-item">
-                                <h4> Comment Section </h4>   
+                    <span>
+                        <h3><span class="mega-octicon octicon-book"></span> {{post.title}}</h3>
+                        <button data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
+                        <button data-ng-click="editPost(post)" data-ng-disabled="post.disabled" data-ng-show="!post.editMode">
+                            Edit Post
+                        </button>
+                        <button data-ng-click="submitPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.editMode">
+                            Submit
+                        </button>
+                        <input type = "text" placeholder = '{{post.title}}' data-ng-model='post.title' data-ng-show='post.editMode'>
+                        <br data-ng-show='post.editMode'/>
+                        <input type = 'text' placeholder = '{{post.description}}' data-ng-model='post.description' data-ng-show='post.editMode'/>
+                        <br data-ng-show='post.editMode'/>
+                        <select placeholder='{{post.contentType}}' data-ng-model='post.contentType' data-ng-show='post.editMode'>
+                            <option value='plain'>Plain text</option>
+                            <option value='x-markdown'>Markdown</option>
+                            <option value='html'>HTML</option>
+                        </select>
+                        <br data-ng-show='post.editMode'/>
+                        <input type = 'text' placeholder='{{post.categories}}' data-ng-model='post.categories' data-ng-show='post.editMode'>
+                        <br data-ng-show='post.editMode'/>
+                        <select placeholder='{{post.visibility}}' data-ng-model='post.visibility' data-ng-show='post.editMode'>
+                            <option value="PUBLIC">Everyone</option>
+                            <option value="FOAF">Friends of Friends</option>
+                            <option value="FRIENDS">Friends</option>
+                            <option value="PRIVATE">Only Me</option>
+                            <option value="SERVERONLY">Server Users</option>
+                        </select>
+                        <br data-ng-show='post.editMode'/>
+                        <input type = 'text' placeholder='{{post.content}}' data-ng-model='post.content' data-ng-show='post.editMode'>
+                            <button data-ng-click="viewComments(post)">View Comments</button>
+                            <h4>{{post.author.displayName}}</h4>
+                            <h3>{{post.description}}</h3>
+                            <h6>Published: {{post.published}}</h6>
+                            <div btf-markdown="post.content"></div>
+                            <form>
+                                Post A Comment
                                 <br>
-                                <button ng-hide="showComments" ng-click="showComments=true">View Comments</button>
-                                <button  ng-show="showComments" ng-click="showComments=false">Hide Comments</button>
+                                <textarea data-ng-model="comments" placeholder="Your Comment" style='width:550px'></textarea>
                                 <br>
-                                <div ng-show="showComments" ng-repeat="comment in post.comments">
-                                      <div class="list-group-item ">
-                                        <i>Author {{comment.author.displayname}} wrote...</i>
-                                        <br><br>
-                                        <h4>"{{comment.comment}}"</h4>
-                                        <br>
-                                        <small><i>Published on {{comment.published}} Author's gihub @ {{comment.author.github}}</i></small>
-                                      </div>
-                                </div>
-                                <br>
-                                <form>
-                                    Post A Comment
-                                    <br>
-                                    <textarea data-ng-model="comments" placeholder="Your Comment" style='width:550px'></textarea>
-                                    <br>
-                                    <button data-ng-click="AddComment(post, comments)">Post Comment</button>
-                                    <button  ng-show="showComments" ng-click="showComments=false">Hide Comments</button>
-                                </form>
-                               </div>
+                                <button data-ng-click="AddComment(post, comments)">Post Comment</button>
+                            </form>
+
                         </span>
-                              
-                </div>     
-            </div>
 
+                    </div>
+                </div>
+
+            </div>
         </div>
-    </div>
 
     </div>

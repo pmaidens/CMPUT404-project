@@ -78,6 +78,15 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
         });
     };
 
+    $scope.editPost = function (post) {
+        post.editMode = true;
+    };
+
+    $scope.submitPost = function (post) {
+        // postHandler.submit(post);
+        post.editMode = false;
+    };
+
 //localhost/api/posts/{postid}/comments
 
 //POST : author id, comment, postid
@@ -88,14 +97,4 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
             post: post.id
         });
     };
-
-    $scope.canEditPost =function(post){
-        postHandler.canEditPost(post);
-    };
-	//		postHandler.canEditPost(post);
-	//	};
-   // $scope.editPost = function(post){
-
-        postHandler.editPost(post);
-    //};
 });
