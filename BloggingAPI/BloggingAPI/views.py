@@ -1,25 +1,21 @@
 from rest_framework import generics
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
+from rest_framework.permissions import  *
 from .serializers import *
 import uuid
-from rest_framework.permissions import  AllowAny
+from .permissions import *
 
 class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
 
     queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
+    # permission_classes = (AuthorPermissions,)
 
-    # def create(self, request):
-    #     serializer = self.serializer_class(data=request.data)
-    #
-    #     if serializer.is_valid():
-    #         Author.create_Author(**serializer.validated_data)
-    #         return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
-    #
-    #     print serializer.errors
-    #     return Response({'message': 'Account could not be created with received data.'}, status=status.HTTP_400_BAD_REQUEST)
-
+    def get_serializer_class(self):
+        serializer_class = ViewAuthorSerializer
+        if self.request.method == 'PUT':
+            serializer_class = UpdateAuthorSerializer
+        return serializer_class
 
 class PostsViewSet(viewsets.ModelViewSet):
 
@@ -81,7 +77,7 @@ class FriendDetailViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Author.objects.all()
         pks = self.request.query_params.get('pks', None)
-        
+
         if pks is not None:
             queryset = queryset.filter(pks__in=pks)
 
