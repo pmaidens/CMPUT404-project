@@ -1,21 +1,35 @@
 "use strict";
 
 angular.module("myApp.services.authenticationHandler", [])
-.service("authenticationHandler", function($q) {
+.service("authenticationHandler", function($q,$http) {
     this.loginWatchers = [];
 
     this.login = function (username, password) {
         // Make a request to see if the login credentials are valid
         // If they are, set them as default headers
-        return $q(function(resolve/*, reject*/) {
-            setTimeout(function () {
-                // $httpProvider.defaults.headers.common.Authorization = "Basic " + result.token;
-                this.loginWatchers.forEach(function(f) {
-                    f(true);
-                });
-                resolve();
-            }.bind(this), 1000);
-        }.bind(this));
+    //     return $q(function(resolve/*, reject*/) {
+    //         setTimeout(function () {
+    //             // $httpProvider.defaults.headers.common.Authorization = "Basic " + result.token;
+    //             this.loginWatchers.forEach(function(f) {
+    //                 f(true);
+    //             });
+    //             resolve();
+    //         }.bind(this), 1000);
+    //     }.bind(this));
+     
+	var url = 'localhost:8000/rest-auth/login/'
+	return $http.post(url).then(function(result){
+
+	    //$scope.authToken = result.data.key;
+	    $httpProvider.defaults.headers.common.Authorization = "Basic " + result.data.key;
+
+	},function(err){
+
+
+	    console.log(err);
+	});
+    
+    
     };
 
     this.logout = function() {
