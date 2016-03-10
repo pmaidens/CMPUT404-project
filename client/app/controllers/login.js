@@ -12,7 +12,12 @@ angular.module("myApp.login", ["ngRoute", "myApp.services.authenticationHandler"
 .controller("LoginController", function($scope, $location, authenticationHandler) {
     $scope.submit = function() {
     	authenticationHandler.login($scope.username, $scope.password).then(function() {
-    		$location.url("/");
-    	});
+	    console.log('sup?');
+    	    $location.url("/");
+    	},function(err){
+
+	    console.log(err);
+
+	});
     };
 });
