@@ -48,6 +48,7 @@ INSTALLED_APPS = (
 	'rest_auth',
 	'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth.registration',
     'BloggingAPI',
 )
@@ -107,29 +108,6 @@ WSGI_APPLICATION = 'BloggingAPI.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'myproject',
-        'USER': 'myprojectuser',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'project',
-        'USER': os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME'],
-        'PASSWORD': os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD'],
-        'HOST': os.environ['OPENSHIFT_POSTGRESQL_DB_HOST'],
-        'PORT': os.environ['OPENSHIFT_POSTGRESQL_DB_PORT'],
-    }
-}
-
 if LOCAL_ENV:
 	DATABASES = {
     		'default': {
@@ -171,7 +149,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'wsgi', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'BloggingAPI', 'static')
 
 
 REST_FRAMEWORK = {
