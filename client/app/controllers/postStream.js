@@ -99,15 +99,15 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
          
      };
 
-		$scope.canEditPost =function(post){
+	//	$scope.canEditPost =function(post){
 		
-			postHandler.canEditPost(post);
+	//		postHandler.canEditPost(post);
 		
-		};
+	//	};
     
-    $scope.editPost = function(post){
+   // $scope.editPost = function(post){
 
-	postHandler.editPost(post);
+	//postHandler.editPost(post);
 
-    };
+    //};
 });

@@ -38,11 +38,11 @@ angular.module("myApp.services.postHandler", ["ngRoute"])
         return $http.post("http://localhost:8000/api/posts/"+post.post+"/comments/", post);
     };
 
-		this.canEditPost = function(post){}
+	//	this.canEditPost = function(post){}
 		
-			post.canEdit = true;
+	//		post.canEdit = true;
 		
-		;
+	//	;
 		
     this.editPost = function(post){
 
