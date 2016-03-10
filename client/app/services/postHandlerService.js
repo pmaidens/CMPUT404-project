@@ -34,6 +34,10 @@ angular.module("myApp.services.postHandler", ["ngRoute"])
 
     };
 
+    this.commentPost = function(post){
+        return $http.post("http://localhost:8000/api/posts/"+post.post+"/comments/", post);
+    };
+
     this.editPost = function(post){
 
 	//TODO 

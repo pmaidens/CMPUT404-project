@@ -11,7 +11,7 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 
 .controller("PostStreamController", function($scope, $http, postHandler) {
     var targetAuthorId;
-    $scope.user = {id: "46c07967-b790-4d6f-baf0-44a7b1a6cb45"}
+    $scope.user = {id: "7a0465c9-b89e-4f3b-a6e7-4e35de32bd64"}
     $scope.posts = [];
     //TODO change to author.github 
     $scope.git_username = "sjpartri";  // This will have to be changed "hard-coded for now"
@@ -86,6 +86,20 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
 
         });
     };
+
+//localhost/api/posts/{postid}/comments
+
+//POST : author id, comment, postid
+     $scope.AddComment = function (post, comments) {
+         postHandler.commentPost({
+            author: "7a0465c9-b89e-4f3b-a6e7-4e35de32bd64",
+            comment: comments,
+            post: post.id
+         });
+         
+     };
+
+    
     $scope.editPost = function(post){
 
 	postHandler.editPost(post);
