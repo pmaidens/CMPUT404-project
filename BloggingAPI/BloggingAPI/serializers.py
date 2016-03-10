@@ -2,18 +2,12 @@ from rest_framework import serializers
 from .models import *
 
 #Serializers for Author
-# class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
-#     #hyperlinkedModelSerializer uses hyperlinks instead of p-keys
-#     class Meta:
-#         model = Friend
-#         fields = ('id','author_id', 'host', 'display_name', 'url')
-
 class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
     #hyperlinkedModelSerializer uses hyperlinks instead of p-keys
     class Meta:
         model = Friend
-        dictList = [dict() for x in range(10)]
-        fields = ('author_id','url')
+        fields = ('id','author_id', 'host', 'display_name', 'url')
+
 
 class AuthorSerializer(serializers.ModelSerializer):
 
@@ -40,6 +34,7 @@ class FriendDetailSerializer(serializers.ModelSerializer):
         fields = ('query','authors','friends')
     
     def getFriendship(self, obj):
+        #obj.Author.User
         return "true".format(bool)
 
     def getFriends(self,obj):
@@ -62,6 +57,7 @@ class PostAuthorSerializer(serializers.HyperlinkedModelSerializer):
         model = Author
         fields = ('id', 'host', 'displayname', 'url', 'github')
 
+
 #This serializer is to show the nested comment objects in a GET request
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -71,6 +67,7 @@ class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
         fields = ('author', 'comment', 'contentType', 'published', 'id')
+
 
 #This serializer is for displaying posts in the API
 class ViewPostsSerializer(serializers.ModelSerializer):
@@ -93,12 +90,14 @@ class ViewPostsSerializer(serializers.ModelSerializer):
             return 0
         return obj.comments.count()
 
+
 #This serializer is for creating or editing posts in the API
 class UpdatePostsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('title', 'source', 'origin', 'description', 'contentType',
               'content', 'author', 'categories', 'visibility')
+
 
 #Serializer for Comments
 #This serializer is for viewing comments of a post
@@ -118,11 +117,4 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('author', 'comment', 'post')
-
-class FriendSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Friend
-        fields = ('id','author_id','host','display_name','url')
-
         

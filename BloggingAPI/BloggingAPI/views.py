@@ -71,12 +71,9 @@ class PostCommentsViewSet(viewsets.ModelViewSet):
             serializer_class = UpdateCommentSerializer
         return serializer_class
 
-class FriendViewSet(viewsets.ModelViewSet):
-
-    queryset = Friend.objects.all()
-    serializer_class = FriendSerializer
 
 class FriendDetailViewSet(viewsets.ModelViewSet):
+
     queryset = Author.objects.all()
     model = Author
     serializer_class = FriendDetailSerializer
