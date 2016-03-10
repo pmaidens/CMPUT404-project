@@ -23,6 +23,8 @@ git remote add openshift -f ssh://56d513e20c1e66012500005b@project-c404.rhcloud.
 echo 'merge in openshift'
 git merge openshift/master -s recursive -X ours
 rm -rf ./BloggingAPI/static
+git add . --all
+git commit -m "Remove static"
 echo 'push'
 git push openshift HEAD
 git clean -fd
