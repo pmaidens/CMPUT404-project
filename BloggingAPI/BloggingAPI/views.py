@@ -1,6 +1,8 @@
+from rest_framework import generics
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from .serializers import *
+import uuid
 from rest_framework.permissions import  AllowAny
 
 class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -69,11 +71,25 @@ class PostCommentsViewSet(viewsets.ModelViewSet):
             serializer_class = UpdateCommentSerializer
         return serializer_class
 
-class FriendsViewSet(viewsets.ModelViewSet):
+class FriendViewSet(viewsets.ModelViewSet):
 
     queryset = Friend.objects.all()
     serializer_class = FriendSerializer
-#
+
+class FriendDetailViewSet(viewsets.ModelViewSet):
+    queryset = Author.objects.all()
+    model = Author
+    serializer_class = FriendDetailSerializer
+
+    def get_queryset(self):
+        queryset = Author.objects.all()
+        pks = self.request.query_params.get('pks', None)
+        
+        if pks is not None:
+            queryset = queryset.filter(pks__in=pks)
+
+        return queryset
+
 #
 # class FriendRequestViewSet(viewsets.ModelViewSet):
 #
