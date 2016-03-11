@@ -50,7 +50,7 @@ class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.L
         bio (string) - the bio of an author
     """
     queryset = Author.objects.all()
-    # permission_classes = (AuthorPermissions,)
+    permission_classes = (AuthorPermissions,)
 
     def get_serializer_class(self):
         serializer_class = ViewAuthorSerializer
