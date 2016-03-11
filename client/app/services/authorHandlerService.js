@@ -5,14 +5,9 @@ angular.module("myApp.services.authorHandler", [
     "myApp.services.authenticationHandler"
 ])
 .service("authorHandler", function($q, $http, urlHandler, authenticationHandler) {
-    this.getAuthor = function (authorId) {//eslint-disable-line no-unused-vars
-        // return $q(function(resolve/*, reject*/) {
-        //     setTimeout(function () {
-        //         resolve(STUBgetAuthorId);
-        //     }.bind(this), 1000);
-        // }.bind(this));
+    this.getAuthor = function (authorId) {
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.get(urlHandler.serviceURL() + "api/author/" + authorId);
+        return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/");
     };
 
     this.submitAuthor = function (author) {
@@ -25,7 +20,7 @@ angular.module("myApp.services.authorHandler", [
         };
 
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.put(urlHandler.serviceURL() + "api/author/" + author.id, putParameters);
+        return $http.put(urlHandler.serviceURL() + "api/author/" + author.id + "/", putParameters);
     };
 
     var STUBgetAuthorId = {
