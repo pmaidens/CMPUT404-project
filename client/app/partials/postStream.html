@@ -49,28 +49,32 @@
                             <small><i>Post Stream</i></small>
                             <span>
                                 <h3><span class="mega-octicon octicon-book"></span><span class="postTitle"> {{post.title}}</span></h3>
-                                <button class= "btn btn-danger" data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
-                                <button class= "btn btn-info" data-ng-click="canEditPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">Edit Post</button>
-
-                                <input type = "text" placeholder = '{{post.title}}' data-ng-model='post.title' data-ng-show='post.canEdit'>
-                                <br data-ng-show='post.canEdit'/>
-                                <input type = 'text' placeholder = '{{post.description}}' data-ng-model='post.description' data-ng-show='post.canEdit'>
-                                <br data-ng-show='post.canEdit'/>
-                                <select placeholder='{{post.contentType}}' data-ng-model='post.contentType' data-ng-show='post.canEdit'>
-                                    <option value='plain'>Plain text</option>
-                                    <option value='x-markdown'>Markdown</option>
-                                    <option value='html'>HTML</option>
-                                </select>
-                                <br data-ng-show='post.canEdit'/>
-                                <input type = 'text' placeholder='{{post.categories}}' data-ng-model='post.categories' data-ng-show='post.canEdit'/>
-                                <br data-ng-show='post.canEdit'/>
-                                <select placeholder='{{post.visibility}}' data-ng-model='post.visibility' data-ng-show='post.canEdit'>
-                                    <option value="PUBLIC">Everyone</option>
-                                    <option value="FOAF">Friends of Friends</option>
-                                    <option value="FRIENDS">Friends</option>
-                                    <option value="PRIVATE">Only Me</option>
-                                    <option value="SERVERONLY">Server Users</option>
-                                </select>
+                                <button class="btn btn-danger" data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
+                                <button class="btn btn-info" data-ng-click="editPost(post)" data-ng-disabled="post.disabled" data-ng-show="!post.editMode">Edit Post</button>
+                                <button class="btn btn-success" data-ng-click="submitPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.editMode">Submit</button>
+                                <div data-ng-show="post.editMode">
+                                    <input type="text" placeholder='Title' data-ng-model='post.title'></input>
+                                    <br/>
+                                    <input type='text' placeholder='Description' data-ng-model='post.description'></input>
+                                    <br/>
+                                    <select data-ng-model='post.contentType'>
+                                        <option value='plain'>Plain text</option>
+                                        <option value='x-markdown'>Markdown</option>
+                                        <option value='html'>HTML</option>
+                                    </select>
+                                    <br/>
+                                    <input type='text' placeholder='Categories' data-ng-model='post.categories'/>
+                                    <br/>
+                                    <select placeholder='{{post.visibility}}' data-ng-model='post.visibility'>
+                                        <option value="PUBLIC">Everyone</option>
+                                        <option value="FOAF">Friends of Friends</option>
+                                        <option value="FRIENDS">Friends</option>
+                                        <option value="PRIVATE">Only Me</option>
+                                        <option value="SERVERONLY">Server Users</option>
+                                    </select>
+                                    <br/>
+                                    <textarea placeholder="Blog Post Content" data-ng-model="post.content"></textarea>
+                                </div>
                                 <h4>Author: {{post.author.displayname}}</h4>
                                 <h3>Description: {{post.description}}</h3>
                                 <h6>Published: {{post.published}}</h6>
