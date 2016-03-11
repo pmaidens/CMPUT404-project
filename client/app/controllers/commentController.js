@@ -1,13 +1,16 @@
 "use strict";
 
-angular.module("myApp.commentController", ["myApp.services.postHandler"])
+angular.module("myApp.commentController", [
+    "myApp.services.postHandler",
+    "myApp.services.authenticationHandler"
+])
 
-.controller("CommentController", function($scope, postHandler){
+.controller("CommentController", function($scope, postHandler, authenticationHandler){
 
 
  $scope.AddComment = function () {
  		 postHandler.commentPost({
- 		 	author: "7a0465c9-b89e-4f3b-a6e7-4e35de32bd64",
+ 		 	author: authenticationHandler.user.id,
 			source:"someSource",
 			origin:"anOrigin",
             title: $scope.title || "",
@@ -25,4 +28,3 @@ angular.module("myApp.commentController", ["myApp.services.postHandler"])
 
  };
 })
-

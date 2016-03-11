@@ -1,6 +1,10 @@
 "use strict";
 
-angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
+angular.module("myApp.postStream", [
+    "ngRoute",
+    "myApp.services.postHandler",
+    "myApp.services.authenticationHandler"
+])
 
 .config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/stream", {
@@ -9,9 +13,9 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
     });
 }])
 
-.controller("PostStreamController", function($scope, $http, postHandler) {
+.controller("PostStreamController", function($scope, $http, postHandler, authenticationHandler) {
     var targetAuthorId;
-    $scope.user = {id: "7a0465c9-b89e-4f3b-a6e7-4e35de32bd64"};
+    $scope.user = authenticationHandler.user;
     $scope.posts = [];
     //TODO change to author.github
     $scope.git_username = "sjpartri";  // This will have to be changed "hard-coded for now"

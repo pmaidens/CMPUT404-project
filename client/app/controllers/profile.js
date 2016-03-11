@@ -3,7 +3,8 @@
 angular.module("myApp.profile", [
     "ngRoute",
     "myApp.directives.postStream",
-    "myApp.services.authorHandler"
+    "myApp.services.authorHandler",
+    "myApp.services.authenticationHandler"
 ])
 
 .config(["$routeProvider", function($routeProvider) {
@@ -17,12 +18,12 @@ angular.module("myApp.profile", [
     });
 }])
 
-.controller("Profile", function($scope, $routeParams, authorHandler) {
+.controller("Profile", function($scope, $routeParams, authorHandler, authenticationHandler) {
     $scope.author = {};
     $scope.postStream = {authorId: $routeParams.authorId};
     $scope.editing = false;
     //TODO: Don't fake this!
-    $scope.user = {id:"7a0465c9-b89e-4f3b-a6e7-4e35de32bd64"};
+    $scope.user = authenticationHandler.user;
 
     $scope.clickEdit = function () {
         if($scope.user.id === $scope.author.id) {

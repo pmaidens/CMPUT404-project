@@ -1,6 +1,10 @@
 "use strict";
 
-angular.module("myApp.postWriter", ["ngRoute", "myApp.services.postHandler"])
+angular.module("myApp.postWriter", [
+    "ngRoute",
+    "myApp.services.postHandler",
+    "myApp.services.authenticationHandler"
+])
 
 .config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/write", {
@@ -9,7 +13,7 @@ angular.module("myApp.postWriter", ["ngRoute", "myApp.services.postHandler"])
     });
 }])
 
-.controller("PostWriterController", function($scope, $http, postHandler) {
+.controller("PostWriterController", function($scope, $http, postHandler, authenticationHandler) {
 
     function separateCategories(inputValue) {
         return inputValue.split(",").map(function (category) {
@@ -22,9 +26,9 @@ angular.module("myApp.postWriter", ["ngRoute", "myApp.services.postHandler"])
     $scope.SubmitPost = function () {
         // TODO: Change this object to whatever it needs to be
         postHandler.createPost({
-            author: "7a0465c9-b89e-4f3b-a6e7-4e35de32bd64",
-			source:"someSource",
-			origin:"anOrigin",
+            author: authenticationHandler.user.id,
+            source:"someSource",
+            origin:"anOrigin",
             title: $scope.title || "",
             description: $scope.description || "",
             contentType: $scope.contentType,

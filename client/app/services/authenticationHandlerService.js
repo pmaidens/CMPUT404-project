@@ -3,6 +3,7 @@
 angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandler"])
 .service("authenticationHandler", function($q,$http, urlHandler) {
     this.loginWatchers = [];
+    this.user = {};
 
     this.login = function (username, password) {
         // Make a request to see if the login credentials are valid
