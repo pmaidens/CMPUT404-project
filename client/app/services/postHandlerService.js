@@ -9,7 +9,7 @@ angular.module("myApp.services.postHandler", [
     this.posts = [];
     this.getPosts = function (authorId) {
         //TODO change the url to the proper url
-        var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
+        var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "") + "/";//eslint-disable-line no-unused-vars
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.get(url, {author: authorId});
     };
@@ -40,8 +40,19 @@ angular.module("myApp.services.postHandler", [
     };
 
     this.updatePost = function (post) {
+        var putParameters = {
+            title: post.title,
+            source: post.source,
+            origin: post.origin,
+            description: post.description,
+            contentType: post.contentType,
+            content: post.content,
+            author: post.author.id,
+            categories: post.categories,
+            visibility: post.visibility
+        }
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.put(urlHandler.serviceURL() + "api/posts/"+post.id, post);
+        return $http.put(urlHandler.serviceURL() + "api/posts/"+post.id + "/", putParameters);
     };
 
     var STUBgetPosts = {
