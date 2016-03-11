@@ -2,6 +2,11 @@ from rest_framework import serializers
 from .models import *
 
 #Serializers for Author
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')
+
 class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
     #hyperlinkedModelSerializer uses hyperlinks instead of p-keys
     class Meta:
@@ -11,7 +16,7 @@ class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
 
 class ViewAuthorSerializer(serializers.ModelSerializer):
 
-    displayname = serializers.CharField(source='user.username', read_only=True)
+    displayname = serializers.CharField(source='user.username')
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
     email = serializers.CharField(source='user.email')
@@ -23,6 +28,7 @@ class ViewAuthorSerializer(serializers.ModelSerializer):
         fields = ('id', 'host', 'displayname', 'url', 'friends', 'github',
           'first_name', 'last_name', 'email', 'bio')
 
+# Used to serailize response for a GET to /api/friends/<auth id>
 class FriendDetailSerializer(serializers.ModelSerializer):
 
     query = serializers.SerializerMethodField('getQuery')
@@ -38,14 +44,45 @@ class FriendDetailSerializer(serializers.ModelSerializer):
         return "true".format(bool)
 
     def getFriends(self,obj):
-        test = obj.friends.all().values('author_id')
+        query = obj.friends.all().values('author_id')
         res = []
-        for item in test:
+        for item in query:
             res.append(item.values()[0])
         return res
 
     def getQuery(self,obj):
         return "friends"
+
+# Used to serailize response for a POST to /api/friends/<auth id>
+class FriendVerifySerializer(serializers.ModelSerializer):
+
+    query = serializers.SerializerMethodField('getQuery')
+    author = serializers.SerializerMethodField('getAuthor')
+    authors = serializers.SerializerMethodField('parseFriendList')
+
+    class Meta:
+        model = Author
+        fields = ('query','author','authors')
+
+    def getQuery(self,obj):
+        return self.context.get('query')
+
+    def getAuthor(self,obj):
+        return self.context.get('author')  # for consistency
+
+    def parseFriendList(self,obj):
+        # get all friends
+        friendList = obj.friends.all().values('author_id')
+        friends = []
+        for item in friendList:
+            friends.append(str(item.values()[0]))
+
+        result = []
+        for author in self.context.get('authors'):
+            author = str(author)
+            if author in friends:
+                result.append(author)
+        return result
 
 class UpdateAuthorSerializer(serializers.ModelSerializer):
 
@@ -56,6 +93,20 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ('first_name', 'last_name', 'email', 'github', 'bio')
+
+    def update(self, instance, validated_data):
+        #save the user info
+        user_data = validated_data.pop('user')
+        user =  self.context['request'].user
+        user_serializer = UserSerializer(data=user_data)
+        if user_serializer.is_valid():
+            user_serializer.update(user, user_data)
+        #save the author info
+        instance.github = validated_data.get('github', instance.github)
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.save()
+
+        return instance
 
 #Serializers for Posts
 #This serializer is to show the nested author object in a GET request

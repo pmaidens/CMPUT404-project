@@ -45,7 +45,7 @@ comments_router = routers.NestedSimpleRouter(apiRouter, r'posts', lookup='posts'
 comments_router.register(r'comments', PostCommentsViewSet, base_name='comments')
 
 # http://service/friends/<authorid>
-apiRouter.register(r'friends', FriendDetailViewSet,'friends')
+#apiRouter.register(r'friends', FriendDetailViewSet,'friends')
 
 # http://service/friendrequest
 # apiRouter.register(r'friendrequest', FriendRequestViewSet)
@@ -62,6 +62,9 @@ urlpatterns = [
     url(r'^api/', include(apiRouter.urls)),
     # url(r'^', include(posts_router.urls)),
     url(r'^api/', include(comments_router.urls)),
+    url(r'^api/friends/(?P<pk>[^/.]+)/$', FriendDetailView.as_view()),
+    url(r'^api/friends/$', FriendOverView.as_view()),
+   
 ]
 
 #url(r'^test/(?P<pk>[\d]+)/$', FriendPostViewSet.as_view(), name='test-list'),
