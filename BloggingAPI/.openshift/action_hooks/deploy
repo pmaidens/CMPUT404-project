@@ -1,5 +1,10 @@
 #!/bin/bash
 
-python "$OPENSHIFT_REPO_DIR"/manage.py makemigrations BloggingAPI
+echo "---> ACTION HOOK: deploy <---"
+source $OPENSHIFT_PYTHON_DIR/virtenv/bin/activate
+
+echo "Executing 'python $OPENSHIFT_REPO_DIR/manage.py migrate --noinput'"
 python "$OPENSHIFT_REPO_DIR"/manage.py migrate --noinput
-# python "$OPENSHIFT_REPO_DIR"/manage.py collectstatic
+
+echo "Executing 'python $OPENSHIFT_REPO_DIR/manage.py collectstatic --noinput'"
+python "$OPENSHIFT_REPO_DIR"/manage.py collectstatic --clear --noinput
