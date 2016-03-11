@@ -2,6 +2,11 @@ from rest_framework import serializers
 from .models import *
 
 #Serializers for Author
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')
+
 class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
     #hyperlinkedModelSerializer uses hyperlinks instead of p-keys
     class Meta:
@@ -11,7 +16,7 @@ class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
 
 class ViewAuthorSerializer(serializers.ModelSerializer):
 
-    displayname = serializers.CharField(source='user.username', read_only=True)
+    displayname = serializers.CharField(source='user.username')
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
     email = serializers.CharField(source='user.email')
@@ -47,6 +52,21 @@ class FriendDetailSerializer(serializers.ModelSerializer):
     def getQuery(self,obj):
         return "friends"
 
+class Test(serializers.ModelSerializer):
+    def __init__(self,data):
+        self.data = data
+
+    test = serializers.SerializerMethodField('test')
+    
+
+    class Meta:
+        model = Author
+        fields = 'test'
+
+    def test(self,obj):
+        test = self.data.get('query')
+        return test
+
 class UpdateAuthorSerializer(serializers.ModelSerializer):
 
     first_name = serializers.CharField(source='user.first_name')
@@ -56,6 +76,20 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ('first_name', 'last_name', 'email', 'github', 'bio')
+
+    def update(self, instance, validated_data):
+        #save the user info
+        user_data = validated_data.pop('user')
+        user =  self.context['request'].user
+        user_serializer = UserSerializer(data=user_data)
+        if user_serializer.is_valid():
+            user_serializer.update(user, user_data)
+        #save the author info
+        instance.github = validated_data.get('github', instance.github)
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.save()
+
+        return instance
 
 #Serializers for Posts
 #This serializer is to show the nested author object in a GET request

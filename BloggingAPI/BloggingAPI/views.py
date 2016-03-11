@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import  *
 from .serializers import *
 import uuid
+from rest_framework.permissions import  AllowAny
+from rest_framework.decorators import detail_route
 from .permissions import *
 from .pagination import *
 
@@ -50,13 +52,22 @@ class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.L
         bio (string) - the bio of an author
     """
     queryset = Author.objects.all()
-    # permission_classes = (AuthorPermissions,)
+    permission_classes = (AuthorPermissions,)
 
     def get_serializer_class(self):
         serializer_class = ViewAuthorSerializer
         if self.request.method == 'PUT':
             serializer_class = UpdateAuthorSerializer
         return serializer_class
+
+    def get_queryset(self):
+        queryset = Author.objects.all()
+        displayname = self.request.query_params.get('displayname', None)
+
+        if displayname is not None:
+            queryset = queryset.filter(user__username=displayname)
+
+        return queryset
 
 class PostsViewSet(viewsets.ModelViewSet):
     """
@@ -202,7 +213,7 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
             serializer_class = UpdateCommentSerializer
         return serializer_class
 
-
+#class FriendDetailViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,viewsets.GenericViewSets):
 class FriendDetailViewSet(viewsets.ModelViewSet):
     """
     Endpoint: /api/friends/
@@ -227,6 +238,41 @@ class FriendDetailViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(pks__in=pks)
 
         return queryset
+
+
+    @detail_route(methods=['post','get'])
+    def test(self, request, **kwargs):
+
+        author = self.get_object()
+
+        self.queryset = self.get_queryset()
+        self.serializer_class = FriendDetailSerializer
+
+        if request.method == 'POST':
+
+            # request.data is from the POST object. We want to take these
+            # values and supplement it with the user.id that's defined
+            # in our URL parameter
+            data = {
+                'query': request.data['query'],
+                'author': request.data['author'],
+                'authors': request.data['authors'],
+            }
+
+            serializer = test(data=data,partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Return GET by default
+        else:
+
+            serializer = FriendDetailSerializer(instance=self.queryset, many=True)
+
+            return Response(serializer.data)
 
 #
 # class FriendRequestViewSet(viewsets.ModelViewSet):
