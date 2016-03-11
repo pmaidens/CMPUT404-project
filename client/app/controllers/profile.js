@@ -21,16 +21,22 @@ angular.module("myApp.profile", [
     $scope.author = {};
     $scope.postStream = {authorId: $routeParams.authorId};
     $scope.editing = false;
+    //TODO: Don't fake this!
+    $scope.user = {id:"7a0465c9-b89e-4f3b-a6e7-4e35de32bd64"};
 
     $scope.clickEdit = function () {
-        $scope.editing = !$scope.editing;
+        if($scope.user.id === $scope.author.id) {
+            $scope.editing = !$scope.editing;
+        }
     };
 
     $scope.submitAuthor = function () {
-        $scope.editing = !$scope.editing;
+        authorHandler.submitAuthor($scope.author).then(function () {
+            $scope.editing = !$scope.editing;
+        });
     };
 
-    authorHandler.getAuthor($routeParams.authorId).then(function (result) {
-        $scope.author = result;
+    authorHandler.getAuthor($routeParams.authorId || $scope.user.id).then(function (result) {
+        $scope.author = result.data;
     });
 });

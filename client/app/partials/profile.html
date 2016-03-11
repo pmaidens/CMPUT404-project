@@ -1,13 +1,17 @@
 <div class="profile">
-    <div class="displayName">
-        <h1 data-ng-show="!editing">{{ author.displayName }}</h1>
-        <input type="text" data-ng-model="author.displayName" data-ng-show="editing"></input>
+    <h1>{{ author.displayname }}</h1>
+    <div class="authorName">
+        <span><span data-ng-show="!editing">{{ author.first_name }}</span><input placeholder="First Name" type="text" data-ng-model="author.first_name" data-ng-show="editing"></input></span>
+        <span><span data-ng-show="!editing">{{ author.last_name }}</span><input placeholder="Last Name" type="text" data-ng-model="author.last_name" data-ng-show="editing"></input></span>
     </div>
+    <div><span data-ng-show="!editing">{{ author.email }}</span><input placeholder="Email" type="text" data-ng-model="author.email" data-ng-show="editing"></input></div>
     <div class="github">
         <div data-ng-show="!editing">{{ author.github }}</div>
-        <input type="text" data-ng-model="author.github" data-ng-show="editing"></input>
+        <input placeholder="Github URL" type="text" data-ng-model="author.github" data-ng-show="editing"></input>
     </div>
-    <div class="editButtons">
+    <div data-ng-show="!editing">{{ author.bio }}</div>
+    <textarea placeholder="Bio" data-ng-model="author.bio" data-ng-show="editing"></textarea>
+    <div class="editButtons" data-ng-show="$scope.user.id === $scope.author.id">
         <button data-ng-click="clickEdit()" data-ng-show="!editing">Edit</button>
         <button data-ng-click="submitAuthor()" data-ng-show="editing">Submit</button>
     </div>
