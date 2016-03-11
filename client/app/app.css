@@ -33,17 +33,36 @@
     background-color: #3b5998;
    
 }
+
+/* Post Stream CSS */
+.panel > .panel-heading{
+  background-image: none;
+    background-color: #FF5721;
+    color: white;
+}
+
+
 /* title */
 .navbar-custom .navbar-brand {
     color: #f7f7f7;
+    display: block;
+    padding-bottom:40px;
 }
+
+.navbar-brand img { 
+  position: relative;
+  padding-left: 10px; }
+
 .navbar-custom .navbar-brand:hover,
 .navbar-custom .navbar-brand:focus {
     color:  #dfe3ee;
+
 }
 /* link */
 .navbar-custom .navbar-nav > li > a {
     color: #f7f7f7;
+    padding-top:20px;
+
 }
 .navbar-custom .navbar-nav > li > a:hover,
 .navbar-custom .navbar-nav > li > a:focus {

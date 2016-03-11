@@ -1,15 +1,24 @@
-    
-    <h2>Post Stream + GitHub Integration: </h2>
-    		</span>
-    <h4>
-    	GitHub Account Associated With: <i>{{gitUserData.name}} @ </i>
-        <a href="{{gitUserData.html_url}}" class="btn btn-default">
-    <span class="octicon octicon-mark-github"></span>
-            {{gitUserData.login}}
-        </a>
-    </h4>
+    <div class="postStream container">
+  
+    	
 
+     <div class="panel panel-default">
+                <div class="panel-heading">
 
+                    <form class="form-inline">
+                        <span>
+                            <h4>NewFeed <span class="badge">{{allPost.length}}</span>
+                          
+                        </h4>
+                            <h4>
+                                  <a href="{{gitUserData.html_url}}" class="btn btn-default">
+                                <span class="octicon octicon-mark-github">
+                               {{gitUserData.login}}
+                            </a></span> </h4>
+                           <input ng-model="searchText" placeholder="Search NewFeed" class="form-control input-md">                            
+                    </form>
+
+                </div>
     <div class="panel-body">
     <div class="list-group">
         <div ng-repeat="post in allPost | orderBy:'createdate':true" class="list-group-item ">
@@ -116,3 +125,6 @@
     </div>
 
     </div>
+</div>
+
+</div>
