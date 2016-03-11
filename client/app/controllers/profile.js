@@ -3,7 +3,8 @@
 angular.module("myApp.profile", [
     "ngRoute",
     "myApp.directives.postStream",
-    "myApp.services.authorHandler"
+    "myApp.services.authorHandler",
+    "myApp.services.authenticationHandler"
 ])
 
 .config(["$routeProvider", function($routeProvider) {
@@ -17,20 +18,26 @@ angular.module("myApp.profile", [
     });
 }])
 
-.controller("Profile", function($scope, $routeParams, authorHandler) {
+.controller("Profile", function($scope, $routeParams, authorHandler, authenticationHandler) {
     $scope.author = {};
     $scope.postStream = {authorId: $routeParams.authorId};
     $scope.editing = false;
+    //TODO: Don't fake this!
+    $scope.user = authenticationHandler.user;
 
     $scope.clickEdit = function () {
-        $scope.editing = !$scope.editing;
+        if($scope.user.id === $scope.author.id) {
+            $scope.editing = !$scope.editing;
+        }
     };
 
     $scope.submitAuthor = function () {
-        $scope.editing = !$scope.editing;
+        authorHandler.submitAuthor($scope.author).then(function () {
+            $scope.editing = !$scope.editing;
+        });
     };
 
-    authorHandler.getAuthor($routeParams.authorId).then(function (result) {
-        $scope.author = result;
+    authorHandler.getAuthor($routeParams.authorId || $scope.user.id).then(function (result) {
+        $scope.author = result.data;
     });
 });

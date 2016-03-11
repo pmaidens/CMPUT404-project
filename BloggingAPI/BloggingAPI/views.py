@@ -61,6 +61,15 @@ class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.L
             serializer_class = UpdateAuthorSerializer
         return serializer_class
 
+    def get_queryset(self):
+        queryset = Author.objects.all()
+        displayname = self.request.query_params.get('displayname', None)
+
+        if displayname is not None:
+            queryset = queryset.filter(user__username=displayname)
+
+        return queryset
+
 class PostsViewSet(viewsets.ModelViewSet):
     """
     Endpoint: /api/posts/
