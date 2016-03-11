@@ -1,15 +1,15 @@
 "use strict";
 
-angular.module("myApp.services.authenticationHandler", [])
-.service("authenticationHandler", function($q,$http) {
+angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandler"])
+.service("authenticationHandler", function($q,$http, urlHandler) {
     this.loginWatchers = [];
 
     this.login = function (username, password) {
         // Make a request to see if the login credentials are valid
         // If they are, set them as default headers
-      //  return $q(function(resolve/*, reject*/) {
+        //  return $q(function(resolve/*, reject*/) {
         //    setTimeout(function () {
-                // $httpProvider.defaults.headers.common.Authorization = "Basic " + result.token;
+        // $httpProvider.defaults.headers.common.Authorization = "Basic " + result.token;
         //         this.loginWatchers.forEach(function(f) {
         //             f(true);
         //         });
@@ -17,23 +17,23 @@ angular.module("myApp.services.authenticationHandler", [])
         //     }.bind(this), 1000);
         // }.bind(this));
 
-	var url = 'http://localhost:8000/rest-auth/login/'
-	return $http.post(url,{'username':username, 'password':password}).then(function(result){
-	    console.log(result.data.key);
-	    
-	    this.loginWatchers.forEach(function(f){
+        var url = urlHandler.serviceURL() + "rest-auth/login/";
+        return $http.post(url,{"username":username, "password":password}).then(function(result){
+            console.log(result.data.key);
 
-		f(true);
-	    });
+            this.loginWatchers.forEach(function(f){
 
-	    $httpProvider.defaults.headers.common.Authorization = "Token " + result.data.key;
-				   
-	},function(err){
+                f(true);
+            });
+
+            $httpProvider.defaults.headers.common.Authorization = "Token " + result.data.key;
+
+        },function(err){
 
 
-	    console.log(err);
-	
-	});
+            console.log(err);
+
+        });
 
     };
 

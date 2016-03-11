@@ -4,8 +4,26 @@ from rest_framework_nested import routers
 from django.contrib import admin
 from .views import *
 
+class APIRouter(routers.DefaultRouter):
 
-apiRouter = routers.DefaultRouter()
+    def get_api_root_view(self):
+        api_root_view = super(APIRouter, self).get_api_root_view()
+        ApiRootClass = api_root_view.cls
+
+        class MyAPIRoot(ApiRootClass):
+            """
+            Endpoint: /api/
+            This is the api root end point and it lists the following api endpoints that are available to the user.
+            Endpoint: /api/author/ gives the list of authors
+            Endpoint: /api/posts/ gives the list of posts
+            Endpoint: /api/posts/{AUTHOR_ID}/comments gives the list of comments of a post
+            Endpoint: /api/friends/ gives the list of friends
+            """
+            pass
+
+        return MyAPIRoot.as_view()
+
+apiRouter = APIRouter()
 
 # http://service/author (ONLY USED FOR TESTING)
 # http://service/author/{AUTHOR_ID}

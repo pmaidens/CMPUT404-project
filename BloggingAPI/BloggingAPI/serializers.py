@@ -9,7 +9,7 @@ class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','author_id', 'host', 'display_name', 'url')
 
 
-class AuthorSerializer(serializers.ModelSerializer):
+class ViewAuthorSerializer(serializers.ModelSerializer):
 
     displayname = serializers.CharField(source='user.username', read_only=True)
     first_name = serializers.CharField(source='user.first_name')
@@ -32,7 +32,7 @@ class FriendDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ('query','authors','friends')
-    
+
     def getFriendship(self, obj):
         #obj.Author.User
         return "true".format(bool)
@@ -62,7 +62,15 @@ class Test(serializers.ModelSerializer):
         test = self.data.get('query')
         return test
 
-    
+class UpdateAuthorSerializer(serializers.ModelSerializer):
+
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+    email = serializers.CharField(source='user.email')
+
+    class Meta:
+        model = Author
+        fields = ('first_name', 'last_name', 'email', 'github', 'bio')
 
 #Serializers for Posts
 #This serializer is to show the nested author object in a GET request
@@ -134,4 +142,3 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('author', 'comment', 'post')
-        
