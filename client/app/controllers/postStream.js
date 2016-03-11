@@ -76,17 +76,23 @@ angular.module("myApp.postStream", [
 	  $scope.git_username = githubuserName || authData.github;
 	  });
 	 */
-        $http.get("https://api.github.com/users/"+$scope.git_username)
-            .success(function(gitdata) {
-                $scope.gitUserData = gitdata;
+	//var tokenHolder = $http.
+	console.log(authenticationHandler.token);
+        $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
+
+
+	        $scope.gitUserData = gitdata;
                 loadEvents();
-            });
+
+
+	});
+
     };
     // Http call for github repos (not too sure what Abram means by "activity")
     // ** May need to make additional calls
 
     var loadEvents = function () {
-        $http.get("https://api.github.com/users/"+$scope.git_username+"/events")
+        $http({method:'GET', url: "https://api.github.com/users/"+$scope.git_username+"/events" , headers:{'Authorization':undefined}})
             .success(function(event_data){
                 $scope.eventData = event_data;
              
@@ -118,7 +124,7 @@ angular.module("myApp.postStream", [
 //POST : author id, comment, postid
     $scope.AddComment = function (post, comments) {
         postHandler.commentPost({
-            author: "7a0465c9-b89e-4f3b-a6e7-4e35de32bd64",
+            author:($scope.postStream.authorId ||"7a0465c9-b89e-4f3b-a6e7-4e35de32bd64"),
             comment: comments,
             post: post.id
         });
