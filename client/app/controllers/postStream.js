@@ -32,17 +32,35 @@ angular.module("myApp.postStream", [
 
         $scope.posts = result.data.posts;
 	console.log(result.data.posts);
-		//result[1] for example has these fields:
-		/*
-			(title', 'source', 'origin', 'description', 'contentType',
-              'content', 'author', 'categories', 'visibility')
-			access them like result[1].title
-		*/
-		//console.log(result.data);
+
 	//in $scope.posts we have to add our friend's posts as well.
 	/*
+	var url = 'localhost:8000/api/friends/' + targetAuthorId + '/';
+	$http.get(url).then(function(friendData){
+
+	var friends = friendData.authors;
+
+	for(var i = 0 ; i< friends.length; i++){
+
+	var url2 = 'localhost:8000/api/author/' + friends[i] + '/posts/';
+	
+	$http.get(url2).then(function(postData){
+
+	$scope.posts += postData.data.posts;
+
+	
+
+	});
+	
+
+	}
+
+
+	});
+
 
 	 */
+
         loadGit();
     });
 
