@@ -47,28 +47,65 @@
 
                                 <h3><span class="mega-octicon octicon-book"></span> {{post.title}}</h3>
                                 <button data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
-				<!--data-ng-click should probably be a function that shows a little form filled out with old post info for the user to update.
-				When the user is done editing their post then we should call editPost(post)-->
-				<button data-ng-click="editPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">
-                                Edit Post</button>
-                                <button data-ng-click="viewComments(post)">View Comments</button>
-                                <input type='text'>
-				<input type='text'>
-				<h4>{{post.author.displayName}}</h4>
+				<button data-ng-click="canEditPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">Edit Post</button>
+
+				<input type = "text" placeholder = '{{post.title}}' data-ng-model='post.title' data-ng-show='post.canEdit'>
+				<br data-ng-show='post.canEdit'/>
+				<input type = 'text' placeholder = '{{post.description}}' data-ng-model='post.description' data-ng-show='post.canEdit'>
+				<br data-ng-show='post.canEdit'/>
+				<select placeholder='{{post.contentType}}' data-ng-model='post.contentType' data-ng-show='post.canEdit'>
+				  <option value='plain'>Plain text</option>
+				  <option value='x-markdown'>Markdown</option>
+				  <option value='html'>HTML</option>
+				</select>																>
+				<br data-ng-show='post.canEdit'/>
+				<input type = 'text' placeholder='{{post.categories}}' data-ng-model='post.categories' data-ng-show='post.canEdit'/>
+				<br data-ng-show='post.canEdit'/>
+				<select placeholder='{{post.visibility}}' data-ng-model='post.visibility' data-ng-show='post.canEdit'>
+				  <option value="PUBLIC">Everyone</option>
+				  <option value="FOAF">Friends of Friends</option>
+				  <option value="FRIENDS">Friends</option>
+				  <option value="PRIVATE">Only Me</option>
+				  <option value="SERVERONLY">Server Users</option>
+				  
+				</select>																
+																
+																
+                                
+                                <h4>{{post.author.displayName}}</h4>
                                 <h3>{{post.description}}</h3>
                                 <h6>Published: {{post.published}}</h6>
                                 <div btf-markdown="post.content"></div>
+
+                                <div class="list-group-item custom-list-group-item">
+                                <h4> Comment Section </h4>   
+                                <br>
+                                <button ng-hide="showComments" ng-click="showComments=true">View Comments</button>
+                                <button  ng-show="showComments" ng-click="showComments=false">Hide Comments</button>
+                                <br>
+                                <div ng-show="showComments" ng-repeat="comment in post.comments">
+                                      <div class="list-group-item ">
+                                        <i>Author {{comment.author.displayname}} wrote...</i>
+                                        <br><br>
+                                        <h4 font-align="center">"{{comment.comment}}"</h4>
+                                        <br>
+                                        <small><i>Published on {{comment.published}} Author's gihub @ {{comment.author.github}}</i></small>
+                                      </div>
+                                </div>
+                                <br>
                                 <form>
                                     Post A Comment
                                     <br>
                                     <textarea data-ng-model="comments" placeholder="Your Comment" style='width:550px'></textarea>
                                     <br>
                                     <button data-ng-click="AddComment(post, comments)">Post Comment</button>
+                                    <button  ng-show="showComments" ng-click="showComments=false">Hide Comments</button>
                                 </form>
-                             
+                               </div>
                         </span>
                               
                 </div>     
+                
             </div>
 
         </div>

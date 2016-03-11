@@ -1,50 +1,34 @@
 "use strict";
 
-angular.module("myApp.services.postHandler", ["ngRoute"])
-.service("postHandler", function($q,$http,$route) {
+angular.module("myApp.services.postHandler", ["ngRoute", "myApp.services.urlHandler"])
+.service("postHandler", function($q,$http,$route, urlHandler) {
     this.posts = [];
-
-
-   //this isn't being used right now
-    var generateId = function() {
-        return Math.random(1, 1000);
-    };
     this.getPosts = function (authorId) {
-	//TODO change the url to the proper url 
-        var url = "http://localhost:8000/api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
+        //TODO change the url to the proper url
+        var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
         return $http.get(url, {author: authorId});
-  ;
     };
     this.deletePost = function(id) {
-	//TODO change the url to the proper url
-	//make sure you have the slash at the end
-        return $http.delete('http://localhost:8000/api/posts/'+id+"/").then(function(){
+        //TODO change the url to the proper url
+        //make sure you have the slash at the end
+        return $http.delete(urlHandler.serviceURL() + "api/posts/"+id+"/").then(function(){
 
-			$route.reload();
+            $route.reload();
 
-		},function(err){
+        },function(err){
 
-			console.log(err);
+            console.log(err);
 
-		});
+        });
     };
     this.createPost = function(post) {
-	//TODO change the url to the proper url
-        return $http.post("http://localhost:8000/api/posts/",post);
+        //TODO change the url to the proper url
+        return $http.post(urlHandler.serviceURL() + "api/posts/",post);
 
     };
 
     this.commentPost = function(post){
-        return $http.post("http://localhost:8000/api/posts/"+post.post+"/comments/", post);
-    };
-
-    this.editPost = function(post){
-
-	//TODO 
-	//maybe put the posts fields into a form
-	return $http.put("http://localhost:8000/api/posts/"+post.id+"/");
-
-
+        return $http.post(urlHandler.serviceURL() + "api/posts/"+post.post+"/comments/", post);
     };
 
     var STUBgetPosts = {
