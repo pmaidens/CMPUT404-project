@@ -47,6 +47,23 @@ class FriendDetailSerializer(serializers.ModelSerializer):
     def getQuery(self,obj):
         return "friends"
 
+class Test(serializers.ModelSerializer):
+    def __init__(self,data):
+        self.data = data
+
+    test = serializers.SerializerMethodField('test')
+    
+
+    class Meta:
+        model = Author
+        fields = 'test'
+
+    def test(self,obj):
+        test = self.data.get('query')
+        return test
+
+    
+
 #Serializers for Posts
 #This serializer is to show the nested author object in a GET request
 class PostAuthorSerializer(serializers.HyperlinkedModelSerializer):

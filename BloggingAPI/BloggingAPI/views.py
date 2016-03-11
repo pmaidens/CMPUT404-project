@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from .serializers import *
 import uuid
 from rest_framework.permissions import  AllowAny
+from rest_framework.decorators import detail_route
+
 
 class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
 
@@ -72,8 +74,10 @@ class PostCommentsViewSet(viewsets.ModelViewSet):
         return serializer_class
 
 
-class FriendDetailViewSet(viewsets.ModelViewSet):
 
+
+#class FriendDetailViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,viewsets.GenericViewSets):
+class FriendDetailViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all()
     model = Author
     serializer_class = FriendDetailSerializer
@@ -86,6 +90,41 @@ class FriendDetailViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(pks__in=pks)
 
         return queryset
+
+
+    @detail_route(methods=['post','get'])
+    def test(self, request, **kwargs):
+
+        author = self.get_object()
+
+        self.queryset = self.get_queryset()
+        self.serializer_class = FriendDetailSerializer
+
+        if request.method == 'POST':
+
+            # request.data is from the POST object. We want to take these
+            # values and supplement it with the user.id that's defined
+            # in our URL parameter
+            data = {
+                'query': request.data['query'],
+                'author': request.data['author'],
+                'authors': request.data['authors'],
+            }
+
+            serializer = test(data=data,partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Return GET by default
+        else:
+
+            serializer = FriendDetailSerializer(instance=self.queryset, many=True)
+
+            return Response(serializer.data)
 
 #
 # class FriendRequestViewSet(viewsets.ModelViewSet):
