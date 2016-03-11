@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from rest_framework.permissions import  *
@@ -204,67 +205,81 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
             serializer_class = UpdateCommentSerializer
         return serializer_class
 
-#class FriendDetailViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,viewsets.GenericViewSets):
-class FriendDetailViewSet(viewsets.ModelViewSet):
+
+# view for /api/friends/
+class FriendOverView(APIView):
     """
     Endpoint: /api/friends/
     Available Methods: GET
-    This endpoint lists any friends that an author has.
-
+    This endpoint lists the friends that each author has, and is for testing
+    purposes only
+    
     GET Response object properties:
         query - the current query
         authors - the list of friends the current author has
         friends - boolean specifying if the author is a friend or not
     """
 
-    queryset = Author.objects.all()
-    model = Author
-    serializer_class = FriendDetailSerializer
-
-    def get_queryset(self):
+    def get(self, request, format=None):
         queryset = Author.objects.all()
-        pks = self.request.query_params.get('pks', None)
+        serializer = FriendDetailSerializer(queryset, many=True)
+        return Response(serializer.data)
 
-        if pks is not None:
-            queryset = queryset.filter(pks__in=pks)
+    #Will we need to post here?
 
-        return queryset
+    # def post(self, request, format=None):
+    #     serializer = FriendDetailSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# view for /api/friends/<author-id>
+class FriendDetailView(APIView):
+    """
+    Endpoint: /api/friends/<author-id>
+    Available Methods: GET, POST
+    This endpoint lists any friends that an author has.
+    
+    GET Response object properties:
+        query - the current query
+        authors - the list of friends the current author has
+        friends - boolean specifying if the author is a friend or not
+    
+    POST Request object properties:
+        query - the current query
+        author - the id of the author in question
+        authors - an array of Author ID's - checked against the author in question to
+                  determine friendship
 
-    @detail_route(methods=['post','get'])
-    def test(self, request, **kwargs):
+    POST Response object properties:
+        query - the current query
+        author - the id of the author in question
+        autors - and array of Author ID's, all of which are friends with the author in
+                 question, and were present on the requested list
+    """
+    
+    
+    def get(self,request,pk,format=None):
+        queryset = Author.objects.get(id=pk)
+        serializer = FriendDetailSerializer(queryset)
+        return Response(serializer.data)
 
-        author = self.get_object()
+    def post(self, request, pk, format=None):
+        data = {
+            'query': request.data['query'],
+            'author': request.data['author'],
+            'authors': request.data['authors'],
+        }
+  
+        queryset = Author.objects.get(id=pk)
+        serializer = FriendVerifySerializer(queryset,data=request.data,partial=True,context=request.data)
 
-        self.queryset = self.get_queryset()
-        self.serializer_class = FriendDetailSerializer
-
-        if request.method == 'POST':
-
-            # request.data is from the POST object. We want to take these
-            # values and supplement it with the user.id that's defined
-            # in our URL parameter
-            data = {
-                'query': request.data['query'],
-                'author': request.data['author'],
-                'authors': request.data['authors'],
-            }
-
-            serializer = test(data=data,partial=True)
-
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        # Return GET by default
+        if serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-
-            serializer = FriendDetailSerializer(instance=self.queryset, many=True)
-
-            return Response(serializer.data)
-
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 #
 # class FriendRequestViewSet(viewsets.ModelViewSet):
 #

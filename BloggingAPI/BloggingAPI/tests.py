@@ -80,7 +80,7 @@ class apiTests(TestCase):
         # TODO check body contents, post, then run the same tests
         # I.E ensure it can get multiple posts
 
-    def test_FriendGet(self):
+    def test_Friend(self):
 
         # have an author object in self.author
         # and a user object in  self.author.user
@@ -157,8 +157,6 @@ class apiTests(TestCase):
         #     ]
         # }
 
-        
-
         data = {"query":"friends",
                 "author":str(self.author.id),
                 "authors":[str(self.testEnemy.id),str(self.testFriend.id)]}
@@ -171,5 +169,12 @@ class apiTests(TestCase):
         #         "testFriend.id",]
 
 
-       # postResponse = self.client.post(getUrl,data,format='json')
-        #self.assertEqual(postResponse.status_code, status.HTTP_200_OK)
+        postResponse = self.client.post(getUrl,data,format='json')
+        
+        friendsCalculated= postResponse.data.get('authors')
+
+        self.assertEqual(postResponse.status_code, status.HTTP_200_OK)
+        self.assertEqual(Author.objects.count(),3) # no new authors made
+        self.assertEqual(Friend.objects.count(),2) # no new friends
+        self.assertEqual(len(friendsCalculated),1)
+        self.assertEqual(friendsCalculated[0],str(self.testFriend.id))

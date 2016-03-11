@@ -28,6 +28,7 @@ class ViewAuthorSerializer(serializers.ModelSerializer):
         fields = ('id', 'host', 'displayname', 'url', 'friends', 'github',
           'first_name', 'last_name', 'email', 'bio')
 
+# Used to serailize response for a GET to /api/friends/<auth id>
 class FriendDetailSerializer(serializers.ModelSerializer):
 
     query = serializers.SerializerMethodField('getQuery')
@@ -43,29 +44,45 @@ class FriendDetailSerializer(serializers.ModelSerializer):
         return "true".format(bool)
 
     def getFriends(self,obj):
-        test = obj.friends.all().values('author_id')
+        query = obj.friends.all().values('author_id')
         res = []
-        for item in test:
+        for item in query:
             res.append(item.values()[0])
         return res
 
     def getQuery(self,obj):
         return "friends"
 
-class Test(serializers.ModelSerializer):
-    def __init__(self,data):
-        self.data = data
+# Used to serailize response for a POST to /api/friends/<auth id>
+class FriendVerifySerializer(serializers.ModelSerializer):
 
-    test = serializers.SerializerMethodField('test')
-    
+    query = serializers.SerializerMethodField('getQuery')
+    author = serializers.SerializerMethodField('getAuthor')
+    authors = serializers.SerializerMethodField('parseFriendList')
 
     class Meta:
         model = Author
-        fields = 'test'
+        fields = ('query','author','authors')
 
-    def test(self,obj):
-        test = self.data.get('query')
-        return test
+    def getQuery(self,obj):
+        return self.context.get('query')
+
+    def getAuthor(self,obj):
+        return self.context.get('author')  # for consistency
+
+    def parseFriendList(self,obj):
+        # get all friends
+        friendList = obj.friends.all().values('author_id')
+        friends = []
+        for item in friendList:
+            friends.append(str(item.values()[0]))
+
+        result = []
+        for author in self.context.get('authors'):
+            author = str(author)
+            if author in friends:
+                result.append(author)
+        return result
 
 class UpdateAuthorSerializer(serializers.ModelSerializer):
 
