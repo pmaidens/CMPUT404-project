@@ -28,7 +28,10 @@ angular.module("myApp.postStream", [
         targetAuthorId = {id: $scope.postStream.authorId};
     }
     postHandler.getPosts(targetAuthorId).then(function(result) {
-        $scope.posts = result.data;
+
+
+        $scope.posts = result.data.posts;
+	console.log(result.data.posts);
 		//result[1] for example has these fields:
 		/*
 			(title', 'source', 'origin', 'description', 'contentType',
@@ -52,7 +55,7 @@ angular.module("myApp.postStream", [
 	  $http.get('http://localhost:8000/api/author'+$scope.postStream.authorId+'/').then(function(authData){
 	  var githubUserName = authData.github.split('/')[2];
 	  //i dunno if this works but i think it should
-	  $scope.git_username = githubuserName;
+	  $scope.git_username = githubuserName || authData.github;
 	  });
 	 */
         $http.get("https://api.github.com/users/"+$scope.git_username)
