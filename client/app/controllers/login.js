@@ -15,9 +15,14 @@ angular.module("myApp.login", ["ngRoute", "myApp.services.authenticationHandler"
             console.log("sup?");
             $location.url("/");
         },function(err){
-
             console.log(err);
-
+        });
+    };
+    $scope.register = function () {
+        authenticationHandler.register({
+            username: $scope.username,
+            password: $scope.password,
+            email: $scope.email
         });
     };
 });

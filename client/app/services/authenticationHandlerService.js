@@ -21,17 +21,20 @@ angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandl
         var url = urlHandler.serviceURL() + "rest-auth/login/";
         return $http.post(url,{"username":username, "password":password}).then(function(result){
             // console.log(result.data.key);
-            $http.get(urlHandler.serviceURL()+"api/author/").then(function (result) {
-                result.data.some(function (author) {
-                    if(author.displayname === username) {
-                        this.user = author;
-                        this.loginWatchers.forEach(function(f){
-                            f(true);
-                        });
-                        return true;
-                    }
-                }.bind(this));
-            }.bind(this));
+            this.determineUser(username).then(function () {
+                this.updateWatchers(true);
+            });
+            // $http.get(urlHandler.serviceURL()+"api/author/").then(function (result) {
+            //     result.data.some(function (author) {
+            //         if(author.displayname === username) {
+            //             this.user = author;
+            //             this.loginWatchers.forEach(function(f){
+            //                 f(true);
+            //             });
+            //             return true;
+            //         }
+            //     }.bind(this));
+            // }.bind(this));
 
             $httpProvider.defaults.headers.common.Authorization = "Token " + result.data.key;
 
@@ -48,11 +51,34 @@ angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandl
         //Keep this wrapped in 'q' just to keep everything consistent.
         return $q(function(resolve/*, reject*/) {
             $httpProvider.defaults.headers.common.Authorization = undefined;
-            this.loginWatchers.forEach(function(f) {
-                f(false);
-            });
+            this.updateWatchers(false);
             resolve();
         }.bind(this));
+    };
+
+    this.register = function (userInfo) {
+        $http.post(urlHandler.serviceURL()+"rest-auth/registration", userInfo).then(function () {
+            this.determineUser(userInfo.displayname).then(function () {
+                this.updateWatchers(true);
+            });
+        }.bind(this));
+    };
+
+    this.determineUser = function (displayname) {
+        return $http.get(urlHandler.serviceURL()+"api/author/").then(function (result) {
+            result.data.some(function (author) {
+                if(author.displayname === displayname) {
+                    this.user = author;
+                    return true;
+                }
+            }.bind(this));
+        }.bind(this));
+    };
+
+    this.updateWatchers = function (loggedIn) {
+        this.loginWatchers.forEach(function(f){
+            f(loggedIn);
+        });
     };
 
     this.watchLogin = function(callback) {
