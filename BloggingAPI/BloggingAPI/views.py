@@ -5,6 +5,7 @@ from rest_framework.permissions import  *
 from .serializers import *
 import uuid
 from .permissions import *
+from .pagination import *
 
 class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
@@ -65,6 +66,9 @@ class PostsViewSet(viewsets.ModelViewSet):
     You can also create a new post for the current user.
 
     GET Repsonse objects properties:
+        count (Posts) - number of posts
+        query - the current query
+        size - the size of the page
         title - the title of the post
         source - the last place this post was
         origin - the original url of the post
@@ -73,7 +77,7 @@ class PostsViewSet(viewsets.ModelViewSet):
         content - the text of the post
         author - the author object that wrote the post
         categories - a list of categories that the post belongs to
-        count - the number of comments that this post has
+        count (Comments) - the number of comments that this post has
         comments - the list of comments of a post
         published - the date the post was created
         id - the guid of the post
@@ -123,6 +127,7 @@ class PostsViewSet(viewsets.ModelViewSet):
     """
     queryset = Post.objects.all()
     permission_classes = (AllowAny,)
+    pagination_class = PostsPagination
 
     def get_queryset(self):
         queryset = Post.objects.all()
@@ -165,6 +170,9 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
     You can also post new comments for the corresponding post.
 
     GET Repsonse objects properties:
+        count - number of comments
+        query - the current query
+        size - the size of the page
         author - the author object that wrote the comment
         comment - the text of the comment
         pubDate - the date that the comment was created
@@ -186,6 +194,7 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
         guid - the guid of the comment
     """
     queryset = Comment.objects.all()
+    pagination_class = CommentsPagination
 
     def get_serializer_class(self):
         serializer_class = ViewCommentSerializer
