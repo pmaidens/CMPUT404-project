@@ -37,9 +37,17 @@
 /* Post Stream CSS */
 .panel > .panel-heading{
   background-image: none;
-    background-color: #FF5721;
+    background-color: #F87531;
     color: white;
 }
+
+#searchNewFeed{
+    right:100px;
+    padding-left: 150px;
+    padding-right: 100px;
+}
+
+
 
 
 /* title */

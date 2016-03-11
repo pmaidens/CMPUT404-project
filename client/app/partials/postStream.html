@@ -15,7 +15,9 @@
                                 <span class="octicon octicon-mark-github">
                                {{gitUserData.login}}
                             </a></span> </h4>
-                           <input ng-model="searchText" placeholder="Search NewFeed" class="form-control input-md">                            
+                            <h5 align="center">
+                           <input id="searchNewFeed" ng-model="searchText" placeholder="Search NewFeed" class="form-control input-md">        
+                           </h5>                    
                     </form>
 
                 </div>
@@ -26,6 +28,8 @@
 
                 <div class="col-md-8">
                     <h4>
+                        <small><i>Github Stream</i></small>
+                        <br>
                         <small>
                             <span ng-if="post.fork" class="octicon octicon-repo-forked"></span>
                             <span ng-if="!post.fork" class="octicon octicon-repo"></span>
@@ -48,10 +52,10 @@
                 </div>
             </div>
 
-             <div ng-if="post.title" class="row">
+             <div class="blogPosts" ng-if="post.title" class="row">
 
                 <div class="col-md-8">
-             
+                        <small><i>Post Stream</i></small>
                         <span>
 
                                 <h3><span class="mega-octicon octicon-book"></span> {{post.title}}</h3>
