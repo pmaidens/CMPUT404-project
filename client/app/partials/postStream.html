@@ -56,32 +56,28 @@
 
                                 <h3><span class="mega-octicon octicon-book"></span> {{post.title}}</h3>
                                 <button data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
-								<!--data-ng-click should probably be a function that shows a little form filled out with old post info for the user to update.
-								When the user is done editing their post then we should call editPost(post)-->
-								<button data-ng-click="canEditPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">
-                                Edit Post</button>
-																<input type = "text" placeholder = '{{post.title}}' data-ng-model='post.title' data-ng-show='post.canEdit'>
-																<br data-ng-show='post.canEdit'/>
-																<input type = 'text' placeholder = '{{post.description}}' data-ng-model='post.description' data-ng-show='post.canEdit'>
-																<br data-ng-show='post.canEdit'/>
-																<select placeholder='{{post.contentType}}' data-ng-model='post.contentType' data-ng-show='post.canEdit'>
-																	<option value='plain'>Plain text</option>
-																	<option value='x-markdown'>Markdown</option>
-																	<option value='html'>HTML</option>
-																</select>																>
-																<br data-ng-show='post.canEdit'/>
-																<input type = 'text' placeholder='{{post.categories}}' data-ng-model='post.categories' data-ng-show='post.canEdit'/>
-																<br data-ng-show='post.canEdit'/>
-																<select placeholder='{{post.visibility}}' data-ng-model='post.visibility' data-ng-show='post.canEdit'>
-																	<option value="PUBLIC">Everyone</option>
-																	<option value="FOAF">Friends of Friends</option>
-																	<option value="FRIENDS">Friends</option>
-																	<option value="PRIVATE">Only Me</option>
-																	<option value="SERVERONLY">Server Users</option>
+				<button data-ng-click="canEditPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">Edit Post</button>
 
-																</select>
-
-																
+				<input type = "text" placeholder = '{{post.title}}' data-ng-model='post.title' data-ng-show='post.canEdit'>
+				<br data-ng-show='post.canEdit'/>
+				<input type = 'text' placeholder = '{{post.description}}' data-ng-model='post.description' data-ng-show='post.canEdit'>
+				<br data-ng-show='post.canEdit'/>
+				<select placeholder='{{post.contentType}}' data-ng-model='post.contentType' data-ng-show='post.canEdit'>
+				  <option value='plain'>Plain text</option>
+				  <option value='x-markdown'>Markdown</option>
+				  <option value='html'>HTML</option>
+				</select>																>
+				<br data-ng-show='post.canEdit'/>
+				<input type = 'text' placeholder='{{post.categories}}' data-ng-model='post.categories' data-ng-show='post.canEdit'/>
+				<br data-ng-show='post.canEdit'/>
+				<select placeholder='{{post.visibility}}' data-ng-model='post.visibility' data-ng-show='post.canEdit'>
+				  <option value="PUBLIC">Everyone</option>
+				  <option value="FOAF">Friends of Friends</option>
+				  <option value="FRIENDS">Friends</option>
+				  <option value="PRIVATE">Only Me</option>
+				  <option value="SERVERONLY">Server Users</option>
+				  
+				</select>																
 																
 																
                                 
