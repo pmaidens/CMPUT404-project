@@ -46,7 +46,8 @@
                         <span>
 
                                 <h3><span class="mega-octicon octicon-book"></span> {{post.title}}</h3>
-                                <button data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
+                               
+			        <button data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
 				<button data-ng-click="canEditPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">Edit Post</button>
 
 				<input type = "text" placeholder = '{{post.title}}' data-ng-model='post.title' data-ng-show='post.canEdit'>
