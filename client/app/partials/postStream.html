@@ -12,7 +12,7 @@
 
     <div class="panel-body">
     <div class="list-group">
-        <div ng-repeat="post in allPost | orderBy:'createdate':true" class="list-group-item custom-list-group-item">
+        <div ng-repeat="post in allPost | orderBy:'createdate':true" class="list-group-item ">
             <div ng-if="post.html_url" class="row">
 
                 <div class="col-md-8">
@@ -109,6 +109,7 @@
                         </span>
                               
                 </div>     
+                
             </div>
 
         </div>
