@@ -20,12 +20,18 @@ angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandl
 
         var url = urlHandler.serviceURL() + "rest-auth/login/";
         return $http.post(url,{"username":username, "password":password}).then(function(result){
-            console.log(result.data.key);
-
-            this.loginWatchers.forEach(function(f){
-
-                f(true);
-            });
+            // console.log(result.data.key);
+            $http.get(urlHandler.serviceURL()+"api/author/").then(function (result) {
+                result.data.some(function (author) {
+                    if(author.displayname === username) {
+                        this.user = author;
+                        this.loginWatchers.forEach(function(f){
+                            f(true);
+                        });
+                        return true;
+                    }
+                }.bind(this));
+            }.bind(this));
 
             $httpProvider.defaults.headers.common.Authorization = "Token " + result.data.key;
 
