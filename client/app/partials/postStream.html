@@ -47,12 +47,14 @@
 
                                 <h3><span class="mega-octicon octicon-book"></span> {{post.title}}</h3>
                                 <button data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
-								<!--data-ng-click should probably be a function that shows a little form filled out with old post info for the user to update.
-								When the user is done editing their post then we should call editPost(post)-->
-								<button data-ng-click="editPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">
+				<!--data-ng-click should probably be a function that shows a little form filled out with old post info for the user to update.
+				When the user is done editing their post then we should call editPost(post)-->
+				<button data-ng-click="editPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">
                                 Edit Post</button>
                                 <button data-ng-click="viewComments(post)">View Comments</button>
-                                <h4>{{post.author.displayName}}</h4>
+                                <input type='text'>
+				<input type='text'>
+				<h4>{{post.author.displayName}}</h4>
                                 <h3>{{post.description}}</h3>
                                 <h6>Published: {{post.published}}</h6>
                                 <div btf-markdown="post.content"></div>
