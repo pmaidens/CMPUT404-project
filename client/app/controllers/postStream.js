@@ -83,7 +83,7 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
     };
 
     $scope.submitPost = function (post) {
-        // postHandler.submit(post);
+        postHandler.updatePost(post);
         post.editMode = false;
     };
 

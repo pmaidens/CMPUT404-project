@@ -31,6 +31,10 @@ angular.module("myApp.services.postHandler", ["ngRoute", "myApp.services.urlHand
         return $http.post(urlHandler.serviceURL() + "api/posts/"+post.post+"/comments/", post);
     };
 
+    this.updatePost = function (post) {
+        return $http.put(urlHandler.serviceURL() + "api/posts/"+post.id, post);
+    };
+
     var STUBgetPosts = {
         "query": "posts",
         "count": 105,
