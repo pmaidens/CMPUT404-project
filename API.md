@@ -140,3 +140,23 @@
           query - the current query
           authors - the list of friends the current author has
           friends - boolean specifying if the author is a friend or not
+
+    Endpoint: /rest-auth/login/
+    Available Methods: POST
+    This endpoint is to login and authenticate with the server.
+    The endpoint will return an authentication token after successful login.
+    You will not be able to login if your account has not been approved by an admin.
+
+    POST Request object properties:
+          username - the username of the user
+          password - the password of the user
+
+    Endpoint: /rest-auth/registration/
+    Available Methods: POST
+    This endpoint is to register a user. After user creation the admin will have to approve the account before you can access the site.
+
+    POST Request object properties:
+          username - (Required) the username of the user
+          email - the email of the user
+          password1 - (Required) the password of the user
+          password2 - (Required) the password again to verify
