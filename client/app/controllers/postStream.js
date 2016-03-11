@@ -54,18 +54,19 @@ angular.module("myApp.postStream", ["ngRoute", "myApp.services.postHandler"])
         $http.get("https://api.github.com/users/"+$scope.git_username)
             .success(function(gitdata) {
                 $scope.gitUserData = gitdata;
-                loadRepos();
+                loadEvents();
             });
     };
     // Http call for github repos (not too sure what Abram means by "activity")
     // ** May need to make additional calls
 
-    var loadRepos = function () {
-        $http.get($scope.gitUserData.repos_url)
-            .success(function(repo_data){
-                $scope.repoData = repo_data;
-
-                $scope.allPost = $scope.posts.concat($scope.repoData);
+    var loadEvents = function () {
+        $http.get("https://api.github.com/users/"+$scope.git_username+"/events")
+            .success(function(event_data){
+                $scope.eventData = event_data;
+             
+                $scope.allPost = $scope.posts.concat($scope.eventData);
+                //console.log($scope.allPost);
             });
     };
 

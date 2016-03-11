@@ -19,33 +19,85 @@
                 </div>
     <div class="panel-body">
     <div class="list-group">
-        <div ng-repeat="post in allPost | orderBy:'createdate':true" class="list-group-item ">
-            <div ng-if="post.html_url" class="row">
+        <div ng-repeat="post in allPost | orderBy: ['createdate','published'] " class="list-group-item ">
+            <div  ng-if="post.type" class="row">
 
-                <div class="col-md-8">
-                    <h4>
-                        <small><i>Github Stream</i></small>
-                        <br>
-                        <small>
-                            <span ng-if="post.fork" class="octicon octicon-repo-forked"></span>
-                            <span ng-if="!post.fork" class="octicon octicon-repo"></span>
+                <div  class="col-md-8">
+                   
+                        <small ng-if="post.type == 'PushEvent'">
+                            <i>Github Stream</i>
+                            <br><br>
+                            <span class="mega-octicon octicon-git-commit"></span>
+                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
+                                <a href="{{post.actor.url}}">{{post.actor.login}}</a>
+                                pushed to {{post.payload.ref}} at <span class="octicon octicon-repo"></span>
+                                <a href="{{post.repo.url}}">{{post.repo.name}}</a>
+                                <br><br>
+                                
+                                <div ng-repeat="commits in post.payload.commits">
+                                    commit message:
+                                 <a href="{{commits.url}}">{{commits.message}}</a>
+                                </div>
                         </small>
-                        <a href="{{repo.html_url}}" target="_blank" >
-                            {{post.name}}
-                        </a>
-                        <small>{{post.description}}</small>
-                    </h4>
+                        
+                        <small ng-if="post.type == 'ForkEvent'">
+                            <i>Github Stream</i>
+                            <br><br>
+                            <span class="mega-octicon octicon-git-branch"></span>
+                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
+                                <a href="{{post.actor.url}}">{{post.actor.login}}</a>
+                                forked {{post.payload.ref}} at <span class="octicon octicon-repo"></span>
+                                <a href="{{post.repo.url}}">{{post.repo.name}}</a>
+                                <br><br>
+                        </small>
+
+                        <small ng-if="post.type == 'IssueCommentEvent'">
+                            <i>Github Stream</i>
+                            <br><br>
+                            <span class="mega-octicon octicon-comment-discussion"></span>
+                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
+                                <a href="{{post.actor.url}}">{{post.actor.login}}</a>
+                                commented on issue    <a href="{{post.payload.issue.html_url}}">{{post.payload.issue.title}}</b></a>
+                                <br><br>
+                                
+                        </small>
+
+
+                        <small ng-if="post.type == 'IssuesEvent'">
+                            <i>Github Stream</i>
+                            <br><br>
+                            <span class="mega-octicon octicon-issue-opened"></span>
+                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
+                                <a href="{{post.actor.url}}">{{post.actor.login}}</a>
+                                opened a issue  <a href="{{post.payload.issue.html_url}}">{{post.payload.issue.title}}</b></a>
+                                <br><br>
+                                
+                        </small>
+
+                         <small ng-if="post.type == 'CreateEvent'" >
+                            <i>Github Stream</i>
+                            <br><br>
+                            <span class="mega-octicon octicon-repo"></span>
+                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
+                                <a href="{{post.actor.url}}">{{post.actor.login}}</a>
+                                created a repo at <a href="{{post.repo.url}}">{{post.repo.name}}</b></a>
+                                <br><br>
+                            
+                                
+                        </small>
+               
+               
 
                     
                 </div>
                 <div class="col-md-4">
                     <dl class="dl-horizontal">
-                      <dt>Last Updated:</dt>
-                      <dd>{{post.updated_at | date : short : timezone}}</dd>
+                     
                       <dt>Created:</dt>
                       <dd>{{post.created_at| date : short : timezone}}</dd>
                     </dl>
                 </div>
+                   
             </div>
 
              <div ng-if="post.title" class="row">
