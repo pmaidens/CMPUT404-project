@@ -47,7 +47,11 @@
     padding-right: 100px;
 }
 
-
+.postTitle{
+  color: orange;
+  font-weight: bold;
+  text-transform: uppercase;
+}
 
 
 /* title */
