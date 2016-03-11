@@ -4,53 +4,27 @@ angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandl
 .service("authenticationHandler", function($q,$http, urlHandler) {
     this.loginWatchers = [];
     this.user = {};
+    this.token = "";
 
     this.login = function (username, password) {
-        // Make a request to see if the login credentials are valid
-        // If they are, set them as default headers
-        //  return $q(function(resolve/*, reject*/) {
-        //    setTimeout(function () {
-        // $httpProvider.defaults.headers.common.Authorization = "Basic " + result.token;
-        //         this.loginWatchers.forEach(function(f) {
-        //             f(true);
-        //         });
-        //         resolve();
-        //     }.bind(this), 1000);
-        // }.bind(this));
-
         var url = urlHandler.serviceURL() + "rest-auth/login/";
         return $http.post(url,{"username":username, "password":password}).then(function(result){
-            // console.log(result.data.key);
             this.determineUser(username).then(function () {
                 this.updateWatchers(true);
-            });
-            // $http.get(urlHandler.serviceURL()+"api/author/").then(function (result) {
-            //     result.data.some(function (author) {
-            //         if(author.displayname === username) {
-            //             this.user = author;
-            //             this.loginWatchers.forEach(function(f){
-            //                 f(true);
-            //             });
-            //             return true;
-            //         }
-            //     }.bind(this));
-            // }.bind(this));
+            }.bind(this));
+            $http.defaults.headers.common.Authorization = "Token " + result.data.key;
+            this.token = "Token " + result.data.key;
 
-            $httpProvider.defaults.headers.common.Authorization = "Token " + result.data.key;
-
-        },function(err){
-
-
+        }.bind(this),function(err){
             console.log(err);
-
         });
-
     };
 
     this.logout = function() {
         //Keep this wrapped in 'q' just to keep everything consistent.
         return $q(function(resolve/*, reject*/) {
-            $httpProvider.defaults.headers.common.Authorization = undefined;
+            $http.defaults.headers.common.Authorization = undefined;
+            this.token = "";
             this.updateWatchers(false);
             resolve();
         }.bind(this));
@@ -60,7 +34,7 @@ angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandl
         $http.post(urlHandler.serviceURL()+"rest-auth/registration", userInfo).then(function () {
             this.determineUser(userInfo.displayname).then(function () {
                 this.updateWatchers(true);
-            });
+            }.bind(this));
         }.bind(this));
     };
 

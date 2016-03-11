@@ -1,13 +1,17 @@
 "use strict";
 
-angular.module("myApp.services.authorHandler", ["myApp.services.urlHandler"])
-.service("authorHandler", function($q, $http, urlHandler) {
+angular.module("myApp.services.authorHandler", [
+    "myApp.services.urlHandler",
+    "myApp.services.authenticationHandler"
+])
+.service("authorHandler", function($q, $http, urlHandler, authenticationHandler) {
     this.getAuthor = function (authorId) {//eslint-disable-line no-unused-vars
         // return $q(function(resolve/*, reject*/) {
         //     setTimeout(function () {
         //         resolve(STUBgetAuthorId);
         //     }.bind(this), 1000);
         // }.bind(this));
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.get(urlHandler.serviceURL() + "api/author/" + authorId);
     };
 
@@ -20,6 +24,7 @@ angular.module("myApp.services.authorHandler", ["myApp.services.urlHandler"])
             bio: author.bio
         };
 
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.put(urlHandler.serviceURL() + "api/author/" + author.id, putParameters);
     };
 
