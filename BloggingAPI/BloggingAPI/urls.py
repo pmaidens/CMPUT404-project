@@ -37,8 +37,8 @@ apiRouter.register(r'posts', PostsViewSet)
 # apiRouter.register(r'author/posts', CurrentAuthorPostsViewSet)
 
 # http://service/author/{AUTHOR_ID}/posts
-# posts_router = routers.NestedSimpleRouter(apiRouter, r'author', lookup='author')
-# posts_router.register(r'posts', AuthorPostsViewSet)
+#posts_router = routers.NestedSimpleRouter(apiRouter, r'author', lookup='author')
+#posts_router.register(r'posts', AuthorPostsViewSet)
 
 # http://service/posts/{post_id}/comments
 comments_router = routers.NestedSimpleRouter(apiRouter, r'posts', lookup='posts')
@@ -48,7 +48,7 @@ comments_router.register(r'comments', PostCommentsViewSet, base_name='comments')
 #apiRouter.register(r'friends', FriendDetailViewSet,'friends')
 
 # http://service/friendrequest
-# apiRouter.register(r'friendrequest', FriendRequestViewSet)
+apiRouter.register(r'friendrequest', FriendRequestViewSet, base_name = 'friendReq')
 
 urlpatterns = [
     # Examples:
@@ -64,7 +64,7 @@ urlpatterns = [
     url(r'^api/', include(comments_router.urls)),
     url(r'^api/friends/(?P<pk>[^/.]+)/$', FriendDetailView.as_view()),
     url(r'^api/friends/$', FriendOverView.as_view()),
-   
+    url(r'^api/author/(?P<pk>[^/.]+)/posts/$', AuthorSpecificPosts.as_view()),
 ]
 
 #url(r'^test/(?P<pk>[\d]+)/$', FriendPostViewSet.as_view(), name='test-list'),

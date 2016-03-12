@@ -28,6 +28,7 @@ class ViewAuthorSerializer(serializers.ModelSerializer):
         fields = ('id', 'host', 'displayname', 'url', 'friends', 'github',
           'first_name', 'last_name', 'email', 'bio')
 
+
 # Used to serailize response for a GET to /api/friends/<auth id>
 class FriendDetailSerializer(serializers.ModelSerializer):
 
@@ -156,7 +157,7 @@ class ViewPostsSerializer(serializers.ModelSerializer):
 class UpdatePostsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('title', 'source', 'origin', 'description', 'contentType',
+        fields = ('title', 'source', 'origin', 'description', 'date_created','contentType',
               'content', 'author', 'categories', 'visibility')
 
 
@@ -178,3 +179,28 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('author', 'comment', 'post')
+
+class FriendReqSerializer(serializers.ModelSerializer):
+    class Meta:
+        Model =  Author
+        fields = ('pendingFriends')
+
+class AuthorPostSerializer(serializers.ModelSerializer):
+    count = serializers.SerializerMethodField()
+    comments = PostCommentSerializer(many=True, read_only=True)
+    #For GET request show the author object
+    #author = PostAuthorSerializer(read_only=True)
+    published = serializers.DateTimeField(source='date_created')
+
+    class Meta:
+        model = Post
+        fields = ('title', 'source', 'origin', 'description', 'contentType',
+          'content', 'categories', 'count', 'comments', 'published',
+          'id', 'visibility')
+
+
+    def get_count(self, obj):
+        if obj.comments == None:
+            return 0
+        return obj.comments.count()
+

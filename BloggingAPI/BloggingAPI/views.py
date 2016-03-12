@@ -243,6 +243,7 @@ class FriendOverView(APIView):
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # view for /api/friends/<author-id>
 class FriendDetailView(APIView):
     """
@@ -289,8 +290,51 @@ class FriendDetailView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-#
-# class FriendRequestViewSet(viewsets.ModelViewSet):
-#
-#     queryset = Post.objects.all()
-#     serializer_class = PostsSerializer
+
+class FriendRequestViewSet(viewsets.ModelViewSet):
+
+    queryset = Author.objects.all()
+    Model = Author
+    serializer_class = FriendReqSerializer
+
+    def create(self,request):
+        author = request.data.get('author')
+        friend = request.data.get('friend')
+
+        url = str(friend.get('url'))
+        author_id = url.split('/')[-1]
+
+        friendObj = Friend.objects.get_or_create(id = friend.get('id'),
+                                         author_id = author_id,
+                                         display_name = friend.get('displayName'),
+                                         url = url)
+
+        
+                                         
+        authObj = Author.objects.get(id = author.get('id'))
+        authoObj.pendingFriends.add(friendObj)
+        # {
+	# "query":"friendrequest",
+	# "author": {
+	#     # UUID
+	# 	"id":"de305d54-75b4-431b-adb2-eb6b9e546013",
+	# 	"host":"http://127.0.0.1:5454/",
+	# 	"displayName":"Greg Johnson"
+	# },
+	# "friend": {
+	#     # UUID
+	# 	"id":"de305d54-75b4-431b-adb2-eb6b9e637281",
+	# 	"host":"http://127.0.0.1:5454/",
+	# 	"displayName":"Lara Croft",
+	# 	"url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e"
+	# }
+
+# /service/author/author-id/posts
+class AuthorSpecificPosts(APIView):
+    
+    def get(self,request,pk,format=None):
+        #author = Author.objects.get(id=pk)
+        queryset = Post.objects.filter(author = pk)
+        serializer = AuthorPostSerializer(queryset,many=True)
+        return Response(serializer.data)
+        

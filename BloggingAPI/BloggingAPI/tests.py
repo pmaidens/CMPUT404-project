@@ -178,3 +178,31 @@ class apiTests(TestCase):
         self.assertEqual(Friend.objects.count(),2) # no new friends
         self.assertEqual(len(friendsCalculated),1)
         self.assertEqual(friendsCalculated[0],str(self.testFriend.id))
+
+        data = {"query":"friendrequest",
+                "author": {"id":str(self.author.id),
+                           "host":self.author.host,
+                           "displayName":"tim",
+                           },
+                "friend": {
+                    "id":str(self.friend2.id),
+                    "host":self.friend2.host,
+                    "displayName":self.friend2.display_name,
+                    "url":self.friend2.url
+                    }
+                }
+
+        Url='http://127.0.0.1:8000/api/friendrequest/'
+        postResponse = self.client.post(Url,data,format='json')
+        self.assertEqual(postResponse.status_code, status.HTTP_200_OK)
+
+	# 	"host":"http://127.0.0.1:5454/",
+	# 	"displayName":"Greg Johnson"
+	# },
+	# "friend": {
+	#     # UUID
+	# 	"id":"de305d54-75b4-431b-adb2-eb6b9e637281",
+	# 	"host":"http://127.0.0.1:5454/",
+	# 	"displayName":"Lara Croft",
+	# 	"url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e"
+	# }

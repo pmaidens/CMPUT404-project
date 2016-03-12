@@ -22,6 +22,7 @@ class Author(models.Model):
     host = models.CharField(max_length=2000)
     url = models.CharField(max_length=2000)
     friends = models.ManyToManyField('Friend', blank=True)
+    pendingFriends = models.ManyToManyField('Friend',related_name='friendReq', blank=True)
     github = models.CharField(max_length=2000, default=None, blank=True, null=True)
     bio = models.TextField(default=None, blank=True, null=True)
 
