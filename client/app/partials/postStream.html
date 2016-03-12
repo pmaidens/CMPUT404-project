@@ -20,7 +20,7 @@
                 </div>
     <div class="panel-body">
     <div class="list-group">
-        <div ng-repeat="post in allPost | orderBy: ['createdate','published'] " class="list-group-item ">
+        <div ng-repeat="post in allPost | orderBy: ['createdate' ,'published']" class="list-group-item ">
             <div  ng-if="post.type" class="row">
 
                 <div  class="col-md-8">
@@ -29,7 +29,6 @@
                             <i>Github Stream</i>
                             <br><br>
                             <span class="mega-octicon octicon-git-commit"></span>
-                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
                                 pushed to {{post.payload.ref}} at <span class="octicon octicon-repo"></span>
                                 <a href="{{post.repo.url}}">{{post.repo.name}}</a>
@@ -45,7 +44,6 @@
                             <i>Github Stream</i>
                             <br><br>
                             <span class="mega-octicon octicon-git-branch"></span>
-                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
                                 forked {{post.payload.ref}} at <span class="octicon octicon-repo"></span>
                                 <a href="{{post.repo.url}}">{{post.repo.name}}</a>
@@ -56,7 +54,6 @@
                             <i>Github Stream</i>
                             <br><br>
                             <span class="mega-octicon octicon-comment-discussion"></span>
-                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
                                 commented on issue    <a href="{{post.payload.issue.html_url}}">{{post.payload.issue.title}}</b></a>
                                 <br><br>
@@ -68,7 +65,6 @@
                             <i>Github Stream</i>
                             <br><br>
                             <span class="mega-octicon octicon-issue-opened"></span>
-                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
                                 opened a issue  <a href="{{post.payload.issue.html_url}}">{{post.payload.issue.title}}</b></a>
                                 <br><br>
@@ -79,7 +75,6 @@
                             <i>Github Stream</i>
                             <br><br>
                             <span class="mega-octicon octicon-repo"></span>
-                                <img src="{{post.actor.avatar_url}}" style="width: 5%; height: 5%"/></span>  
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
                                 created a repo at <a href="{{post.repo.url}}">{{post.repo.name}}</b></a>
                                 <br><br>
@@ -101,15 +96,12 @@
                    
             </div>
 
-             <div ng-if="post.title" class="row">
+             <div ng-if="post.author" class="row">
 
                 <div class="col-md-8">
                         <small><i>Post Stream</i></small>
                         <span>
-                                <h3><span class="mega-octicon octicon-book"></span> {{post.title}}</h3>
-                               
-			        <button data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
-				<button data-ng-click="canEditPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id ===user.id">Edit Post</button>
+                        
 
                                 <h3><span class="mega-octicon octicon-book"></span><span class="postTitle"> {{post.title}}</span></h3>
                                 <button class="btn btn-danger" data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
@@ -168,9 +160,9 @@
                                 <form>
                                     Post A Comment
                                     <br/>
-                                    <textarea data-ng-model="comments" placeholder="Your Comment" style='width:300px'></textarea>
+                                    <textarea data-ng-model="comments" placeholder="Your Comment" style='width:100%'></textarea>
                                     <br/>
-                                    <button class="btn btn-success" data-ng-click="AddComment(post, comments)">Post Comment</button>
+                                    <button class="btn btn-success" data-ng-click="AddComment(post, comments); comments='';">Post Comment</button>
                                     <button class="btn btn-warning" ng-show="showComments" ng-click="showComments=false">Hide Comments</button>
                                 </form>
                             </div>

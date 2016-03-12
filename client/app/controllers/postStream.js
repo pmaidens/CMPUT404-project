@@ -3,7 +3,8 @@
 angular.module("myApp.postStream", [
     "ngRoute",
     "myApp.services.postHandler",
-    "myApp.services.authenticationHandler"
+    "myApp.services.authenticationHandler",
+    "myApp.services.urlHandler"
 ])
 
 .config(["$routeProvider", function($routeProvider) {
@@ -13,7 +14,7 @@ angular.module("myApp.postStream", [
     });
 }])
 
-.controller("PostStreamController", function($scope, $http, postHandler, authenticationHandler) {
+.controller("PostStreamController", function($scope, $http, $location ,postHandler, authenticationHandler, urlHandler) {
     var targetAuthorId;
     $scope.user = authenticationHandler.user;
     $scope.posts = [];
@@ -27,11 +28,20 @@ angular.module("myApp.postStream", [
     if($scope.postStream && $scope.postStream.authorId) {
         targetAuthorId = {id: $scope.postStream.authorId};
     }
-    postHandler.getPosts(targetAuthorId).then(function(result) {
+    postHandler.getPosts().then(function(result) {
 
 
+	if($location.url() ==='/profile'){
+
+	    result.data.posts = result.data.posts.filter(function(post){
+
+		return post.author.id === authenticationHandler.user.id;
+
+	    });
+
+	}
         $scope.posts = result.data.posts;
-	console.log(result.data.posts);
+	
 
 	//in $scope.posts we have to add our friend's posts as well.
 	/*
@@ -69,23 +79,24 @@ angular.module("myApp.postStream", [
 
     var loadGit = function () {
 	//change $scope.git_username to the author's github user name
-	/*
-	  $http.get('http://localhost:8000/api/author'+$scope.postStream.authorId+'/').then(function(authData){
-	  var githubUserName = authData.github.split('/')[2];
-	  //i dunno if this works but i think it should
-	  $scope.git_username = githubuserName || authData.github;
-	  });
-	 */
-	//var tokenHolder = $http.
-	console.log(authenticationHandler.token);
-        $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
+	
+
+	var gitHubURL = $scope.user.github;
+	
+
+	if(gitHubURL){
+        $scope.git_username = gitHubURL.substring(gitHubURL.lastIndexOf('/')+1);
+            $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
 
 
 	        $scope.gitUserData = gitdata;
                 loadEvents();
 
 
-	});
+	    });
+	} else {
+        $scope.allPost = $scope.posts;
+    }
 
     };
     // Http call for github repos (not too sure what Abram means by "activity")
@@ -117,6 +128,7 @@ angular.module("myApp.postStream", [
     $scope.submitPost = function (post) {
         postHandler.updatePost(post);
         post.editMode = false;
+       
     };
 
 //localhost/api/posts/{postid}/comments
@@ -124,9 +136,22 @@ angular.module("myApp.postStream", [
 //POST : author id, comment, postid
     $scope.AddComment = function (post, comments) {
         postHandler.commentPost({
-            author:($scope.postStream.authorId ||"7a0465c9-b89e-4f3b-a6e7-4e35de32bd64"),
+            author: authenticationHandler.user.id,
             comment: comments,
             post: post.id
-        });
+        }).then(function(){
+	    
+	    comments = '';
+	    
+	    $http.get(urlHandler.serviceURL()+'api/posts/'+post.id+'/').then(function(postData){
+
+
+		console.log("POST STUFF BELOW");
+		console.log(postData);
+		post.comments = postData.data.comments;
+
+	    });
+
+	});
     };
 });

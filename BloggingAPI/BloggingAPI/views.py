@@ -138,17 +138,23 @@ class PostsViewSet(viewsets.ModelViewSet):
         visibility (string) - (PUBLIC, FOAF, FRIENDS, PRIVATE, SERVERONLY) the visibility level of this post
     """
     queryset = Post.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = (PostPermissions,)
     pagination_class = PostsPagination
 
     def get_queryset(self):
-        queryset = Post.objects.all()
-        visibility = self.request.query_params.get('visibility', None)
-        if visibility is not None:
-            queryset = queryset.filter(visibility=visibility)
-        else:
-            queryset = Post.objects.all().filter(visibility='PUBLIC')
-        return queryset
+        currentUser = self.request.user.username
+        #query set for public posts
+        publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
+        #query set for private posts (has to be the post owner)
+        privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+        #query set for friends
+        # friendsQuerySet = Post.objects.all().filter(visibility='FRIENDS')
+        #query set for friends of friends
+        # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+        #query set for server only
+        friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='SERVERONLY')
+
+        return publicQuerySet | privateQuerySet | friendsOfFriendsQuerySet
 
     def get_serializer_class(self):
         serializer_class = ViewPostsSerializer
@@ -222,7 +228,7 @@ class FriendOverView(APIView):
     Available Methods: GET
     This endpoint lists the friends that each author has, and is for testing
     purposes only
-    
+
     GET Response object properties:
         query - the current query
         authors - the list of friends the current author has
@@ -250,12 +256,12 @@ class FriendDetailView(APIView):
     Endpoint: /api/friends/<author-id>
     Available Methods: GET, POST
     This endpoint lists any friends that an author has.
-    
+
     GET Response object properties:
         query - the current query
         authors - the list of friends the current author has
         friends - boolean specifying if the author is a friend or not
-    
+
     POST Request object properties:
         query - the current query
         author - the id of the author in question
@@ -268,8 +274,8 @@ class FriendDetailView(APIView):
         autors - and array of Author ID's, all of which are friends with the author in
                  question, and were present on the requested list
     """
-    
-    
+
+
     def get(self,request,pk,format=None):
         queryset = Author.objects.get(id=pk)
         serializer = FriendDetailSerializer(queryset)
@@ -281,7 +287,7 @@ class FriendDetailView(APIView):
             'author': request.data['author'],
             'authors': request.data['authors'],
         }
-  
+
         queryset = Author.objects.get(id=pk)
         serializer = FriendVerifySerializer(queryset,data=request.data,partial=True,context=request.data)
 
@@ -289,6 +295,7 @@ class FriendDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+<<<<<<< HEAD
         
 
 class FriendRequestViewSet(viewsets.ModelViewSet):
@@ -338,3 +345,8 @@ class AuthorSpecificPosts(APIView):
         serializer = AuthorPostSerializer(queryset,many=True)
         return Response(serializer.data)
         
+#
+# class FriendRequestViewSet(viewsets.ModelViewSet):
+#
+#     queryset = Post.objects.all()
+#     serializer_class = PostsSerializer
