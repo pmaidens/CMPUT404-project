@@ -14,7 +14,7 @@ angular.module("myApp.postStream", [
     });
 }])
 
-.controller("PostStreamController", function($scope, $http, postHandler, authenticationHandler, urlHandler) {
+.controller("PostStreamController", function($scope, $http, $location ,postHandler, authenticationHandler, urlHandler) {
     var targetAuthorId;
     $scope.user = authenticationHandler.user;
     $scope.posts = [];
@@ -31,6 +31,15 @@ angular.module("myApp.postStream", [
     postHandler.getPosts(targetAuthorId).then(function(result) {
 
 
+	if($location.url() ==='/profile'){
+
+	    result.data.posts = result.data.posts.filter(function(post){
+
+		return post.author.id === authenticationHandler.user.id;
+
+	    });
+
+	}
         $scope.posts = result.data.posts;
 	
 
@@ -141,7 +150,5 @@ angular.module("myApp.postStream", [
 	    });
 
 	});
-	//console.log(comments);
-        comments = null;
     };
 });
