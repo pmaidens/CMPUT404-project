@@ -72,19 +72,20 @@ angular.module("myApp.postStream", [
 	
 
 	var gitHubURL = $scope.user.github;
-	console.log($scope.user);
-	$scope.git_username = gitHubURL.substring(gitHubURL.lastIndexOf('/')+1)
+	$scope.git_username = gitHubURL.substring(gitHubURL.lastIndexOf('/')+1);
 
 
 	console.log(authenticationHandler.token);
-        $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
+	if($scope.git_username){
+            $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
 
 
 	        $scope.gitUserData = gitdata;
                 loadEvents();
 
 
-	});
+	    });
+	}
 
     };
     // Http call for github repos (not too sure what Abram means by "activity")
