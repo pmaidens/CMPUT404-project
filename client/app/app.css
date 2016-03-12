@@ -73,6 +73,7 @@ textarea#styled {
   background-image: none;
     background-color: #F87531;
     color: white;
+    text-align: center
 }
 
 /* Post Stream CSS */
@@ -83,6 +84,16 @@ textarea#styled {
   font-family: Tahoma, sans-serif;
   text-align: center
 }
+
+/* Post Stream CSS */
+.panel > .profile{
+  background-image: none;
+  background-color: #f7f7f7;
+  
+  font-family: Tahoma, sans-serif;
+  text-align: center
+}
+
 
 #searchNewFeed{
     right:100px;
