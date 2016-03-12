@@ -28,18 +28,39 @@ angular.module("myApp.postStream", [
         targetAuthorId = {id: $scope.postStream.authorId};
     }
     postHandler.getPosts(targetAuthorId).then(function(result) {
-        $scope.posts = result.data;
-		//result[1] for example has these fields:
-		/*
-			(title', 'source', 'origin', 'description', 'contentType',
-              'content', 'author', 'categories', 'visibility')
-			access them like result[1].title
-		*/
-		//console.log(result.data);
+
+
+        $scope.posts = result.data.posts;
+	console.log(result.data.posts);
+
 	//in $scope.posts we have to add our friend's posts as well.
 	/*
+	var url = 'localhost:8000/api/friends/' + targetAuthorId + '/';
+	$http.get(url).then(function(friendData){
+
+	var friends = friendData.authors;
+
+	for(var i = 0 ; i< friends.length; i++){
+
+	var url2 = 'localhost:8000/api/author/' + friends[i] + '/posts/';
+	
+	$http.get(url2).then(function(postData){
+
+	$scope.posts += postData.data.posts;
+
+	
+
+	});
+	
+
+	}
+
+
+	});
+
 
 	 */
+
         loadGit();
     });
 
@@ -52,20 +73,26 @@ angular.module("myApp.postStream", [
 	  $http.get('http://localhost:8000/api/author'+$scope.postStream.authorId+'/').then(function(authData){
 	  var githubUserName = authData.github.split('/')[2];
 	  //i dunno if this works but i think it should
-	  $scope.git_username = githubuserName;
+	  $scope.git_username = githubuserName || authData.github;
 	  });
 	 */
-        $http.get("https://api.github.com/users/"+$scope.git_username)
-            .success(function(gitdata) {
-                $scope.gitUserData = gitdata;
+	//var tokenHolder = $http.
+	console.log(authenticationHandler.token);
+        $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
+
+
+	        $scope.gitUserData = gitdata;
                 loadEvents();
-            });
+
+
+	});
+
     };
     // Http call for github repos (not too sure what Abram means by "activity")
     // ** May need to make additional calls
 
     var loadEvents = function () {
-        $http.get("https://api.github.com/users/"+$scope.git_username+"/events")
+        $http({method:'GET', url: "https://api.github.com/users/"+$scope.git_username+"/events" , headers:{'Authorization':undefined}})
             .success(function(event_data){
                 $scope.eventData = event_data;
              
@@ -97,7 +124,7 @@ angular.module("myApp.postStream", [
 //POST : author id, comment, postid
     $scope.AddComment = function (post, comments) {
         postHandler.commentPost({
-            author: "7a0465c9-b89e-4f3b-a6e7-4e35de32bd64",
+            author:($scope.postStream.authorId ||"7a0465c9-b89e-4f3b-a6e7-4e35de32bd64"),
             comment: comments,
             post: post.id
         });

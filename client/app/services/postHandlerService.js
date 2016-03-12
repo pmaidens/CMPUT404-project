@@ -1,16 +1,22 @@
 "use strict";
 
-angular.module("myApp.services.postHandler", ["ngRoute", "myApp.services.urlHandler"])
-.service("postHandler", function($q,$http,$route, urlHandler) {
+angular.module("myApp.services.postHandler", [
+    "ngRoute",
+    "myApp.services.urlHandler",
+    "myApp.services.authenticationHandler"
+])
+.service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler) {
     this.posts = [];
     this.getPosts = function (authorId) {
         //TODO change the url to the proper url
-        var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "");//eslint-disable-line no-unused-vars
+        var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "") + "/";//eslint-disable-line no-unused-vars
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.get(url, {author: authorId});
     };
     this.deletePost = function(id) {
         //TODO change the url to the proper url
         //make sure you have the slash at the end
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.delete(urlHandler.serviceURL() + "api/posts/"+id+"/").then(function(){
 
             $route.reload();
@@ -23,16 +29,30 @@ angular.module("myApp.services.postHandler", ["ngRoute", "myApp.services.urlHand
     };
     this.createPost = function(post) {
         //TODO change the url to the proper url
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.post(urlHandler.serviceURL() + "api/posts/",post);
 
     };
 
     this.commentPost = function(post){
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.post(urlHandler.serviceURL() + "api/posts/"+post.post+"/comments/", post);
     };
 
     this.updatePost = function (post) {
-        return $http.put(urlHandler.serviceURL() + "api/posts/"+post.id, post);
+        var putParameters = {
+            title: post.title,
+            source: post.source,
+            origin: post.origin,
+            description: post.description,
+            contentType: post.contentType,
+            content: post.content,
+            author: post.author.id,
+            categories: post.categories,
+            visibility: post.visibility
+        }
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        return $http.put(urlHandler.serviceURL() + "api/posts/"+post.id + "/", putParameters);
     };
 
     var STUBgetPosts = {
