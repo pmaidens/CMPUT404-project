@@ -108,28 +108,28 @@ WSGI_APPLICATION = 'BloggingAPI.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-# if not LOCAL_ENV:
-# 	DATABASES = {
-#     		'default': {
-#         		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         		'NAME': 'project',
-#         		'USER': os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME'],
-#         		'PASSWORD': os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD'],
-#         		'HOST': os.environ['OPENSHIFT_POSTGRESQL_DB_HOST'],
-#         		'PORT': os.environ['OPENSHIFT_POSTGRESQL_DB_PORT'],
-#     		}
-# 	}
-# else:
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'project',
-        'USER': 'adminux1q3pu',
-        'PASSWORD': 'DZzjTF25jQMV',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+if not LOCAL_ENV:
+	DATABASES = {
+    		'default': {
+        		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        		'NAME': 'project',
+        		'USER': os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME'],
+        		'PASSWORD': os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD'],
+        		'HOST': os.environ['OPENSHIFT_POSTGRESQL_DB_HOST'],
+        		'PORT': os.environ['OPENSHIFT_POSTGRESQL_DB_PORT'],
+    		}
+	}
+else:
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+	        'NAME': 'project',
+	        'USER': 'adminux1q3pu',
+	        'PASSWORD': 'DZzjTF25jQMV',
+	        'HOST': 'localhost',
+	        'PORT': '5432',
+	    }
+	}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -152,11 +152,11 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'BloggingAPI', 'static')
 
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework.authentication.BasicAuthentication',
-# 		'rest_framework.authentication.TokenAuthentication',
-#     )
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+		'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

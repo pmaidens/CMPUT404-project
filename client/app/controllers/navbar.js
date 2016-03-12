@@ -2,8 +2,10 @@
 
 angular.module("myApp.navbar", ["myApp.services.authenticationHandler"])
 
+
 .controller("NavbarController", function($scope, $location, authenticationHandler) {
     $scope.valid = false;
+
     $scope.logout = function() {
         authenticationHandler.logout();
         $location.url("/login");
