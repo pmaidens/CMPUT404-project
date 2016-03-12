@@ -110,7 +110,9 @@
 
                                 <h3><span class="mega-octicon octicon-book"></span><span class="postTitle"> {{post.title}}</span></h3>
                                 <button class="btn btn-danger" data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
-                                <button class="btn btn-info" data-ng-click="editPost(post)" data-ng-disabled="post.disabled" data-ng-show="!post.editMode">Edit Post</button>
+                                <span data-ng-show="post.author.id === user.id">
+                                    <button class="btn btn-info" data-ng-click="editPost(post)" data-ng-disabled="post.disabled" data-ng-show="!post.editMode">Edit Post</button>
+                                </span>
                                 <button class="btn btn-success" data-ng-click="submitPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.editMode">Submit</button>
                                 <div data-ng-show="post.editMode">
                                     <input type="text" placeholder='Title' data-ng-model='post.title'></input>

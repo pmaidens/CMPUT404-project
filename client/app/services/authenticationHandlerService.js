@@ -1,10 +1,13 @@
 "use strict";
 
-angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandler"])
-.service("authenticationHandler", function($q,$http, urlHandler) {
+angular.module("myApp.services.authenticationHandler", [
+    "myApp.services.urlHandler",
+    "ngStorage"
+])
+.service("authenticationHandler", function($q, $http, $localStorage, urlHandler) {
     this.loginWatchers = [];
-    this.user = {};
-    this.token = "";
+    this.user = $localStorage.user || {};
+    this.token = $localStorage.token || "";
 
     this.login = function (username, password) {
         var url = urlHandler.serviceURL() + "rest-auth/login/";
@@ -14,6 +17,7 @@ angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandl
             }.bind(this));
             $http.defaults.headers.common.Authorization = "Token " + result.data.key;
             this.token = "Token " + result.data.key;
+            $localStorage.token = this.token;
 
         }.bind(this),function(err){
             console.log(err);
@@ -25,6 +29,8 @@ angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandl
         return $q(function(resolve/*, reject*/) {
             $http.defaults.headers.common.Authorization = undefined;
             this.token = "";
+            delete $localStorage.token;
+            this.user = {};
             this.updateWatchers(false);
             resolve();
         }.bind(this));
@@ -42,7 +48,7 @@ angular.module("myApp.services.authenticationHandler", ["myApp.services.urlHandl
         return $http.get(urlHandler.serviceURL()+"api/author/").then(function (result) {
             result.data.some(function (author) {
                 if(author.displayname === displayname) {
-                    this.user = author;
+                    this.user = $localStorage.user = author;
                     return true;
                 }
             }.bind(this));

@@ -9,7 +9,7 @@ git merge openshift/master -s recursive -X ours --no-edit
 echo 'remove index.html'
 rm index.html
 echo 'push'
-git push openshift HEAD --force
+git push openshift HEAD
 echo 'remove .git'
 rm -rf .git
 cd ..
