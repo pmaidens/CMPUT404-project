@@ -69,14 +69,13 @@ angular.module("myApp.postStream", [
 
     var loadGit = function () {
 	//change $scope.git_username to the author's github user name
-	/*
-	  $http.get('http://localhost:8000/api/author'+$scope.postStream.authorId+'/').then(function(authData){
-	  var githubUserName = authData.github.split('/')[2];
-	  //i dunno if this works but i think it should
-	  $scope.git_username = githubuserName || authData.github;
-	  });
-	 */
-	//var tokenHolder = $http.
+	
+
+	var gitHubURL = $scope.user.github;
+	console.log($scope.user);
+	$scope.git_username = gitHubURL.substring(gitHubURL.lastIndexOf('/')+1)
+
+
 	console.log(authenticationHandler.token);
         $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
 
