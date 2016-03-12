@@ -8,3 +8,12 @@ class AuthorPermissions(permissions.BasePermission):
             return True
         else:
             return request.user == obj.user or request.user.is_staff
+
+class PostPermissions(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        # Allow get requests for all but only owners to update and delete
+        if request.method == 'PUT' or request.method == 'PATCH' or request.method == 'DELETE':
+            return request.user == obj.author.user or request.user.is_staff
+        else:
+            return True

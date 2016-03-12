@@ -12,5 +12,11 @@ angular.module("myApp", [
     "myApp.login"
 ]).
 config(["$routeProvider", function($routeProvider) {
-    $routeProvider.otherwise({redirectTo: "/login"});
+    $routeProvider.otherwise({redirectTo: "/stream"});
+}]).run(["$rootScope", "$location", function($rootscope, $location) {
+	$rootscope.$on("$locationChangeStart", function(event) {
+		if(!$rootscope.loggedIn && $location.url !== "/login") {
+			$location.path("/login");
+		}
+	});
 }]);

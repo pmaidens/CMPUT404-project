@@ -4,7 +4,7 @@ angular.module("myApp.navbar", ["myApp.services.authenticationHandler"])
 
 
 .controller("NavbarController", function($scope, $location, authenticationHandler) {
-    $scope.valid = false;
+    $scope.valid = !!authenticationHandler.token;
 
     $scope.logout = function() {
         authenticationHandler.logout();
