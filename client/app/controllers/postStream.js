@@ -3,7 +3,8 @@
 angular.module("myApp.postStream", [
     "ngRoute",
     "myApp.services.postHandler",
-    "myApp.services.authenticationHandler"
+    "myApp.services.authenticationHandler",
+    "myApp.services.urlHandler"
 ])
 
 .config(["$routeProvider", function($routeProvider) {
@@ -13,7 +14,7 @@ angular.module("myApp.postStream", [
     });
 }])
 
-.controller("PostStreamController", function($scope, $http, postHandler, authenticationHandler) {
+.controller("PostStreamController", function($scope, $http, postHandler, authenticationHandler, urlHandler) {
     var targetAuthorId;
     $scope.user = authenticationHandler.user;
     $scope.posts = [];
@@ -69,23 +70,23 @@ angular.module("myApp.postStream", [
 
     var loadGit = function () {
 	//change $scope.git_username to the author's github user name
-	/*
-	  $http.get('http://localhost:8000/api/author'+$scope.postStream.authorId+'/').then(function(authData){
-	  var githubUserName = authData.github.split('/')[2];
-	  //i dunno if this works but i think it should
-	  $scope.git_username = githubuserName || authData.github;
-	  });
-	 */
-	//var tokenHolder = $http.
+	
+
+	var gitHubURL = $scope.user.github;
+	$scope.git_username = gitHubURL.substring(gitHubURL.lastIndexOf('/')+1);
+
+
 	console.log(authenticationHandler.token);
-        $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
+	if($scope.git_username){
+            $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
 
 
 	        $scope.gitUserData = gitdata;
                 loadEvents();
 
 
-	});
+	    });
+	}
 
     };
     // Http call for github repos (not too sure what Abram means by "activity")
@@ -128,7 +129,21 @@ angular.module("myApp.postStream", [
             author: authenticationHandler.user.id,
             comment: comments,
             post: post.id
-        });
+        }).then(function(){
+	    
+	    comments = '';
+	    
+	    $http.get(urlHandler.serviceURL()+'api/posts/'+post.id+'/').then(function(postData){
+
+
+		console.log("POST STUFF BELOW");
+		console.log(postData);
+		post.comments = postData.data.comments;
+
+	    });
+
+	});
+	console.log(comments);
         comments = null;
     };
 });
