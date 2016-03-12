@@ -147,8 +147,14 @@ class PostsViewSet(viewsets.ModelViewSet):
         publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
         #query set for private posts (has to be the post owner)
         privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+        #query set for friends
+        # friendsQuerySet = Post.objects.all().filter(visibility='FRIENDS')
+        #query set for friends of friends
+        # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+        #query set for server only
+        friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='SERVERONLY')
 
-        return publicQuerySet | privateQuerySet
+        return publicQuerySet | privateQuerySet | friendsOfFriendsQuerySet
 
     def get_serializer_class(self):
         serializer_class = ViewPostsSerializer
