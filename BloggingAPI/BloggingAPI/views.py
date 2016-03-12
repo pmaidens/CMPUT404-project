@@ -10,7 +10,7 @@ from rest_framework.decorators import detail_route
 from .permissions import *
 from .pagination import *
 
-class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
     """
     Endpoint: /api/author/
     Available Methods: GET

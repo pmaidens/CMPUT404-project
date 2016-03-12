@@ -33,16 +33,11 @@ class ViewAuthorSerializer(serializers.ModelSerializer):
 class FriendDetailSerializer(serializers.ModelSerializer):
 
     query = serializers.SerializerMethodField('getQuery')
-    friends = serializers.SerializerMethodField('getFriendship')
     authors = serializers.SerializerMethodField('getFriends')
 
     class Meta:
         model = Author
-        fields = ('query','authors','friends')
-
-    def getFriendship(self, obj):
-        #obj.Author.User
-        return "true".format(bool)
+        fields = ('query','authors')
 
     def getFriends(self,obj):
         query = obj.friends.all().values('author_id')
@@ -180,10 +175,12 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('author', 'comment', 'post')
 
+
 class FriendReqSerializer(serializers.ModelSerializer):
     class Meta:
         Model =  Author
         fields = ('pendingFriends')
+
 
 class AuthorPostSerializer(serializers.ModelSerializer):
     count = serializers.SerializerMethodField()
