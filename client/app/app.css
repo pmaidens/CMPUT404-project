@@ -65,6 +65,9 @@ textarea#styled {
     display: block;
 }
 
+#login-form{
+  background-color: #f7f7f7;
+}
 /* Post Stream CSS */
 .panel > .panel-heading{
   background-image: none;
