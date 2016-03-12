@@ -12,5 +12,5 @@ angular.module("myApp", [
     "myApp.login"
 ]).
 config(["$routeProvider", function($routeProvider) {
-    $routeProvider.otherwise({redirectTo: "/stream"});
+    $routeProvider.otherwise({redirectTo: "/login"});
 }]);

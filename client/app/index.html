@@ -56,7 +56,32 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#/profile">My Profile</a></li>
-                    <li data-ng-show="!valid"><a href="#/login">Login</a></li>
+                        <li data-ng-show="!valid" class="dropdown" id="menuLogin">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown" id="navLogin">Login</a>
+            <div class="dropdown-menu" style="padding:17px;">
+              <form id="login-form" style="display: block;">
+                                <div class="form-group">
+                                    <input type="text" data-ng-model="username" id="username" tabindex="1" class="form-control" placeholder="Username">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" data-ng-model="password" id="password" tabindex="2" class="form-control" placeholder="Password">
+                                </div>
+                                <div class="form-group text-center">
+                                    <input type="checkbox" tabindex="3" class="" name="remember" id="remember">
+                                    <label for="remember">Remember Me</label>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-sm-offset-3">
+                                            <input type="submit" name="login-submit" data-ng-click="login()" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+            </div>
+          </li>
+
+                    </li>
                     <li data-ng-show="valid" data-ng-click="logout()"><a href="">Logout</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->

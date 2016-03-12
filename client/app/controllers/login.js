@@ -10,14 +10,7 @@ angular.module("myApp.login", ["ngRoute", "myApp.services.authenticationHandler"
 }])
 
 .controller("LoginController", function($scope, $location, authenticationHandler) {
-    $scope.login = function() {
-        authenticationHandler.login($scope.username, $scope.password).then(function() {
-            console.log("sup?");
-            $location.url("/");
-        },function(err){
-            console.log(err);
-        });
-    };
+ 
     $scope.register = function () {
         authenticationHandler.register({
             username: $scope.username,

@@ -72,6 +72,15 @@ textarea#styled {
     color: white;
 }
 
+/* Post Stream CSS */
+.panel > .login{
+  background-image: none;
+  background-color: #3b5998;
+  color: white;
+  font-family: Tahoma, sans-serif;
+  text-align: center
+}
+
 #searchNewFeed{
     right:100px;
     padding-left: 150px;
