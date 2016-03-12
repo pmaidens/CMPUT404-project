@@ -32,7 +32,7 @@ angular.module("myApp.postStream", [
 
 
         $scope.posts = result.data.posts;
-	console.log(result.data.posts);
+	
 
 	//in $scope.posts we have to add our friend's posts as well.
 	/*
@@ -75,8 +75,6 @@ angular.module("myApp.postStream", [
 	var gitHubURL = $scope.user.github;
 	$scope.git_username = gitHubURL.substring(gitHubURL.lastIndexOf('/')+1);
 
-
-	console.log(authenticationHandler.token);
 	if($scope.git_username){
             $http({method: 'GET', url:"https://api.github.com/users/"+$scope.git_username , headers:{'Authorization':undefined}}).success(function(gitdata){
 
@@ -143,7 +141,7 @@ angular.module("myApp.postStream", [
 	    });
 
 	});
-	console.log(comments);
+	//console.log(comments);
         comments = null;
     };
 });
