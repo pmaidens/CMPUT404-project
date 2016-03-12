@@ -162,7 +162,7 @@
                                     <br/>
                                     <textarea data-ng-model="comments" placeholder="Your Comment" style='width:300px'></textarea>
                                     <br/>
-                                    <button class="btn btn-success" data-ng-click="AddComment(post, comments)">Post Comment</button>
+                                    <button class="btn btn-success" data-ng-click="AddComment(post, comments); comments='';">Post Comment</button>
                                     <button class="btn btn-warning" ng-show="showComments" ng-click="showComments=false">Hide Comments</button>
                                 </form>
                             </div>

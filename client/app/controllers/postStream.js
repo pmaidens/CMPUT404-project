@@ -3,7 +3,8 @@
 angular.module("myApp.postStream", [
     "ngRoute",
     "myApp.services.postHandler",
-    "myApp.services.authenticationHandler"
+    "myApp.services.authenticationHandler",
+    "myApp.services.urlHandler"
 ])
 
 .config(["$routeProvider", function($routeProvider) {
@@ -13,7 +14,7 @@ angular.module("myApp.postStream", [
     });
 }])
 
-.controller("PostStreamController", function($scope, $http, postHandler, authenticationHandler) {
+.controller("PostStreamController", function($scope, $http, postHandler, authenticationHandler, urlHandler) {
     var targetAuthorId;
     $scope.user = authenticationHandler.user;
     $scope.posts = [];
@@ -128,7 +129,21 @@ angular.module("myApp.postStream", [
             author: authenticationHandler.user.id,
             comment: comments,
             post: post.id
-        });
+        }).then(function(){
+	    
+	    comments = '';
+	    
+	    $http.get(urlHandler.serviceURL()+'api/posts/'+post.id+'/').then(function(postData){
+
+
+		console.log("POST STUFF BELOW");
+		console.log(postData);
+		post.comments = postData.data.comments;
+
+	    });
+
+	});
+	console.log(comments);
         comments = null;
     };
 });
