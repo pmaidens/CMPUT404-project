@@ -20,7 +20,9 @@ angular.module("myApp.services.authorHandler", [
         };
 
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.put(urlHandler.serviceURL() + "api/author/" + author.id + "/", putParameters);
+        return $http.put(urlHandler.serviceURL() + "api/author/" + author.id + "/", putParameters).then(function() {
+            authenticationHandler.updateUser(author);
+        });
     };
 
     var STUBgetAuthorId = {

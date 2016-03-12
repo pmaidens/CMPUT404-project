@@ -83,4 +83,8 @@ angular.module("myApp.services.authenticationHandler", [
     this.watchLogin = function(callback) {
         this.loginWatchers.push(callback);
     };
+
+    this.updateUser = function(user) {
+        this.user = $localStorage.user = user;
+    };
 });
