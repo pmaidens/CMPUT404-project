@@ -13,7 +13,7 @@ angular.module("myApp.postWriter", [
     });
 }])
 
-.controller("PostWriterController", function($scope, $http, postHandler, authenticationHandler) {
+.controller("PostWriterController", function($scope, $location, $http, postHandler, authenticationHandler) {
 
     function separateCategories(inputValue) {
         return inputValue.split(",").map(function (category) {
@@ -36,6 +36,8 @@ angular.module("myApp.postWriter", [
             visibility: $scope.visibility,
             content: $scope.content || ""
         });
+        
+         $location.url("/#/stream");
         // $http({
         //     method: "POST",
         //     url: "base/server/url/authors/123/posts",

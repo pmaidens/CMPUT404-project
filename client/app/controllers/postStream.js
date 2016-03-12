@@ -117,6 +117,7 @@ angular.module("myApp.postStream", [
     $scope.submitPost = function (post) {
         postHandler.updatePost(post);
         post.editMode = false;
+       
     };
 
 //localhost/api/posts/{postid}/comments
@@ -124,9 +125,10 @@ angular.module("myApp.postStream", [
 //POST : author id, comment, postid
     $scope.AddComment = function (post, comments) {
         postHandler.commentPost({
-            author:($scope.postStream.authorId ||"7a0465c9-b89e-4f3b-a6e7-4e35de32bd64"),
+            author: authenticationHandler.user.id,
             comment: comments,
             post: post.id
         });
+        comments = null;
     };
 });

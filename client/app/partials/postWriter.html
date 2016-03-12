@@ -1,31 +1,73 @@
-<div class="container">
-    <p>
-        Write something earthshattering!
-    </p>
-    <input type="text" data-ng-model="title" data-ng-trim="true" placeholder="Title"></input>
-    <br/>
-    <input type="text" data-ng-model="description" data-ng-trim="true" placeholder="Description"></input>
-    <br/>
-    <select data-ng-model="contentType">
-        <option value="plain">Plain Text</option>
-        <option value="x-markdown">Markdown</option>
-        <option value="html">HTML</option>
-    </select>
-    <br/>
-    <input type="text" data-ng-model="categories" data-ng-trim="true" placeholder="Categories"></input>
-    <br/>
-    Add Images<input type="file" multiple>
-    <textarea data-ng-model="content" data-ng-maxlength="9000" placeholder="Post Content"></textarea>
-    <br/>
-    Who can see your post?
-    <select data-ng-model="visibility">
-        <option value="PUBLIC">Everyone</option>
-        <option value="FOAF">Friends of Friends</option>
-        <option value="FRIENDS">Friends</option>
-        <option value="PRIVATE">Only Me</option>
-        <option value="SERVERONLY">Server Users</option>
-    </select>
-    <br/>
-    <button data-ng-click="SubmitPost()">Submit</button>
+<div class=" container">
 
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1>Write Something EarthShattering!</h1>
+        </div>
+    <div class="panel-body">
+        <form class="form-horizontal" role="form">
+            <fieldset class="form-group">
+                <div class = "col-md-8">
+                        <input class="form-control"  data-ng-model="title" data-ng-trim="true" placeholder="Title"></input>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+                <div class = "col-md-8">
+                    <input class="form-control" type="text" data-ng-model="description" data-ng-trim="true" placeholder="Description"></input>
+                </div>
+            </fieldset>
+           
+         <div class="form-group">
+            <label class="col-md-12" for="Content Type">Content Type:</label>
+                <div class="col-md-6">
+                    <select class="form-control" data-ng-model="contentType">
+                    <option value="plain">Plain Text</option>
+                    <option value="x-markdown">Markdown</option>
+                    <option value="html">HTML</option>
+                </select>
+                </div>
+        </div>
+
+        <fieldset class="form-group">
+            <div class = "col-md-8">
+                <input class="form-control" type="text" data-ng-model="categories" data-ng-trim="true" placeholder="Categories"></input>
+            </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+            <div class = "col-md-8">
+                <span class="btn btn-primary btn-file">
+                            Add Images<input type="file" multiple>
+                </span>
+            </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+                <div class = "col-md-12">
+                    <textarea data-ng-model="content" data-ng-maxlength="9000" id="styled" placeholder="Post Content"></textarea>
+                </div>
+        </fieldset>
+      
+        <fieldset class="form-group">
+                    
+                <label class="col-md-12" for="visibility">Who Can See Your Post?</label>
+                <div class="col-md-4">
+                    <select class="form-control" data-ng-model="visibility">
+                        <option value="PUBLIC">Everyone</option>
+                        <option value="FOAF">Friends of Friends</option>
+                        <option value="FRIENDS">Friends</option>
+                        <option value="PRIVATE">Only Me</option>
+                        <option value="SERVERONLY">Server Users</option>
+                    </select>
+                </div>
+       
+        </fieldset>
+
+        <button class="btn btn-success" data-ng-click="SubmitPost()">Submit</button>
+        
+
+    </form>
+</div>
+</div>
 </div>

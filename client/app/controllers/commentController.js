@@ -24,6 +24,7 @@ angular.module("myApp.commentController", [
                     $scope.txtcomment = "";
                     }
                 }
+            $scope.txtcomment = "";
  		 });
 
  };

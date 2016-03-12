@@ -37,6 +37,7 @@ angular.module("myApp.services.postHandler", [
     this.commentPost = function(post){
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.post(urlHandler.serviceURL() + "api/posts/"+post.post+"/comments/", post);
+
     };
 
     this.updatePost = function (post) {
