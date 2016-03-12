@@ -14,7 +14,8 @@ angular.module("myApp.login", ["ngRoute", "myApp.services.authenticationHandler"
     $scope.register = function () {
         authenticationHandler.register({
             username: $scope.username,
-            password: $scope.password,
+            password1: $scope.password1,
+            password2: $scope.password2,
             email: $scope.email
         });
     };

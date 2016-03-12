@@ -55,7 +55,7 @@ angular.module("myApp.services.authenticationHandler", [
     };
 
     this.register = function (userInfo) {
-        $http.post(urlHandler.serviceURL()+"rest-auth/registration", userInfo).then(function () {
+        $http.post(urlHandler.serviceURL()+"rest-auth/registration/", userInfo).then(function () {
             this.determineUser(userInfo.displayname).then(function () {
                 this.updateWatchers(true);
             }.bind(this));
