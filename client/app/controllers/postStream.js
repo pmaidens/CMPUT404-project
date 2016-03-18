@@ -15,7 +15,7 @@ angular.module("myApp.postStream", [
 }])
 
 .controller("PostStreamController", function($scope, $http, $location ,postHandler, authenticationHandler, urlHandler) {
-    var targetAuthorId;
+    var targetAuthor, targetAuthorId;
     $scope.user = authenticationHandler.user;
     $scope.posts = [];
     //TODO change to author.github
@@ -26,51 +26,18 @@ angular.module("myApp.postStream", [
     // Otherwise, we should just load all the posts the current
     // signed in user can see.
     if($scope.postStream && $scope.postStream.authorId) {
-        targetAuthorId = {id: $scope.postStream.authorId};
+        targetAuthor = {id: $scope.postStream.authorId};
+        targetAuthorId = targetAuthor.id;
     }
-    postHandler.getPosts().then(function(result) {
+    postHandler.getPosts(targetAuthorId).then(function(result) {
 
 
-	if($location.url() ==='/profile'){
-
-	    result.data.posts = result.data.posts.filter(function(post){
-
-		return post.author.id === authenticationHandler.user.id;
-
-	    });
-
-	}
-        $scope.posts = result.data.posts;
-	
-
-	//in $scope.posts we have to add our friend's posts as well.
-	/*
-	var url = 'localhost:8000/api/friends/' + targetAuthorId + '/';
-	$http.get(url).then(function(friendData){
-
-	var friends = friendData.authors;
-
-	for(var i = 0 ; i< friends.length; i++){
-
-	var url2 = 'localhost:8000/api/author/' + friends[i] + '/posts/';
-	
-	$http.get(url2).then(function(postData){
-
-	$scope.posts += postData.data.posts;
-
-	
-
-	});
-	
-
-	}
-
-
-	});
-
-
-	 */
-
+    	if($location.url() ==='/profile'){
+    	    result.data.posts = result.data.posts.filter(function(post){
+        		return post.author.id === authenticationHandler.user.id;
+    	    });
+    	}
+        $scope.posts = result.data.posts || result.data;
         loadGit();
     });
 

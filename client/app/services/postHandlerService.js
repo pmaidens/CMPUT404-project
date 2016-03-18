@@ -3,15 +3,51 @@
 angular.module("myApp.services.postHandler", [
     "ngRoute",
     "myApp.services.urlHandler",
-    "myApp.services.authenticationHandler"
+    "myApp.services.authenticationHandler",
+    "myApp.services.authorHandler"
 ])
-.service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler) {
+.service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler, authorHandler) {
     this.posts = [];
     this.getPosts = function (authorId) {
         //TODO change the url to the proper url
-        var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "") + "/";//eslint-disable-line no-unused-vars
+        /*if(authorId) {
+            var url = urlHandler.serviceURL() + "api/author/" + (authorId || "") + "/posts/";
+        } else {
+            var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "") + "/";//eslint-disable-line no-unused-vars
+        }
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.get(url, {author: authorId});
+        return $http.get(url, {author: authorId});*/
+
+        return $q(function(resolve, reject) {
+            if(authorId) {
+                var url = urlHandler.serviceURL() + "api/author/" + (authorId || "") + "/posts/";
+            } else {
+                var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "") + "/";//eslint-disable-line no-unused-vars
+            }
+            $http.defaults.headers.common.Authorization = authenticationHandler.token;
+            $http.get(url, {author: authorId}).then(function(result) {
+                if(result.data instanceof Array) {
+                    authorHandler.getAuthor(authorId).then(function(authorResult) {
+                        var author = authorResult.data;
+                        result.data.forEach(function(post) {
+                            post.author = {
+                                id: author.id,
+                                host: author.host,
+                                displayname: author.displayname,
+                                url: author.url,
+                                github: author.github
+                            };
+                        });
+                        resolve(result);
+                    });
+                } else {
+                    resolve(result);
+                }
+            }.bind(this), function(err){
+                console.log(err);
+                reject(err);
+            });
+        }.bind(this));
     };
     this.deletePost = function(id) {
         //TODO change the url to the proper url
