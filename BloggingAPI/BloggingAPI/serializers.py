@@ -176,12 +176,6 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
         fields = ('author', 'comment', 'post')
 
 
-class FriendReqSerializer(serializers.ModelSerializer):
-    class Meta:
-        Model =  Author
-        fields = ('pendingFriends')
-
-
 class AuthorPostSerializer(serializers.ModelSerializer):
     count = serializers.SerializerMethodField()
     comments = PostCommentSerializer(many=True, read_only=True)
@@ -200,4 +194,3 @@ class AuthorPostSerializer(serializers.ModelSerializer):
         if obj.comments == None:
             return 0
         return obj.comments.count()
-

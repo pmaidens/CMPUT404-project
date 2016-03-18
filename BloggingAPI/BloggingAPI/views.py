@@ -222,7 +222,7 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
 
 
 # view for /api/friends/
-class FriendOverView(APIView):
+class FriendOverviewView(APIView):
     """
     Endpoint: /api/friends/
     Available Methods: GET
@@ -282,11 +282,6 @@ class FriendDetailView(APIView):
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
-        data = {
-            'query': request.data['query'],
-            'author': request.data['author'],
-            'authors': request.data['authors'],
-        }
 
         queryset = Author.objects.get(id=pk)
         serializer = FriendVerifySerializer(queryset,data=request.data,partial=True,context=request.data)
@@ -295,46 +290,32 @@ class FriendDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-<<<<<<< HEAD
         
 
-class FriendRequestViewSet(viewsets.ModelViewSet):
+# view for /api/friendrequest/
+class FriendRequestViewSet(APIView):
 
-    queryset = Author.objects.all()
-    Model = Author
-    serializer_class = FriendReqSerializer
-
-    def create(self,request):
-        author = request.data.get('author')
-        friend = request.data.get('friend')
-
-        url = str(friend.get('url'))
-        author_id = url.split('/')[-1]
-
-        friendObj = Friend.objects.get_or_create(id = friend.get('id'),
-                                         author_id = author_id,
-                                         display_name = friend.get('displayName'),
-                                         url = url)
-
+    def get(self, request,format=None):
+        return Response('Do we want to get something here?',status = status.HTTP_200_OK)
         
-                                         
-        authObj = Author.objects.get(id = author.get('id'))
-        authoObj.pendingFriends.add(friendObj)
-        # {
-	# "query":"friendrequest",
-	# "author": {
-	#     # UUID
-	# 	"id":"de305d54-75b4-431b-adb2-eb6b9e546013",
-	# 	"host":"http://127.0.0.1:5454/",
-	# 	"displayName":"Greg Johnson"
-	# },
-	# "friend": {
-	#     # UUID
-	# 	"id":"de305d54-75b4-431b-adb2-eb6b9e637281",
-	# 	"host":"http://127.0.0.1:5454/",
-	# 	"displayName":"Lara Croft",
-	# 	"url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e"
-	# }
+
+    def post(self,request,format=None):
+
+        author = Author.objects.get(id=request.data['author']['id'])
+
+        friendObj = Friend.objects.create(id = request.data['friend']['id'],
+                                          author_id = request.data['author']['id'],
+                                          host = request.data['friend']['host'],
+                                          display_name = request.data['friend']['display_name'],
+                                          url = request.data['friend']['url'])
+        
+        try:
+            author.pendingFriends.add(friendObj)
+            return Response('OK',status = status.HTTP_200_OK)
+        except:
+            return Response('Error', status=status.HTTP_400_BAD_REQUEST)
+
+
 
 # /service/author/author-id/posts
 class AuthorSpecificPosts(APIView):
@@ -345,8 +326,3 @@ class AuthorSpecificPosts(APIView):
         serializer = AuthorPostSerializer(queryset,many=True)
         return Response(serializer.data)
         
-#
-# class FriendRequestViewSet(viewsets.ModelViewSet):
-#
-#     queryset = Post.objects.all()
-#     serializer_class = PostsSerializer

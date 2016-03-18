@@ -156,10 +156,9 @@ class apiTests(TestCase):
         url2 = "http://127.0.0.1:8000/api/authors/" + str(self.testEnemy.id) + '/'
 
         self.friend1 = Friend.objects.create(id = friendID1,author_id = self.testFriend.id,host = "localhost",display_name = "friend",url = url1)
-        self.friend2 = Friend.objects.create(id = friendID2,author_id = self.testFriend.id,host = "localhost",display_name = "enemy",url = url2)
+       # self.friend2 = Friend.objects.create(id = friendID2,author_id = self.testFriend.id,host = "localhost",display_name = "enemy",url = url2)
 
         self.author.friends.add(self.friend1)
-
         self.assertEqual(self.author.friends.count(), 1)
 
     
@@ -230,12 +229,51 @@ class apiTests(TestCase):
 
         self.assertEqual(postResponse.status_code, status.HTTP_200_OK)
         self.assertEqual(Author.objects.count(),3) # no new authors made
-        self.assertEqual(Friend.objects.count(),2) # no new friends
-        self.assertEqual(len(friendsCalculated),1)
+        self.assertEqual(Friend.objects.count(),1) # no new friends
+        self.assertEqual(len(friendsCalculated),1) # 1 author returned
         self.assertEqual(friendsCalculated[0],str(self.testFriend.id))
 
+        # Friend requests
+
+        url =  '/api/friendrequest/'
+
+        # {
+	# "query":"friendrequest",
+	# "author": {
+	#     # UUID
+	# 	"id":"de305d54-75b4-431b-adb2-eb6b9e546013",
+	# 	"host":"http://127.0.0.1:5454/",
+	# 	"displayName":"Greg Johnson"
+	# },
+	# "friend": {
+	#     # UUID
+	# 	"id":"de305d54-75b4-431b-adb2-eb6b9e637281",
+	# 	"host":"http://127.0.0.1:5454/",
+	# 	"displayName":"Lara Croft",
+	# 	"url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e"
+	# }
 
 
+        
+        data = {"query":"friends",
+                "author":{ "id": str(self.author.id),
+                           "host": str(self.author.host),
+                           "display_name": "Author"
+                           },
+                
+                "friend": { "id":str(self.testEnemy.id),
+                            "host":str(self.testEnemy.host),
+                            "display_name": "Enemy",
+                            "url":str(self.testEnemy.url),
+                            }
+                }
+
+        friendRequest = self.client.post(url,data,format='json')
+        self.assertEqual(friendRequest.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(self.author.pendingFriends.all()),1)
+        self.assertEqual(len(Friend.objects.all()),2) # friend created
+
+        
 
         # TESTS US25 As a server admin, add, modify, and remove authors
         # https://github.com/pmaidens/CMPUT404-project/issues/25
