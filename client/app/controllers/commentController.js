@@ -9,23 +9,18 @@ angular.module("myApp.commentController", [
 
 
  $scope.AddComment = function () {
- 		 postHandler.commentPost({
- 		 	author: authenticationHandler.user.id,
-			source:"someSource",
-			origin:"anOrigin",
+ 		postHandler.commentPost({
+            author: authenticationHandler.user.id,
+            source:"someSource",
+            origin:"anOrigin",
             title: $scope.title || "",
             description: $scope.description || "",
             contentType: $scope.contentType,
             categories: separateCategories($scope.categories || ""),
             visibility: $scope.visibility,
-            content: $scope.content || ""
-            if($scope.txtcomment !=''){
-                    comment: $scope.comment.push($scope.txtcomment);
-                    $scope.txtcomment = "";
-                    }
-                }
-            $scope.txtcomment = "";
- 		 });
-
- };
+            content: $scope.content || "",
+            comment: $scope.txtcomment !== "" ? $scope.comment.push($scope.txtcomment) : $scope.comment,
+ 		});
+        $scope.txtcomment = "";
+    };
 })
