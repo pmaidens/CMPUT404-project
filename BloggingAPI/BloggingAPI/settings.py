@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'BloggingAPI.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-if not LOCAL_ENV:
+if LOCAL_ENV:
 	DATABASES = {
     		'default': {
         		'ENGINE': 'django.db.backends.postgresql_psycopg2',
