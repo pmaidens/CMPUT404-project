@@ -37,4 +37,17 @@ angular.module("myApp.services.authorHandler", [
         "email": "lara@croft.com",
         "bio": "An amazing person!"
     };
+
+    this.postFriendRequest = function(friendReq){
+
+	/*
+
+	  we're going to post to our service and tell it to follow the user
+	  then our backend makes the real request to the friend we want 
+	 */
+	//return $http.post('');
+
+
+    };
+
 });

@@ -1,111 +1,85 @@
-
-    <div class="postStream container">
-
-     <div class="panel panel-default">
-                <div class="panel-heading">
-
-                    <form class="form-inline">
-                        <span>
-                            <h4>NewsFeed <span class="badge">{{allPost.length}}</span>
-                          
-                        </h4>
-                            <h4>
-                                  <a href="{{gitUserData.html_url}}" class="btn btn-primary">
-                                <span class="octicon octicon-mark-github">
-                               {{gitUserData.login}}
-                            </a></span> </h4>
-                                              
-                    </form>
-
-                </div>
-    <div class="panel-body">
-    <div class="list-group">
-        <div ng-repeat="post in allPost | orderBy: ['createdate' ,'published']" class="list-group-item ">
-            <div  ng-if="post.type" class="row">
-
-                <div  class="col-md-8">
-                   
-                        <small ng-if="post.type == 'PushEvent'">
-                            <i>Github Stream</i>
-                            <br><br>
-                            <span class="mega-octicon octicon-git-commit"></span>
+<div class="postStream container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <form class="form-inline">
+                <span>
+                    <h4>NewsFeed <span class="badge">{{allPost.length}}</span></h4>
+                    <h4>
+                        <a href="{{gitUserData.html_url}}" class="btn btn-primary">
+                            <span class="octicon octicon-mark-github">
+                                {{gitUserData.login}}
+                            </span>
+                        </a>
+                    </h4>
+                </span>
+            </form>
+        </div>
+        <div class="panel-body">
+            <div class="list-group">
+                <div ng-repeat="post in allPost | orderBy: ['createdate' ,'published']" class="list-group-item ">
+                    <div ng-if="post.type" class="row">
+                        <div class="col-md-8">
+                            <small ng-if="post.type == 'PushEvent'">
+                                <i>Github Stream</i>
+                                <br/><br/>
+                                <span class="mega-octicon octicon-git-commit"></span>
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
                                 pushed to {{post.payload.ref}} at <span class="octicon octicon-repo"></span>
                                 <a href="{{post.repo.url}}">{{post.repo.name}}</a>
-                                <br><br>
-                                
+                                <br/><br/>
                                 <div ng-repeat="commits in post.payload.commits">
                                     commit message:
-                                 <a href="{{commits.url}}">{{commits.message}}</a>
+                                    <a href="{{commits.url}}">{{commits.message}}</a>
                                 </div>
-                        </small>
-                        
-                        <small ng-if="post.type == 'ForkEvent'">
-                            <i>Github Stream</i>
-                            <br><br>
-                            <span class="mega-octicon octicon-git-branch"></span>
+                            </small>
+                            <small ng-if="post.type == 'ForkEvent'">
+                                <i>Github Stream</i>
+                                <br/><br/>
+                                <span class="mega-octicon octicon-git-branch"></span>
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
                                 forked {{post.payload.ref}} at <span class="octicon octicon-repo"></span>
                                 <a href="{{post.repo.url}}">{{post.repo.name}}</a>
-                                <br><br>
-                        </small>
-
-                        <small ng-if="post.type == 'IssueCommentEvent'">
-                            <i>Github Stream</i>
-                            <br><br>
-                            <span class="mega-octicon octicon-comment-discussion"></span>
+                                <br/><br/>
+                            </small>
+                            <small ng-if="post.type == 'IssueCommentEvent'">
+                                <i>Github Stream</i>
+                                <br/><br/>
+                                <span class="mega-octicon octicon-comment-discussion"></span>
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
-                                commented on issue    <a href="{{post.payload.issue.html_url}}">{{post.payload.issue.title}}</b></a>
-                                <br><br>
-                                
-                        </small>
-
-
-                        <small ng-if="post.type == 'IssuesEvent'">
-                            <i>Github Stream</i>
-                            <br><br>
-                            <span class="mega-octicon octicon-issue-opened"></span>
+                                commented on issue    <a href="{{post.payload.issue.html_url}}">{{post.payload.issue.title}</a>
+                                <br/><br/>
+                            </small>
+                            <small ng-if="post.type == 'IssuesEvent'">
+                                <i>Github Stream</i>
+                                <br/><br/>
+                                <span class="mega-octicon octicon-issue-opened"></span>
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
-                                opened a issue  <a href="{{post.payload.issue.html_url}}">{{post.payload.issue.title}}</b></a>
-                                <br><br>
-                                
-                        </small>
-
-                         <small ng-if="post.type == 'CreateEvent'" >
-                            <i>Github Stream</i>
-                            <br><br>
-                            <span class="mega-octicon octicon-repo"></span>
+                                opened a issue  <a href="{{post.payload.issue.html_url}}">{{post.payload.issue.title}}</a>
+                                <br/><br/>
+                            </small>
+                            <small ng-if="post.type == 'CreateEvent'" >
+                                <i>Github Stream</i>
+                                <br/><br/>
+                                <span class="mega-octicon octicon-repo"></span>
                                 <a href="{{post.actor.url}}">{{post.actor.login}}</a>
                                 created a repo at <a href="{{post.repo.url}}">{{post.repo.name}}</b></a>
-                                <br><br>
-                            
-                                
-                        </small>
-               
-               
-
-                    
-                </div>
-                <div class="col-md-4">
-                    <dl class="dl-horizontal">
-                     
-                      <dt>Created:</dt>
-                      <dd>{{post.created_at| date : short : timezone}}</dd>
-                    </dl>
-                </div>
-                   
-            </div>
-
-             <div ng-if="post.author" class="row">
-
-                <div class="col-md-8">
-                        <small><i>Post Stream</i></small>
-                        <span>
-                        
-
+                                <br/><br/>
+                            </small>
+                        </div>
+                        <div class="col-md-4">
+                            <dl class="dl-horizontal">
+                                <dt>Created:</dt>
+                                <dd>{{post.created_at| date : short : timezone}}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div ng-if="post.visibility" class="row">
+                        <div class="col-md-8">
+                            <small><i>Post Stream</i></small>
+                            <span>
                                 <h3><span class="mega-octicon octicon-book"></span><span class="postTitle"> {{post.title}}</span></h3>
-                                <button class="btn btn-danger" data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="post.author.id === user.id">Delete Post</button>
-                                <span data-ng-show="post.author.id === user.id">
+                                <button class="btn btn-danger" data-ng-click="deletePost(post)" data-ng-disabled="post.disabled" data-ng-show="(post.author.id || postream.authorId) === user.id">Delete Post</button>
+                                <span data-ng-show="(post.author.id || postream.authorId) === user.id">
                                     <button class="btn btn-info" data-ng-click="editPost(post)" data-ng-disabled="post.disabled" data-ng-show="!post.editMode">Edit Post</button>
                                 </span>
                                 <button class="btn btn-success" data-ng-click="submitPost(post)" data-ng-disabled="post.disabled" data-ng-show="post.editMode">Submit</button>
@@ -120,7 +94,7 @@
                                         <option value='html'>HTML</option>
                                     </select>
                                     <br/>
-                                    <input type='text' placeholder='Categories' data-ng-model='post.categories'/>
+                                    <input type='text' placeholder='Categories' data-ng-model='post.categories'></input>
                                     <br/>
                                     <select placeholder='{{post.visibility}}' data-ng-model='post.visibility'>
                                         <option value="PUBLIC">Everyone</option>
