@@ -18,3 +18,17 @@ TEST
 `rhc port-forward project`
 
 `python manage.py test`
+
+
+Service Info
+------
+
+Service Address: http://project-c404.rhcloud.com/api/
+
+Host: project-c404.rhcloud.com
+
+Prefix: api  
+Ex. http://project-c404.rhcloud.com/api/
+
+HTTP AUTH Username: testnode
+HTTP AUTH Password: testnode
