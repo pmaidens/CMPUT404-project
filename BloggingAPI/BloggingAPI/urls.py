@@ -60,8 +60,9 @@ urlpatterns = [
     url(r'^api/', include(apiRouter.urls)),
     # url(r'^', include(posts_router.urls)),
     url(r'^api/', include(comments_router.urls)),
-    url(r'^api/friends/(?P<pk>[^/.]+)/$', FriendDetailView.as_view()),
     url(r'^api/friends/$', FriendOverviewView.as_view()),
+    url(r'^api/friends/(?P<pk>[^/.]+)/$', FriendDetailView.as_view()),
+    url(r'^api/friends/(?P<pk1>[^/.]+)/(?P<pk2>[^/.]+)/$', FriendQueryViewSet.as_view()),
     url(r'^api/author/(?P<pk>[^/.]+)/posts/$', AuthorSpecificPosts.as_view()),
     url(r'^api/friendrequest/$',FriendRequestViewSet.as_view()),
 ]

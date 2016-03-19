@@ -9,6 +9,7 @@ from rest_framework.permissions import  AllowAny
 from rest_framework.decorators import detail_route
 from .permissions import *
 from .pagination import *
+from django.db.models import Q
 
 class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
     """
@@ -300,21 +301,47 @@ class FriendRequestViewSet(APIView):
         
 
     def post(self,request,format=None):
+        authorHost = request.data['author']['host']
+        friendHost = request.data['friend']['host']
 
-        author = Author.objects.get(id=request.data['author']['id'])
+        # Assume local author, and thus local friend
+        if (authorHost == friendHost):
+            
+            # Get Author
+            author = Author.objects.get(id=request.data['author']['id'])
 
-        friendObj = Friend.objects.create(id = request.data['friend']['id'],
+            # Get Friend Author
+            friend = Author.objects.get(id=request.data['friend']['id'])
+
+            # Make friend object
+            friendObj = Friend.objects.create(id = request.data['friend']['id'],
                                           author_id = request.data['author']['id'],
-                                          host = request.data['friend']['host'],
+                                          host = friendHost,
                                           display_name = request.data['friend']['display_name'],
                                           url = request.data['friend']['url'])
         
-        try:
-            author.pendingFriends.add(friendObj)
-            return Response('OK',status = status.HTTP_200_OK)
-        except:
-            return Response('Error', status=status.HTTP_400_BAD_REQUEST)
+            ### TODO Add a request to the friend's author model? ###
+            ### need to consider remote authors as well
+            try:
+                author.pendingFriends.add(friendObj)
+                return Response('OK',status = status.HTTP_200_OK)
+            except:
+                return Response('Error', status=status.HTTP_400_BAD_REQUEST)
 
+
+# api/friend/<friend1>/<friend2>/
+class FriendQueryViewSet(APIView):
+    
+    def get(self, request, pk1, pk2, format=None):
+        criteria1 = Q(id=pk1)
+        criteria2 = Q(id=pk2)
+        queryset = Author.objects.filter(criteria1 | criteria2)
+        serializer = FriendQuerySerializer(queryset,data=request.data,partial=True)
+
+        if serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # /service/author/author-id/posts

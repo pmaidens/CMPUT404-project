@@ -80,6 +80,38 @@ class FriendVerifySerializer(serializers.ModelSerializer):
                 result.append(author)
         return result
 
+# Used to tell if two authors are friends
+class FriendQuerySerializer(serializers.ModelSerializer):
+
+    query = serializers.SerializerMethodField('getQuery')
+    authors = serializers.SerializerMethodField('getAuthors')
+    friend = serializers.SerializerMethodField('getFriendship')
+
+    class Meta:
+        model = Author
+        fields = ('query','authors','friend') 
+
+    def getQuery(self,obj):
+        return "query"
+
+    def getAuthors(self,obj):
+        res = []
+        for author in obj:
+            res.append(author.id)
+        return res
+
+    def getFriendship(self,obj):
+        author = obj[0]
+        friend = obj[1]
+
+        for frnd in author.friends.all():
+            for potential in friend.friends.all():
+                if frnd == potential:
+                    return True
+        return False
+        
+        
+
 class UpdateAuthorSerializer(serializers.ModelSerializer):
 
     first_name = serializers.CharField(source='user.first_name')
@@ -194,3 +226,5 @@ class AuthorPostSerializer(serializers.ModelSerializer):
         if obj.comments == None:
             return 0
         return obj.comments.count()
+    
+    
