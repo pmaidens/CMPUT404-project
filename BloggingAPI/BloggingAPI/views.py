@@ -253,6 +253,7 @@ class FriendOverviewView(APIView):
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 # view for /api/friends/<author-id>
 class FriendDetailView(APIView):
     """
