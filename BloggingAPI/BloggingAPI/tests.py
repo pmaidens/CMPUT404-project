@@ -279,10 +279,14 @@ class apiTests(TestCase):
                             }
                 }
 
+        print self.testEnemy.host
+        print self.author.host
+
         friendRequest = self.client.post(url,data,format='json')
         self.assertEqual(friendRequest.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(self.author.pendingFriends.all()),1)
-        self.assertEqual(len(Friend.objects.all()),2) # friend created
+        self.assertEqual(len(self.author.following.all()),1)
+        self.assertEqual(len(self.testEnemy.pendingFriends.all()),1)
+        self.assertEqual(len(Friend.objects.all()),3) # 2 friends created
         
         #Test Friend Querying:
 
