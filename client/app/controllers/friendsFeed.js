@@ -18,7 +18,6 @@ angular.module("myApp.friendsFeed", [
 	$scope.authors = [];
 	$scope.user = authenticationHandler.user;
 
-
     authorHandler.getAllAuthors().then(function(result) {
 
 
@@ -26,17 +25,71 @@ angular.module("myApp.friendsFeed", [
      
     });
 
-    $scope.makeFriendReq = function(){
+    authorHandler.getFollowers($scope.user.id).then(function(result){
+
+        $scope.followers = result.data;
+
+
+    });
+
+    authorHandler.getFollowing($scope.user.id).then(function(result){
+
+        $scope.friendsSOON = result.data;
+
+    
+    });
+
+
+
+    $scope.makeFriendReq = function(author){
         var friend = {
-            "id":$scope.user.id,
-            "host":$scope.user.host,
-            "displayName": $scope.user.displayname,
-            "url":$scope.user.url
+            "id": author.id,
+            "host":author.host,
+            "displayName": author.displayname,
+            "url": author.url
         };
 
         authorHandler.postFriendRequest(friend).then(function() {alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
-    }
+    };
 
    
 
+
+    $scope.unfriend = function(friend){
+
+	authorHandler.unfriend(friend).then(function(result){
+
+	    //success!
+
+
+	});
+
+    };
+    
+    $scope.unfollow = function(following){
+
+	authorHandler.unfollow(following).then(function(result){
+
+	    //success!
+
+	});
+
+    };
+
+    $scope.acceptFriend = function(follower){
+	
+	authorHandler.acceptFriend(follower).then(function(result){
+
+	
+	});
+
+    };
+
+    
+
+
+
+
+
 });
+
