@@ -62,16 +62,16 @@ angular.module("myApp.services.authorHandler", [
     };
 
 
-    this.getFollowers = function(authorID){
+    this.getFollowers = function(){
 	
 	//get followers
-	//return $http.get();
+	return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/friendrequests");
 
     };
     this.getFollowing = function(){
 	
 	//get ppl who the author is following
-	//$http.get();
+	return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/following");
 
 
     };
