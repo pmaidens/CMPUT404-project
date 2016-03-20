@@ -33,6 +33,9 @@ apiRouter.register(r'author', AuthorViewSet)
 # http://service/posts/{POST_ID}
 apiRouter.register(r'posts', PostsViewSet)
 
+#http://service/nodes/
+apiRouter.register(r'nodes', ConnectedNodesViewSet)
+
 # http://service/author/posts
 # apiRouter.register(r'author/posts', CurrentAuthorPostsViewSet)
 
