@@ -38,6 +38,23 @@
           email (string) - the email of an author
           bio (string) - the bio of an author
 
+###Endpoint: /api/author/{AUTHOR_ID}/posts/###
+    Available Methods: GET
+    Gets all posts made by {AUTHOR_ID}
+      GET Response properties:
+          title - the title of the post
+          source - the last place this post was
+          origin - the original url of the post
+          description - the description of the post
+          contentType - content type of the post
+          content - the text of the post
+          categories - a list of categories that the post belongs to
+          count - number of posts
+          comments - the list of comments of a post
+          published - the date the post was created
+          id - the guid of the post
+          visibility - the visibility level of this post
+
 ###Endpoint: /api/posts/###
     Available Methods: GET, POST
     This endpoint lists the posts that are currently available to the authenticated user.
@@ -160,23 +177,6 @@
           authors - and array of Author ID's, all of which are friends
           with the author in question, and were present on the requested 
           list
-
-###Endpoint: /api/friend/{AUTHOR_ID}/posts/###
-    Available Methods: GET
-    Gets all posts made by {AUTHOR_ID}
-      GET Response properties:
-          title - the title of the post
-          source - the last place this post was
-          origin - the original url of the post
-          description - the description of the post
-          contentType - content type of the post
-          content - the text of the post
-          categories - a list of categories that the post belongs to
-          count - number of posts
-          comments - the list of comments of a post
-          published - the date the post was created
-          id - the guid of the post
-          visibility - the visibility level of this post
 
 ###Endpoint: /api/friend/{AUTHOR_ID1}/{AUTHOR_ID2}/###
     Available Methods: GET
