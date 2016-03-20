@@ -161,11 +161,9 @@
           with the author in question, and were present on the requested 
           list
 
-###Endpoint: /api/friend/<authorid>/posts/###
+###Endpoint: /api/friend/{AUTHOR_ID}/posts/###
     Available Methods: GET
-    Gets all posts made by <author-id> that are visible to the 
-    currently authenticated User
-
+    Gets all posts made by {AUTHOR_ID}
       GET Response properties:
           title - the title of the post
           source - the last place this post was
@@ -180,7 +178,7 @@
           id - the guid of the post
           visibility - the visibility level of this post
 
-###Endpoint: /api/friend/<authorid1>/<authorid2>/###
+###Endpoint: /api/friend/{AUTHOR_ID1}/{AUTHOR_ID2}/###
     Available Methods: GET
     Used to determine the friendship of two authors,
     specified in the URL
