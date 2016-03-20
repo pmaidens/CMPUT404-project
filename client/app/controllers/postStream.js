@@ -102,10 +102,14 @@ angular.module("myApp.postStream", [
 
 //POST : author id, comment, postid
     $scope.AddComment = function (post, comments) {
+	var date = new Date();
         postHandler.commentPost({
-            author: authenticationHandler.user.id,
+            author: authenticationHandler.user,
             comment: comments,
-            post: post.id
+	    //we need to allow different contenttypes for comments
+	    contentType: 'text/plain'//,
+	   // published: date,
+	   // id:''
         }).then(function(){
 	    
 	    comments = '';

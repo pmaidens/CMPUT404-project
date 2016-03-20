@@ -5,10 +5,15 @@ angular.module("myApp.services.authorHandler", [
     "myApp.services.authenticationHandler"
 ])
 .service("authorHandler", function($q, $http, urlHandler, authenticationHandler) {
+    this.getAllAuthors = function(){
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        return $http.get(urlHandler.serviceURL() + "api/author/");
+    }
     this.getAuthor = function (authorId) {
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/");
     };
+
 
     this.submitAuthor = function (author) {
         var putParameters = {
@@ -55,6 +60,38 @@ angular.module("myApp.services.authorHandler", [
 
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
+    };
+
+
+    this.getFollowers = function(authorId){
+	
+	//get followers
+	return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId|| authenticationHandler.user.id) + "/friendrequests/");
+
+    };
+    this.getFollowing = function(authorId){
+	
+	//get ppl who the author is following
+	return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/following/");
+
+
+    };
+
+    this.unfriend = function(friend){
+
+	//delete friend
+	//return $http.post();
+
+    };
+
+    this.unfollow = function(following){
+	//stop following
+
+    };
+
+    this.acceptFriend = function(follower){
+    
+	//accept friend request
     };
 
 });
