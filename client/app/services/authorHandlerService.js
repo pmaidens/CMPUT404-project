@@ -38,16 +38,23 @@ angular.module("myApp.services.authorHandler", [
         "bio": "An amazing person!"
     };
 
-    this.postFriendRequest = function(friendReq){
+    this.postFriendRequest = function(friend){
+    	/*
+        	we're going to post to our service and tell it to follow the user
+            then our backend makes the real request to the friend we want 
+    	*/
+        var requestObject = {
+            query: "friendrequest",
+            author:  {
+                "id": authenticationHandler.user.id,
+                "host": authenticationHandler.user.host,
+                "displayName": authenticationHandler.user.displayname,
+            },
+            friend: friend
+        };
 
-	/*
-
-	  we're going to post to our service and tell it to follow the user
-	  then our backend makes the real request to the friend we want 
-	 */
-	//return $http.post('');
-
-
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
     };
 
 });

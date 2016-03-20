@@ -53,24 +53,14 @@ angular.module("myApp.profile", [
     });
 
     $scope.makeFriendReq = function(){
-	//friendReq should actually be made in the back end
-	var friendReq = {
-	    "query":"friendrequest",
-	    "author":{
-		"id": $scope.user.id,
-		"host": $scope.user.host,
-		"displayName": $scope.user.displayname,
-	    },
-	    "friend":{
-		"id":$scope.author.id,
-		"host":$scope.author.host,
-		"displayName": $scope.author.displayname,
-		"url":$scope.author.url
+        var friend = {
+            "id":$scope.author.id,
+            "host":$scope.author.host,
+            "displayName": $scope.author.displayname,
+            "url":$scope.author.url
+        };
 
-	    }
-
-	};
-
+        authorHandler.postFriendRequest(friend).then(function() {alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
     }
 
 });
