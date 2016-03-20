@@ -428,3 +428,7 @@ class AuthorFollowing(APIView):
         queryset = Author.objects.filter(id=pk)
         serializer = ViewFollowingSerializer(queryset,many=True)
         return Response(serializer.data)
+
+class ConnectedNodesViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
+    serializer_class = ConnectedNodeSerializer
+    queryset = Node.objects.all()

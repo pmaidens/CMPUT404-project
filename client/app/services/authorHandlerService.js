@@ -5,6 +5,10 @@ angular.module("myApp.services.authorHandler", [
     "myApp.services.authenticationHandler"
 ])
 .service("authorHandler", function($q, $http, urlHandler, authenticationHandler) {
+    this.getAllAuthors = function(){
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        return $http.get(urlHandler.serviceURL() + "api/author/");
+    }
     this.getAuthor = function (authorId) {
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/");

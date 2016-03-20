@@ -269,3 +269,8 @@ class ViewFollowingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ('id', 'following')
+
+class ConnectedNodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Node
+        fields = ('url', 'username', 'password')
