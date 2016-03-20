@@ -20,9 +20,9 @@ angular.module("myApp.services.postHandler", [
 
         return $q(function(resolve, reject) {
             if(authorId) {
-                var url = urlHandler.serviceURL() + "api/author/" + (authorId || "") + "/posts/";
+                var url = urlHandler.serviceURL() + "api/author/" + (authorId ? authorId + "/posts/" : "");
             } else {
-                var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "") + "/";//eslint-disable-line no-unused-vars
+                var url = urlHandler.serviceURL() + "api/posts/" + (authorId ? authorId + "/" : "");//eslint-disable-line no-unused-vars
             }
             $http.defaults.headers.common.Authorization = authenticationHandler.token;
             $http.get(url, {author: authorId}).then(function(result) {
