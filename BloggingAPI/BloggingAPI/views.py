@@ -410,10 +410,10 @@ class AddFollowerViewSet(APIView):
             return Response('Error', status=status.HTTP_400_BAD_REQUEST)
     
     
-# view for api/friend/<friend1>/<friend2>/
+# view for api/friends/<friend1>/<friend2>/
 class FriendQueryViewSet(APIView):
     """
-    Endpoint: /api/friend/<authorid1>/<authorid2>/
+    Endpoint: /api/friends/<authorid1>/<authorid2>/
     Available Methods: GET
     Used to determine the friendship of two authors,
     specified in the URL
@@ -440,7 +440,7 @@ class FriendQueryViewSet(APIView):
 # /api/author/author-id/posts
 class AuthorSpecificPosts(APIView):
     """
-    Endpoint: /api/friend/<authorid>/posts/
+    Endpoint: /api/author/<authorid>/posts/
     Available Methods: GET
     Gets all posts made by <author-id> that are visible to the 
     currently authenticated User
