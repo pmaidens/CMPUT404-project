@@ -85,3 +85,8 @@ class Comment(models.Model):
     contentType = models.CharField(default='text/plain', max_length=255)
     comment = models.TextField(default=None, blank=True, null=True)
     date_created = models.DateTimeField(default=datetime.now, blank=True)
+
+class Node(models.Model):
+    url = models.CharField(max_length=2000)
+    username = models.CharField(max_length=2000)
+    password = models.CharField(max_length=2000)
