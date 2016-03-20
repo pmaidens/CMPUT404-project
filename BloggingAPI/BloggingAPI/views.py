@@ -301,7 +301,6 @@ class FriendRequestViewSet(APIView):
 
     def get(self, request,format=None):
         return Response('Do we want to get something here?',status = status.HTTP_200_OK)
-        
 
     def post(self,request,format=None):
         authorHost = request.data['author']['host']
@@ -310,28 +309,72 @@ class FriendRequestViewSet(APIView):
         # Assume local author, and thus local friend
         if (authorHost == friendHost):
             
-            # Get Author
+            # Get Requester
             author = Author.objects.get(id=request.data['author']['id'])
 
-            # Get Friend Author
+            # Get Requested
             friend = Author.objects.get(id=request.data['friend']['id'])
 
-            # Make friend object
-            friendObj = Friend.objects.create(id = request.data['friend']['id'],
-                                          author_id = request.data['author']['id'],
+            
+            followingObj = Friend.objects.create(author_id = request.data['friend']['id'],
                                           host = friendHost,
                                           display_name = request.data['friend']['displayName'],
                                           url = request.data['friend']['url'])
+
+            pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
+                                          host = friendHost,
+                                          display_name = request.data['friend']['displayName'],
+                                          url = request.data['friend']['url'])
+
         
-            ### TODO Add a request to the friend's author model? ###
-            ### need to consider remote authors as well
             try:
-                author.pendingFriends.add(friendObj)
+                author.following.add(followingObj)
+                friend.pendingFriends.add(pendingObj)
                 return Response('OK',status = status.HTTP_200_OK)
             except:
                 return Response('Error', status=status.HTTP_400_BAD_REQUEST)
 
+        # remote request
+        else:
+            
+            # We have the friend host, author is not on our server
+            # Add friend object to it's pending field
+            
+            friend = Author.objects.get(id=request.data['friend']['id'])
 
+            pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
+                                               host = authorHost,
+                                               display_name = request.data['author']['displayName'],
+                                               url = request.data['author']['url'])
+        
+            try:
+                friend.pendingFriends.add(pendingObj)
+                return Response('OK',status = status.HTTP_200_OK)
+            except:
+                return Response('Error', status=status.HTTP_400_BAD_REQUEST)
+            
+
+# To be called when a friend request is posted to another service
+# Adds to the follow field of the local author
+class AddFollowerViewSet(APIView):
+
+    # We have the author in our DB, make a friend for it!
+    def post(self,request,format=None):
+
+        author = Author.objects.get(id=request.data['author']['id'])
+
+        followingObj = Friend.objects.create(author_id = request.data['friend']['id'],
+                                          host = friendHost,
+                                          display_name = request.data['friend']['displayName'],
+                                          url = request.data['friend']['url'])
+
+        try:
+            author.following.add(followingObj)
+            return Response('Success',status = status.HTTP_200_OK)
+        except:
+            return Response('Error', status=status.HTTP_400_BAD_REQUEST)
+    
+    
 # api/friend/<friend1>/<friend2>/
 class FriendQueryViewSet(APIView):
     
@@ -347,12 +390,41 @@ class FriendQueryViewSet(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# /service/author/author-id/posts
+# /api/author/author-id/posts
 class AuthorSpecificPosts(APIView):
-    
+
+    def get_queryset(self):
+        currentUser = self.request.user.username
+        #query set for public posts
+        publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
+        #query set for private posts (has to be the post owner)
+        privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+        #query set for friends
+        # friendsQuerySet = Post.objects.all().filter(visibility='FRIENDS')
+        #query set for friends of friends
+        # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+        #query set for server only
+        friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='SERVERONLY')
+
+        return publicQuerySet | privateQuerySet | friendsOfFriendsQuerySet
+
     def get(self,request,pk,format=None):
-        #author = Author.objects.get(id=pk)
-        queryset = Post.objects.filter(author = pk)
+        queryset = self.get_queryset().filter(id=pk)
         serializer = AuthorPostSerializer(queryset,many=True)
         return Response(serializer.data)
-        
+
+# /api/author/author-id/friendrequests
+class AuthorFriendRequests(APIView):
+
+    def get(self,request,pk,format=None):
+        queryset = Author.objects.filter(id=pk)
+        serializer = ViewFriendRequestsSerializer(queryset,many=True)
+        return Response(serializer.data)
+
+# /api/author/author-id/following
+class AuthorFollowing(APIView):
+
+    def get(self,request,pk,format=None):
+        queryset = Author.objects.filter(id=pk)
+        serializer = ViewFollowingSerializer(queryset,many=True)
+        return Response(serializer.data)
