@@ -25,4 +25,18 @@ angular.module("myApp.friendsFeed", [
         $scope.authors = result.data;
      
     });
+
+    $scope.makeFriendReq = function(){
+        var friend = {
+            "id":$scope.user.id,
+            "host":$scope.user.host,
+            "displayName": $scope.user.displayname,
+            "url":$scope.user.url
+        };
+
+        authorHandler.postFriendRequest(friend).then(function() {alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
+    }
+
+   
+
 });

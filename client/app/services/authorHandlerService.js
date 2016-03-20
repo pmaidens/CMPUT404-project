@@ -14,6 +14,7 @@ angular.module("myApp.services.authorHandler", [
         return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/");
     };
 
+
     this.submitAuthor = function (author) {
         var putParameters = {
             github: author.github,
