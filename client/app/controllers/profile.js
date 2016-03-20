@@ -72,7 +72,7 @@ angular.module("myApp.profile", [
     
     $scope.getFollowers = function(){
 	
-	authorHandler.getFollowers().then(function(result){
+	authorHandler.getFollowers($scope.author.id).then(function(result){
 
 	    //set $scope.followers here
 

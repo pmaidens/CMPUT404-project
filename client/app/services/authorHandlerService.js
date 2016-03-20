@@ -58,7 +58,7 @@ angular.module("myApp.services.authorHandler", [
     };
 
 
-    this.getFollowers = function(){
+    this.getFollowers = function(authorID){
 	
 	//get followers
 	//return $http.get();
@@ -84,7 +84,7 @@ angular.module("myApp.services.authorHandler", [
 
     };
 
-    this.acceptFriend(follower){
+    this.acceptFriend = function(follower){
     
 	//accept friend request
     };
