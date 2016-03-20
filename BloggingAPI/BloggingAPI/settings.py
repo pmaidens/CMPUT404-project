@@ -108,24 +108,13 @@ WSGI_APPLICATION = 'BloggingAPI.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-if not LOCAL_ENV:
-	DATABASES = {
-    		'default': {
-        		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        		'NAME': 'project',
-        		'USER': os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME'],
-        		'PASSWORD': os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD'],
-        		'HOST': os.environ['OPENSHIFT_POSTGRESQL_DB_HOST'],
-        		'PORT': os.environ['OPENSHIFT_POSTGRESQL_DB_PORT'],
-    		}
-	}
-else:
-	DATABASES = {
+
+DATABASES = {
 	    'default': {
 	        'ENGINE': 'django.db.backends.postgresql_psycopg2',
 	        'NAME': 'project',
-	        'USER': 'adminux1q3pu',
-	        'PASSWORD': 'DZzjTF25jQMV',
+	        'USER': 'adminksnpw21',
+	        'PASSWORD': 'Asx-autlnjBd',
 	        'HOST': 'localhost',
 	        'PORT': '5432',
 	    }

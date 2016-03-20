@@ -68,8 +68,98 @@
     </div>
     </form>
     </div>
+    
+
+ 
+
+
 </div>
 </div>
 </div>
+
+
+<div class ="container">
+<div class = "row">
+<div class = "col-sm-4">
+
+
+   <div class ='panel panel-default friends'>
+     <div class= "panel-heading login">
+     <h3> Your Friends</h3>
+     </div>
+      <div class ='panel-body ' ng-repeat="friend in friends">
+	  <div class = 'row' >
+	    <div class ="col-lg-4"> display Name: </div>
+	    <div class ="col-lg-4">{{friend.display_name}}</div>
+	    <div class ="col-lg-4"><button data-ng-click="unfriend(friend)"> Unfriend</button></div>
+	  </div>
+	<div class = 'row' >  
+	<div class = 'col-lg-4'> URL:</div>
+	<div class ='col-lg-4'>{{friend.url}}</div>
+	</div>
+
+      </div>
+
+      <div class= 'container' data-ng-show="!hasFriends"><h4>whoops
+      you have no friends :(</h4></div>
+    </div>
+
+</div>
+
+
+<div class="col-sm-4">
+   <div class ='panel panel-default friends'>
+     <div class= "panel-heading login">
+     <h3> Your Followers</h3>
+     </div>
+      <div class ='panel-body ' ng-repeat="follower in followers">
+	  <div class = 'row' >
+	    <div class ="col-lg-4"> display Name: </div>
+	    <div class ="col-lg-4">{{friend.display_name}}</div>
+	    <div class ="col-lg-4"><button data-ng-click="acceptFriend(follower)">Accept Friend </button></div>
+	  </div>
+	<div class = 'row' >  
+	<div class = 'col-lg-4'> URL:</div>
+	<div class ='col-lg-4'>{{friend.url}}</div>
+	</div>
+
+      </div>
+
+      <div class= 'container' data-ng-show="!hasFriends"><h4>whoops
+      you have no followers(</h4></div>
+    </div>
+</div>
+
+
+
+
+
+<div class="col-sm-4">
+   <div class ='panel panel-default friends'>
+     <div class= "panel-heading login">
+     <h3>Who YOU are following</h3>
+     </div>
+      <div class ='panel-body ' ng-repeat="following in friendsSOON">
+	  <div class = 'row' >
+	    <div class ="col-lg-4"> display Name: </div>
+	    <div class ="col-lg-4">{{following.display_name}}</div>
+	    <div class ="col-lg-4"><button> Unfollow</button data-ng-click="unfollow(following)"></div>
+	  </div>
+	<div class = 'row' >  
+	<div class = 'col-lg-4'> URL:</div>
+	<div class ='col-lg-4'>{{following.url}}</div>
+	</div>
+
+      </div>
+
+      <div class= 'container' data-ng-show="!hasFriends"><h4> You're
+      not following anyone right now</h4></div>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
 <post-stream data-ng-controller="PostStreamController"></post-stream>
 

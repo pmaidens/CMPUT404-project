@@ -57,4 +57,36 @@ angular.module("myApp.services.authorHandler", [
         return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
     };
 
+
+    this.getFollowers = function(){
+	
+	//get followers
+	//return $http.get();
+
+    };
+    this.getFollowing = function(){
+	
+	//get ppl who the author is following
+	//$http.get();
+
+
+    };
+
+    this.unfriend = function(friend){
+
+	//delete friend
+	//return $http.post();
+
+    };
+
+    this.unfollow = function(following){
+	//stop following
+
+    };
+
+    this.acceptFriend(follower){
+    
+	//accept friend request
+    };
+
 });
