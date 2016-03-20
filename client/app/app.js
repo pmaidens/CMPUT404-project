@@ -9,7 +9,8 @@ angular.module("myApp", [
     "myApp.profile",
     "myApp.version",
     "myApp.navbar",
-    "myApp.login"
+    "myApp.login",
+    "myApp.friendsFeed"
 ]).
 config(["$routeProvider", function($routeProvider) {
     $routeProvider.otherwise({redirectTo: "/stream"});
