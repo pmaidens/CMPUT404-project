@@ -21,8 +21,13 @@ class Author(models.Model):
     # profile_img = models.ImageField(default=None)
     host = models.CharField(max_length=2000)
     url = models.CharField(max_length=2000)
+
     friends = models.ManyToManyField('Friend', blank=True)
-    pendingFriends = models.ManyToManyField('Friend',related_name='friendReq', blank=True)
+    #incoming friend request
+    pendingFriends = models.ManyToManyField('Friend',related_name='friendRequestsRecieved', blank=True)
+    #outgoing friend request
+    following = models.ManyToManyField('Friend',related_name='friendRequestsSent', blank=True)
+
     github = models.CharField(max_length=2000, default=None, blank=True, null=True)
     bio = models.TextField(default=None, blank=True, null=True)
 

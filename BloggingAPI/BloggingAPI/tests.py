@@ -124,13 +124,24 @@ class apiTests(TestCase):
 
         # Comment on post
         cID = uuid.uuid4()
-        comment = {"id":str(cID),"post": postID,
-                   "author":self.author.id,"comment":"Nice Post!"}
+        comment = {
+            "author": {
+                "id": str(self.author.id),
+                "host": str(self.author.host),
+                "displayName": "greg",
+                "url":str(self.author.url),
+                "github":str(self.author.github),
+                },
+            "comment":"Nice Post!",
+            "content-type":'text/plain',
+            "published":now,
+            "id":str(cID),
+            }
+            #"post": postID,
         
-        # commentUrl = getUrl + 'comments/'
-        # commentResponse = self.client.post(commentUrl,comment,format='json')
-        # self.assertEqual(commentResponse.status_code, status.HTTP_201_CREATED)
-
+        commentUrl = getUrl + 'comments/'
+        commentResponse = self.client.post(commentUrl,comment,format='json')
+        self.assertEqual(commentResponse.status_code, status.HTTP_201_CREATED)
         
         # Delete post
         delResp = self.client.delete(getUrl)
@@ -258,12 +269,12 @@ class apiTests(TestCase):
         data = {"query":"friends",
                 "author":{ "id": str(self.author.id),
                            "host": str(self.author.host),
-                           "display_name": "Author"
+                           "displayName": "Author"
                            },
                 
                 "friend": { "id":str(self.testEnemy.id),
                             "host":str(self.testEnemy.host),
-                            "display_name": "Enemy",
+                            "displayName": "Enemy",
                             "url":str(self.testEnemy.url),
                             }
                 }
@@ -272,14 +283,10 @@ class apiTests(TestCase):
         self.assertEqual(friendRequest.status_code, status.HTTP_200_OK)
         self.assertEqual(len(self.author.pendingFriends.all()),1)
         self.assertEqual(len(Friend.objects.all()),2) # friend created
-
         
         #Test Friend Querying:
 
         url = 'http://127.0.0.1:8000/api/friends/'+str(self.author.id) +'/'+ str(self.testFriend.id)+'/'
-
-        print 'authorid=',self.author.id
-        print 'friendID=',self.testFriend.id
         
         friendQuery = self.client.get(url)
         self.assertEqual(friendQuery.status_code, status.HTTP_200_OK)
