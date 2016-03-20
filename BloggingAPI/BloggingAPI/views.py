@@ -390,7 +390,7 @@ class FriendQueryViewSet(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# /service/author/author-id/posts
+# /api/author/author-id/posts
 class AuthorSpecificPosts(APIView):
 
     def get_queryset(self):
@@ -407,8 +407,24 @@ class AuthorSpecificPosts(APIView):
         friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='SERVERONLY')
 
         return publicQuerySet | privateQuerySet | friendsOfFriendsQuerySet
-    
+
     def get(self,request,pk,format=None):
-        queryset = self.get_queryset().filter(author=pk)
+        queryset = self.get_queryset().filter(id=pk)
         serializer = AuthorPostSerializer(queryset,many=True)
+        return Response(serializer.data)
+
+# /api/author/author-id/friendrequests
+class AuthorFriendRequests(APIView):
+
+    def get(self,request,pk,format=None):
+        queryset = Author.objects.filter(id=pk)
+        serializer = ViewFriendRequestsSerializer(queryset,many=True)
+        return Response(serializer.data)
+
+# /api/author/author-id/following
+class AuthorFollowing(APIView):
+
+    def get(self,request,pk,format=None):
+        queryset = Author.objects.filter(id=pk)
+        serializer = ViewFollowingSerializer(queryset,many=True)
         return Response(serializer.data)

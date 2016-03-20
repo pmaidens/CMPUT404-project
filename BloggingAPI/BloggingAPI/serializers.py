@@ -250,3 +250,22 @@ class AuthorPostSerializer(serializers.ModelSerializer):
         if obj.comments == None:
             return 0
         return obj.comments.count()
+
+class ViewFriendSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Friend
+        fields = ('author_id', 'host', 'display_name', 'url')
+
+class ViewFriendRequestsSerializer(serializers.ModelSerializer):
+    friendrequests = ViewFriendSerializer(source='pendingFriends', many=True, read_only=True)
+
+    class Meta:
+        model = Author
+        fields = ('id', 'friendrequests')
+
+class ViewFollowingSerializer(serializers.ModelSerializer):
+    following = ViewFriendSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Author
+        fields = ('id', 'following')
