@@ -221,6 +221,8 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
             serializer_class = UpdateCommentSerializer
         return serializer_class
 
+    def get_serializer_context(self):
+        return {'post_pk': self.kwargs['posts_pk']}
 
 # view for /api/friends/
 class FriendOverviewView(APIView):

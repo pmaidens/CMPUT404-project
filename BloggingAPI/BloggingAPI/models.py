@@ -66,10 +66,17 @@ class Post(models.Model):
     #image = models.ImageField(default=None)
     visibility = models.CharField(default='PUBLIC', max_length=255, choices=visibility_choices)
 
+class CommentAuthor(models.Model):
+    author_id = models.UUIDField()
+    host = models.CharField(max_length=2000)
+    displayName = models.CharField(max_length=2000)
+    url = models.CharField(max_length=2000)
+    github = models.CharField(max_length=2000, default=None, blank=True)
+
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(Author)
+    author = models.ForeignKey(CommentAuthor, on_delete=models.CASCADE)
     contentType = models.CharField(default='text/plain', max_length=255)
     comment = models.TextField(default=None, blank=True, null=True)
     date_created = models.DateTimeField(default=datetime.now, blank=True)

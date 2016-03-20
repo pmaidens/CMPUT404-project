@@ -189,23 +189,48 @@ class UpdatePostsSerializer(serializers.ModelSerializer):
 
 
 #Serializer for Comments
+#This serializer is for viewing author of Comments
+class ViewCommentAuthorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CommentAuthor
+        fields = ('id', 'host', 'displayName')
+
 #This serializer is for viewing comments of a post
 class ViewCommentSerializer(serializers.ModelSerializer):
 
     guid = serializers.UUIDField(source='id')
-    author = PostAuthorSerializer(read_only=True)
+    author = ViewCommentAuthorSerializer(read_only=True)
     pubDate = serializers.DateTimeField(source='date_created')
 
     class Meta:
         model = Comment
         fields = ('author', 'comment', 'pubDate', 'guid')
 
+#This serialzer is specifically creating author objects for a comment
+class CommentAuthorSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source='author_id')
+
+    class Meta:
+        model = CommentAuthor
+        fields = ('id', 'host', 'displayName', 'url', 'github')
+
 #This serializer is for creating and editing a comment of a post
 class UpdateCommentSerializer(serializers.ModelSerializer):
 
+    author = CommentAuthorSerializer()
+
     class Meta:
         model = Comment
-        fields = ('author', 'comment', 'post')
+        fields = ('author', 'comment', 'contentType')
+
+    def create(self, validated_data):
+        #create the comment author object
+        commentAuthorData = validated_data.pop('author')
+        author = CommentAuthor.objects.create(**commentAuthorData)
+        post = Post.objects.filter(id=self.context['post_pk'])
+        comment = Comment.objects.create(post=post[0], author=author, **validated_data)
+        return comment
 
 
 class AuthorPostSerializer(serializers.ModelSerializer):
@@ -226,5 +251,3 @@ class AuthorPostSerializer(serializers.ModelSerializer):
         if obj.comments == None:
             return 0
         return obj.comments.count()
-    
-    
