@@ -320,7 +320,7 @@ class FriendRequestViewSet(APIView):
             friendObj = Friend.objects.create(id = request.data['friend']['id'],
                                           author_id = request.data['author']['id'],
                                           host = friendHost,
-                                          display_name = request.data['friend']['display_name'],
+                                          display_name = request.data['friend']['displayName'],
                                           url = request.data['friend']['url'])
         
             ### TODO Add a request to the friend's author model? ###
