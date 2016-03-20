@@ -105,7 +105,6 @@ class apiTests(TestCase):
         self.assertEqual(Post.objects.get().source, 'src')
         self.assertEqual(Post.objects.get().description, 'not neat!')
 
-
         # make a post in Markdown
         now = str(datetime.now())
         data = {"title":"markdown post","source":"src",
@@ -137,7 +136,6 @@ class apiTests(TestCase):
             "published":now,
             "id":str(cID),
             }
-            #"post": postID,
         
         commentUrl = getUrl + 'comments/'
         commentResponse = self.client.post(commentUrl,comment,format='json')
@@ -235,7 +233,6 @@ class apiTests(TestCase):
 
 
         postResponse = self.client.post(getUrl,data,format='json')
-        
         friendsCalculated= postResponse.data.get('authors')
 
         self.assertEqual(postResponse.status_code, status.HTTP_200_OK)
@@ -279,9 +276,6 @@ class apiTests(TestCase):
                             }
                 }
 
-        print self.testEnemy.host
-        print self.author.host
-
         friendRequest = self.client.post(url,data,format='json')
         self.assertEqual(friendRequest.status_code, status.HTTP_200_OK)
         self.assertEqual(len(self.author.following.all()),1)
@@ -294,35 +288,16 @@ class apiTests(TestCase):
         
         friendQuery = self.client.get(url)
         self.assertEqual(friendQuery.status_code, status.HTTP_200_OK)
-        self.assertEqual(friendQuery.data['friends'], True)
+        self.assertEqual(friendQuery.data['friends'], True)        
 
+
+    def test_Author(self):
+       # http://service/author/{AUTHOR_ID}/posts (all posts made by {AUTHOR_ID} visible to the currently authenticated user)
         
+        url = 'http://127.0.0.1:8000/api/author/' + str(self.author.id) +'/posts/'
+        posts = self.client.get(url)
+        self.assertEqual(posts.status_code, status.HTTP_200_OK)
 
-        # TESTS US25 As a server admin, add, modify, and remove authors
-        # https://github.com/pmaidens/CMPUT404-project/issues/25
-
-        # TESTS US13 As a server admin, host multiple authors on my server
-        # https://github.com/pmaidens/CMPUT404-project/issues/13
-
-        # Tests not running due to HTTP400 bad request error in test
-
-    # def test_Author(self):
-        
-    #     prevCount = Author.objects.count()
-
-    #     # Add an author
-    #     authorUser = User.objects.create_user('tmepAuthor', 'temp@post.com','secret')
-    #     author = Author.objects.get(user = authorUser)
-    #     self.assertEqual(Author.objects.count(), prevCount+1)
-
-    #     data = {"user":author.user.id, 
-    #             "id":author.id, 
-    #             "host":author.host, 
-    #             "url":author.url,
-    #             "friends":author.friends,
-    #             "github":author.github,
-    #             "bio":author.bio}
-        
     #     self.client.force_authenticate(user = authorUser)
 
     #     url = '/api/author/'

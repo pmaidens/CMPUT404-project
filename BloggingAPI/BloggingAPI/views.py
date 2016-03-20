@@ -18,7 +18,7 @@ class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.L
     This end point lists all the authors on the server.
     To add an author you have to register on the site.
 
-    GET Repsonse objects properties:
+    GET Response objects properties:
         id -  guid of the author
         host - the host server that the author resides on
         displayname - the username of the author and the name that will be displayed for an author
@@ -78,7 +78,7 @@ class PostsViewSet(viewsets.ModelViewSet):
     This endpoint lists the posts that are currently available to the authenticated user.
     You can also create a new post for the current user.
 
-    GET Repsonse objects properties:
+    GET Response objects properties:
         count (Posts) - number of posts
         query - the current query
         size - the size of the page
@@ -112,7 +112,7 @@ class PostsViewSet(viewsets.ModelViewSet):
     This endpoint gets the specific post with the POST_ID.
     You can also update the post and delete it.
 
-    GET Repsonse object properties:
+    GET Response object properties:
         title - the title of the post
         source - the last place this post was
         origin - the original url of the post
@@ -188,7 +188,7 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
     This endpoint lists the the comments for the current post (post with the id POST_ID).
     You can also post new comments for the corresponding post.
 
-    GET Repsonse objects properties:
+    GET Response objects properties:
         count - number of comments
         query - the current query
         size - the size of the page
@@ -224,6 +224,7 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
     def get_serializer_context(self):
         return {'post_pk': self.kwargs['posts_pk']}
 
+
 # view for /api/friends/
 class FriendOverviewView(APIView):
     """
@@ -235,24 +236,12 @@ class FriendOverviewView(APIView):
     GET Response object properties:
         query - the current query
         authors - the list of friends the current author has
-        friends - boolean specifying if the author is a friend or not
     """
 
     def get(self, request, format=None):
         queryset = Author.objects.all()
         serializer = FriendDetailSerializer(queryset, many=True)
         return Response(serializer.data)
-
-    #Will we need to post here?
-
-    # def post(self, request, format=None):
-    #     serializer = FriendDetailSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 # view for /api/friends/<author-id>
 class FriendDetailView(APIView):
@@ -263,22 +252,21 @@ class FriendDetailView(APIView):
 
     GET Response object properties:
         query - the current query
-        authors - the list of friends the current author has
-        friends - boolean specifying if the author is a friend or not
+        authors - the list of friends the given author has
 
     POST Request object properties:
         query - the current query
         author - the id of the author in question
-        authors - an array of Author ID's - checked against the author in question to
-                  determine friendship
+        authors - an array of Author ID's - to bechecked against 
+                  the author in question to determine friendship
 
     POST Response object properties:
         query - the current query
         author - the id of the author in question
-        autors - and array of Author ID's, all of which are friends with the author in
-                 question, and were present on the requested list
+        authors - and array of Author ID's, all of which are friends
+        with the author in question, and were present on the requested 
+        list
     """
-
 
     def get(self,request,pk,format=None):
         queryset = Author.objects.get(id=pk)
@@ -298,9 +286,31 @@ class FriendDetailView(APIView):
 
 # view for /api/friendrequest/
 class FriendRequestViewSet(APIView):
+    """
+    Endpoint: /api/friendrequest/
+    Available Methods: POST
+    This endpoint is used to send a friendrequest to a local
+    or remote author.
 
-    def get(self, request,format=None):
-        return Response('Do we want to get something here?',status = status.HTTP_200_OK)
+    POST Request object properties:
+        query - the current query
+        author - an object with the following properties:
+                  * id - the author id
+                  * host - the author host
+                  * displayName - the author's display name
+    
+        friend - an object with the following properties:
+                 * id - the friend's author id
+                 * host - the friend's host
+                 * displayName - the friend's display name
+                 * url - the url where the friend is located
+
+    POST Response object properties:
+       Posting will manipulate the database, but not return any
+       serialized data. A response of success will be returned
+       on a successful request, otherwise the response will be
+       an error message
+    """
 
     def post(self,request,format=None):
         authorHost = request.data['author']['host']
@@ -357,8 +367,33 @@ class FriendRequestViewSet(APIView):
 # To be called when a friend request is posted to another service
 # Adds to the follow field of the local author
 class AddFollowerViewSet(APIView):
+    """
+    Endpoint: /api/addfollower/
+    Available Methods: POST
+    When a friend request is made to a remote author, post
+    here to add to the local author's followers field
 
-    # We have the author in our DB, make a friend for it!
+    POST Request object properties:
+        query - the current query
+
+        author - an object with the following properties:
+                  * id - the author id
+                  * host - the author host
+                  * displayName - the author's display name
+    
+        friend - an object with the following properties:
+                 * id - the friend's author id
+                 * host - the friend's host
+                 * displayName - the friend's display name
+                 * url - the url where the friend is located
+
+    POST Response object properties:
+       Posting will manipulate the database, but not return any
+       serialized data. A response of success will be returned
+       on a successful request, otherwise the response will be
+       an error message
+    """
+
     def post(self,request,format=None):
 
         author = Author.objects.get(id=request.data['author']['id'])
@@ -375,8 +410,20 @@ class AddFollowerViewSet(APIView):
             return Response('Error', status=status.HTTP_400_BAD_REQUEST)
     
     
-# api/friend/<friend1>/<friend2>/
+# view for api/friend/<friend1>/<friend2>/
 class FriendQueryViewSet(APIView):
+    """
+    Endpoint: /api/friend/<authorid1>/<authorid2>/
+    Available Methods: GET
+    Used to determine the friendship of two authors,
+    specified in the URL
+
+    GET Response properties:
+        query - the current query
+        authors - array of author id's, specifies both
+                  authors involved
+        friends - a boolean, True if friends, False otherwise
+    """
     
     def get(self, request, pk1, pk2, format=None):
         criteria1 = Q(id=pk1)
@@ -392,8 +439,28 @@ class FriendQueryViewSet(APIView):
 
 # /service/author/author-id/posts
 class AuthorSpecificPosts(APIView):
+    """
+    Endpoint: /api/friend/<authorid>/posts/
+    Available Methods: GET
+    Gets all posts made by <author-id> that are visible to the 
+    currently authenticated User
 
-    def get_queryset(self):
+    GET Response properties:
+        title - the title of the post
+        source - the last place this post was
+        origin - the original url of the post
+        description - the description of the post
+        contentType - content type of the post
+        content - the text of the post
+        categories - a list of categories that the post belongs to
+        count - number of posts
+        comments - the list of comments of a post
+        published - the date the post was created
+        id - the guid of the post
+        visibility - the visibility level of this post
+    """
+
+    def get_queryset(self,request):
         currentUser = self.request.user.username
         #query set for public posts
         publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
@@ -409,6 +476,6 @@ class AuthorSpecificPosts(APIView):
         return publicQuerySet | privateQuerySet | friendsOfFriendsQuerySet
     
     def get(self,request,pk,format=None):
-        queryset = self.get_queryset().filter(author=pk)
+        queryset = self.get_queryset(request).filter(author=pk)
         serializer = AuthorPostSerializer(queryset,many=True)
         return Response(serializer.data)
