@@ -17,7 +17,9 @@ angular.module("myApp.postStream", [
 .controller("PostStreamController", function($scope, $http, $location ,postHandler, authenticationHandler, urlHandler) {
     var targetAuthor, targetAuthorId;
     $scope.user = authenticationHandler.user;
+    console.log($scope.user);
     $scope.posts = [];
+    $scope.user.github = '';
     $scope.nodes = function(){
 
 	//$http.get our node urls.
@@ -56,7 +58,7 @@ angular.module("myApp.postStream", [
 
     }
 */ 
-$scope.nodePosts = [];
+$scope.nodePosts = [{}];
 
     // If something else tells us what authorId to use, then
     // we know that we should load the posts of that user.
@@ -84,7 +86,7 @@ $scope.nodePosts = [];
     var loadGit = function () {
 	//change $scope.git_username to the author's github user name
 	
-
+	console.log('hello??????');
 	var gitHubURL = $scope.user.github;
 	
 

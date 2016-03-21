@@ -43,7 +43,6 @@ angular.module("myApp.friendsFeed", [
     });
 
     authorHandler.getFollowing($scope.user.id).then(function(result){
-
         $scope.friendsSOON = result.data[0].following;
 	if($scope.friendsSOON.length){
 

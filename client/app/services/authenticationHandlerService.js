@@ -20,6 +20,7 @@ angular.module("myApp.services.authenticationHandler", [
                     resolve(result);
                 }.bind(this));
                 $http.defaults.headers.common.Authorization = "Token " + result.data.key;
+		console.log(result.data.key);
                 this.token = "Token " + result.data.key;
                 $localStorage.token = this.token;
             }.bind(this),function(err){
