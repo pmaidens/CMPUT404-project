@@ -548,8 +548,11 @@ class AcceptFriendViewSet(APIView):
                 break
 
         if toAdd is not None:
-            author.friends.add(toAdd)
             author.pendingFriends.all().filter(author_id=friendID).delete()
+            author.save()
+            print "here"
+            a = Friend.objects.all().filter(id = toAdd.author_id)
+            author.friends.add(a)
             print author.friends.all()
             return  Response('Success', status=status.HTTP_200_OK)
         else:
