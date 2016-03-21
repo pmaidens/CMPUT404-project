@@ -80,7 +80,7 @@ angular.module("myApp.services.authorHandler", [
     this.unfriend = function(friend){
 
 	//delete friend
-	return $http.post('http://localhost:8000/' + 'api/friends/removefriend/' , {friend:friend.author_id});
+	return $http.post(urlHandler.serviceURL() + 'api/friends/removefriend/' , {friend:friend.author_id});
 
     };
 
@@ -91,7 +91,7 @@ angular.module("myApp.services.authorHandler", [
     };
 
     this.acceptFriend = function(follower){
-        return $http.post('http://localhost:8000/' + "api/friends/acceptfriend/", {friend:follower.author_id});
+        return $http.post(urlHandler.serviceURL() + "api/friends/acceptfriend/", {friend:follower.author_id});
     };
 
 });
