@@ -33,7 +33,7 @@ angular.module("myApp.friendsFeed", [
         //var friends = getfriends($scope potentialFriends);
 	//STEP 1 
 	//STEP 2
-	getAuthorsFromNodes(nodes, $scope.potentialFriends);
+	getAuthorsFromNodes(nodes);
 	console.log($scope.nodeAuthors);
      
     });
@@ -169,25 +169,49 @@ angular.module("myApp.friendsFeed", [
 
     var nodeAuthors = [];
     var encoded='';
+    
 
-    for (var i=0; i < nodes.length ; i++){
-        //console.log(nodes);
+
+	for (var i=0; i < nodes.length ; i++){
+	    //console.log(nodes);
+	    
+	    //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
+	  //  if (nodes[i].url =='http://cmput404team4b.herokuapp.com/api/'){
+
+
+
+     //   encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
+
+
+	//    }else{
+      //      console.log(nodes[i].url);
+	//	encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
+
+
+
+     //   }
+      //  $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
+     //   $http.defaults.useXDomain=true;
+     //   $http({
+
+     /*   method:'GET',
+        url: nodes[i].url+'author/',
+        headers:{
+            
+
+        }
         
-        //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
-        if (nodes[i].url =='http://floating-sands-69681.herokuapp.com/api/'){
 
+        }).then(function(result){
 
-        encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
+    */
+    console.log(nodes[i].url);
+    encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
+    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
+    $http.defaults.useXDomain=true;
+    if (nodes[i].url =='http://secret-inlet-51780.herokuapp.com/api/'){
 
-        }
-        else{
-        encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
-
-
-        }
-        $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
-        $http.defaults.useXDomain=true;
-        $http({
+    $http({
 
         method:'GET',
         url: nodes[i].url+'author/',
@@ -199,19 +223,27 @@ angular.module("myApp.friendsFeed", [
 
         }).then(function(result){
 
-        console.log(result.data);
+    
+
+        console.log(result.data.authors);
         //TODO 
-        $scope.nodeAuthors = result.data;
+       // if(nodes[i].url == 'http://secret-inlet-51780.herokuapp.com/api/'){
+
+        $scope.nodeAuthors = result.data.authors;
+        //}
+        //$scope.nodeAuthors = result.data;
         //STEP2
 
-        });
+     //   });
     
 
 
-    }
-    }
+    });
+}
 
+}
 
+};
 
 });
 

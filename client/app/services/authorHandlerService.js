@@ -79,11 +79,13 @@ angular.module("myApp.services.authorHandler", [
 		}
 
 	    });
-	    
+	    console.log("i am HERE "+ friend.host+'/friendRequest/'+friend.displayName,requestObject);
 	    $http.defaults.headers.common.Authorization =  'Basic ' + encoded;
-	    return $http.post(friend.host+'/friendrequest/',requestObject);
+        //TODO Submits local host in the http post request
+	    return $http.post(friend.host+'/friendRequest/'+friend.displayName,requestObject);
 
 	}else{
+               console.log("i am HERE"+ friend.host);
             $http.defaults.headers.common.Authorization = authenticationHandler.token;
             return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
 	    }
