@@ -18,8 +18,45 @@ angular.module("myApp.postStream", [
     var targetAuthor, targetAuthorId;
     $scope.user = authenticationHandler.user;
     $scope.posts = [];
-    //TODO change to author.github
-    $scope.git_username = "sjpartri";  // This will have to be changed "hard-coded for now"
+    $scope.nodes = function(){
+
+	//$http.get our node urls.
+
+    };
+
+ /*   $scope.getNodePosts = function(nodes){
+	
+	$scope.nodePosts = [];
+
+	for (var i; i < nodes.length ; i++){
+	    
+	    var encoded = Base64.encode(nodes[i].username + ':' + nodes[i].password);
+
+
+	    $http({
+
+		method:'GET',
+		url: nodes[i].url+'/posts/',
+		headers:{
+		    'Authentication: Basic '+ encoded
+
+		}
+		
+
+	    }).then(function(result){
+
+
+
+		$scope.nodePosts.push(result.data);
+
+	    });
+	    
+
+	}
+
+    }
+*/ 
+$scope.nodePosts = [];
 
     // If something else tells us what authorId to use, then
     // we know that we should load the posts of that user.
