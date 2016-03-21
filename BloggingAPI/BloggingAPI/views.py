@@ -460,7 +460,7 @@ class AuthorSpecificPosts(APIView):
         visibility - the visibility level of this post
     """
 
-    def get_queryset(self,request):
+    def get_queryset(self):
         currentUser = self.request.user.username
         #query set for public posts
         publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
@@ -509,19 +509,21 @@ class AcceptFriendViewSet(APIView):
     def post(self, request, format=None):
         # Get Author
         currentUser = request.user
-        author = Author.objects.all.filter(id = currentUser.id)
-        
-        friendID = request['friend']
+        author = Author.objects.all().filter(id = currentUser.id)
+        author = author[0]
+
+        print author.pendingFriends.all()
+        friendID = request.data['friend']
         toAdd = None
         
         # Get friend
         for friend in author.pendingFriends.all():
-            if str(friend.id) == friendID:
+            if str(friend.id) == str(friendID):
                 toAdd = friend
                 break
 
         if toAdd is not None:
-            author.friends.add(friend)
+            author.friends.add(toAdd)
             author.pendingFriends.all().filter(id=friendID).delete()
             return  Response('Success', status=status.HTTP_200_OK)
         else:
@@ -537,19 +539,20 @@ class RemoveFriendViewSet(APIView):
     def post(self, request, format=None):
         # Get Author
         currentUser = request.user
-        author = Author.objects.all.filter(id = currentUser.id)
-        
-        friendID = request['friend']
+        author = Author.objects.all().filter(id = currentUser.id)
+        author = author[0]
+  
+        friendID = request.data['friend']
         toDelete = None
         
         # Get friend
         for friend in author.friends.all():
-            if str(friend.id) == friendID:
+            if str(friend.id) == str(friendID):
                 toDelete = friend
                 break
 
         if toDelete is not None:
-            author.friends.all.filter(id=friend.id).delete()
+            author.friends.all.filter(id=toDelete.id).delete()
             return  Response('Success', status=status.HTTP_200_OK)
         else:
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
