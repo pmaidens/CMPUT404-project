@@ -66,6 +66,7 @@ urlpatterns = [
     # url(r'^', include(posts_router.urls)),
     url(r'^api/', include(comments_router.urls)),
     url(r'^api/friends/$', FriendOverviewView.as_view()),
+    url(r'^api/friends/unfollow/$',UnfollowFriendViewSet.as_view()),
     url(r'^api/friends/acceptfriend/$',AcceptFriendViewSet.as_view()),
     url(r'^api/friends/removefriend/$',RemoveFriendViewSet.as_view()),
     url(r'^api/friends/(?P<pk>[^/.]+)/$', FriendDetailView.as_view()),
