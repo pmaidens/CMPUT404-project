@@ -332,9 +332,9 @@ class FriendRequestViewSet(APIView):
                                           url = request.data['friend']['url'])
 
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
-                                          host = friendHost,
-                                          display_name = request.data['friend']['displayName'],
-                                          url = request.data['friend']['url'])
+                                          host = authorHost,
+                                          display_name = request.data['author']['displayName'],
+                                          url = request.data['author']['url'])
 
 
             try:
