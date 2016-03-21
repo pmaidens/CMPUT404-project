@@ -70,11 +70,10 @@ angular.module("myApp.services.postHandler", [
 
     };
 
-    this.commentPost = function(post){
+    this.commentPost = function(post,urlToPostTo){
 	console.log(post);
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
-	var url = post.origin;
-        return $http.post(url+"/comments/", post);
+        return $http.post(urlToPostTo, post);
 
     };
 

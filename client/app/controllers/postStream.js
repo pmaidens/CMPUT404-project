@@ -86,6 +86,7 @@ angular.module("myApp.postStream", [
 
 		//$scope.nodePosts.push(result.data.posts);
 		result.data.posts.forEach(function(post){
+		    console.log(post);
 		    $scope.nodePosts.push(post)
 
 		});
@@ -217,16 +218,19 @@ angular.module("myApp.postStream", [
 //POST : author id, comment, postid
     $scope.AddComment = function (post, comments) {
 	var date = new Date();
+	var urlToComment = post.author.host + '/posts/' + post.id = '/comments/'
         postHandler.commentPost({
             author: authenticationHandler.user,
             comment: comments,
 	    //we need to allow different contenttypes for comments
 	    contentType: 'text/plain'//,
 	   // published: date,
-	   // id:''
-        }).then(function(){
+	   //id
+        },urlToComment).then(function(){
 	    
 	    comments = '';
+	    
+	    //TODO
 	    
 	    $http.get(urlHandler.serviceURL()+'api/posts/'+post.id+'/').then(function(postData){
 
