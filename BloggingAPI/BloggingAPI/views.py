@@ -257,14 +257,14 @@ class FriendDetailView(APIView):
     POST Request object properties:
         query - the current query
         author - the id of the author in question
-        authors - an array of Author ID's - to bechecked against 
+        authors - an array of Author ID's - to bechecked against
                   the author in question to determine friendship
 
     POST Response object properties:
         query - the current query
         author - the id of the author in question
         authors - and array of Author ID's, all of which are friends
-        with the author in question, and were present on the requested 
+        with the author in question, and were present on the requested
         list
     """
 
@@ -282,7 +282,7 @@ class FriendDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
 
 # view for /api/friendrequest/
 class FriendRequestViewSet(APIView):
@@ -298,7 +298,7 @@ class FriendRequestViewSet(APIView):
                   * id - the author id
                   * host - the author host
                   * displayName - the author's display name
-    
+
         friend - an object with the following properties:
                  * id - the friend's author id
                  * host - the friend's host
@@ -318,14 +318,14 @@ class FriendRequestViewSet(APIView):
 
         # Assume local author, and thus local friend
         if (authorHost == friendHost):
-            
+
             # Get Requester
             author = Author.objects.get(id=request.data['author']['id'])
 
             # Get Requested
             friend = Author.objects.get(id=request.data['friend']['id'])
 
-            
+
             followingObj = Friend.objects.create(author_id = request.data['friend']['id'],
                                           host = friendHost,
                                           display_name = request.data['friend']['displayName'],
@@ -336,7 +336,7 @@ class FriendRequestViewSet(APIView):
                                           display_name = request.data['friend']['displayName'],
                                           url = request.data['friend']['url'])
 
-        
+
             try:
                 author.following.add(followingObj)
                 friend.pendingFriends.add(pendingObj)
@@ -346,23 +346,23 @@ class FriendRequestViewSet(APIView):
 
         # remote request
         else:
-            
+
             # We have the friend host, author is not on our server
             # Add friend object to it's pending field
-            
+
             friend = Author.objects.get(id=request.data['friend']['id'])
 
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
                                                host = authorHost,
                                                display_name = request.data['author']['displayName'],
                                                url = request.data['author']['url'])
-        
+
             try:
                 friend.pendingFriends.add(pendingObj)
                 return Response('OK',status = status.HTTP_200_OK)
             except:
                 return Response('Error', status=status.HTTP_400_BAD_REQUEST)
-            
+
 
 # To be called when a friend request is posted to another service
 # Adds to the follow field of the local author
@@ -380,7 +380,7 @@ class AddFollowerViewSet(APIView):
                   * id - the author id
                   * host - the author host
                   * displayName - the author's display name
-    
+
         friend - an object with the following properties:
                  * id - the friend's author id
                  * host - the friend's host
@@ -408,8 +408,8 @@ class AddFollowerViewSet(APIView):
             return Response('Success',status = status.HTTP_200_OK)
         except:
             return Response('Error', status=status.HTTP_400_BAD_REQUEST)
-    
-    
+
+
 # view for api/friends/<friend1>/<friend2>/
 class FriendQueryViewSet(APIView):
     """
@@ -424,7 +424,7 @@ class FriendQueryViewSet(APIView):
                   authors involved
         friends - a boolean, True if friends, False otherwise
     """
-    
+
     def get(self, request, pk1, pk2, format=None):
         criteria1 = Q(id=pk1)
         criteria2 = Q(id=pk2)
@@ -442,7 +442,7 @@ class AuthorSpecificPosts(APIView):
     """
     Endpoint: /api/author/<authorid>/posts/
     Available Methods: GET
-    Gets all posts made by <author-id> that are visible to the 
+    Gets all posts made by <author-id> that are visible to the
     currently authenticated User
 
     GET Response properties:
@@ -505,7 +505,7 @@ class AcceptFriendViewSet(APIView):
 
     #POST:
     # { friend: <author_id> }
-    
+
     def post(self, request, format=None):
         # Get Author
         currentUser = request.user
@@ -515,7 +515,7 @@ class AcceptFriendViewSet(APIView):
         print author.pendingFriends.all()
         friendID = request.data['friend']
         toAdd = None
-        
+
         # Get friend
         for friend in author.pendingFriends.all():
             if str(friend.id) == str(friendID):
@@ -528,23 +528,23 @@ class AcceptFriendViewSet(APIView):
             return  Response('Success', status=status.HTTP_200_OK)
         else:
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
-        
-                
+
+
 # /api/friends/removefriend/
 class RemoveFriendViewSet(APIView):
 
     # POST:
     # { friend: <author_id> }
-    
+
     def post(self, request, format=None):
         # Get Author
         currentUser = request.user
         author = Author.objects.all().filter(id = currentUser.id)
         author = author[0]
-  
+
         friendID = request.data['friend']
         toDelete = None
-        
+
         # Get friend
         for friend in author.friends.all():
             if str(friend.id) == str(friendID):
