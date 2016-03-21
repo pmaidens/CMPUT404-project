@@ -89,7 +89,7 @@ class FriendQuerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Author
-        fields = ('query','authors','friends') 
+        fields = ('query','authors','friends')
 
     def getQuery(self,obj):
         return "friends"
@@ -103,13 +103,13 @@ class FriendQuerySerializer(serializers.ModelSerializer):
     def getFriendship(self,obj):
         author1 = obj[0]
         author2 = obj[1]
-        
+
         for friend in author1.friends.all():
             if friend.author_id == author2.id:
                 return True
         return False
-        
-        
+
+
 
 class UpdateAuthorSerializer(serializers.ModelSerializer):
 
