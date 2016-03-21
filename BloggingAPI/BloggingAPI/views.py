@@ -539,21 +539,29 @@ class AcceptFriendViewSet(APIView):
         author = author[0]
 
         friendID = request.data['friend']
-        toAdd = None
+        print 'friendID:'
+        print friendID
 
         # Get friend
         for friend in author.pendingFriends.all():
+            print 'friend.author_id:'
+            print friend.author_id
             if str(friend.author_id) == str(friendID):
-                toAdd = friend
-                break
+                # print 'friend:'
+                # print Friend.objects.all().filter(author_id=friend.author_id)
+                friendObj = Friend.objects.create(
+                                author_id=friend.author_id,
+                                host=friend.host,
+                                display_name=friend.display_name,
+                                url=friend.url)
+                author.pendingFriends.all().filter(author_id=friendID).delete()
+                author.friends.add(friendObj)
+                # print 'friends:'
+                print author.friends.all()
+                # print Friend.objects.all().filter(author_id=friend.author_id)
+                return  Response('Success', status=status.HTTP_200_OK)
 
-        if toAdd is not None:
-            author.friends.add(toAdd)
-            author.pendingFriends.all().filter(author_id=friendID).delete()
-            print author.friends.all()
-            return  Response('Success', status=status.HTTP_200_OK)
-        else:
-            return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
+        return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
 
 # /api/friends/removefriend/
 class RemoveFriendViewSet(APIView):
