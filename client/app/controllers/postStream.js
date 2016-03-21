@@ -44,7 +44,7 @@ angular.module("myApp.postStream", [
 
     //TODO CHANGE THESE FAKE NODES TO REAL NODES
     //comment this out when $scope.nodes is being set
-    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
     
 
 

@@ -31,6 +31,9 @@ angular.module("myApp.friendsFeed", [
             filteredStuff($scope.potentialFriends,$scope.followers,$scope.user,$scope.user.friends)
         })
         //var friends = getfriends($scope potentialFriends);
+	
+	getAuthorsFromNodes(nodes);
+	console.log($scope.nodeAuthors);
      
     });
 
@@ -150,7 +153,7 @@ angular.module("myApp.friendsFeed", [
 
     };
 
-     var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
 
 
     var getAuthorsFromNodes = function(nodes){
@@ -188,6 +191,8 @@ angular.module("myApp.friendsFeed", [
 	    }).then(function(result){
 
 		console.log(result.data);
+		//TODO 
+		$scope.nodeAuthors = result.data;
 
 	    });
 	
@@ -196,7 +201,7 @@ angular.module("myApp.friendsFeed", [
 	}
     }
 
-    //getAuthorsFromNodes(nodes);
+    
 
 
 });
