@@ -579,7 +579,7 @@ class RemoveFriendViewSet(APIView):
                 break
 
         if toDelete is not None:
-            author.Friends.all().filter(author_id=friendID).delete()
+            author.friends.all().filter(author_id=friendID).delete()
             return  Response('Success', status=status.HTTP_200_OK)
         else:
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)

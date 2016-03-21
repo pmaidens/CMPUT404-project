@@ -73,7 +73,7 @@ angular.module("myApp.services.postHandler", [
     this.commentPost = function(post){
 	console.log(post);
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
-	var url = 'http://cmput404team4b.herokuapp.com/api/posts/' + post.id
+	var url = post.origin;
         return $http.post(url+"/comments/", post);
 
     };
