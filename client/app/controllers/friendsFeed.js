@@ -20,7 +20,7 @@ angular.module("myApp.friendsFeed", [
     $scope.isFollowing = false;
     $scope.hasFollowers = false;
     $scope.friends = $scope.user.friends;
-    console.log($scope.friends.length!=0);
+    //console.log($scope.friends.length!=0);
 
     authorHandler.getAllAuthors().then(function(result) {
 
@@ -32,7 +32,7 @@ angular.module("myApp.friendsFeed", [
     authorHandler.getFollowers($scope.user.id).then(function(result){
 
         $scope.followers = result.data[0].friendrequests;
-	console.log($scope.followers);
+	//console.log($scope.followers);
 	if($scope.followers.length){
 	
 	    $scope.hasFollowers = true;

@@ -19,9 +19,13 @@ angular.module("myApp.services.authenticationHandler", [
                     this.updateWatchers(true);
                     resolve(result);
                 }.bind(this));
-                $http.defaults.headers.common.Authorization = "Token " + result.data.key;
-		console.log(result.data.key);
-                this.token = "Token " + result.data.key;
+
+                var token = "Basic " + window.btoa(username+":"+password);
+                // $http.defaults.headers.common.Authorization = "Token " + result.data.key;
+                // this.token = "Token " + result.data.key;
+                // $localStorage.token = this.token;
+                $http.defaults.headers.common.Authorization = token;
+                this.token = token;
                 $localStorage.token = this.token;
             }.bind(this),function(err){
                 console.log(err);

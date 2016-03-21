@@ -17,22 +17,24 @@ angular.module("myApp.postStream", [
 .controller("PostStreamController", function($scope, $http, $location ,postHandler, authenticationHandler, urlHandler) {
     var targetAuthor, targetAuthorId;
     $scope.user = authenticationHandler.user;
-    console.log($scope.user);
+    //console.log($scope.user);
     $scope.posts = [];
-    $scope.user.github = '';
-    $scope.nodes = function(){
+    //$scope.nodes = 
 
-	//$http.get our node urls.
 
-    };
 
- /*   $scope.getNodePosts = function(nodes){
+    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com','username':'c404','password':'asdf'}];
+    
+
+
+    var getNodePosts = function(nodes){
 	
 	$scope.nodePosts = [];
 
-	for (var i; i < nodes.length ; i++){
+	for (var i=0; i < nodes.length ; i++){
+	    console.log(nodes);
 	    
-	    var encoded = Base64.encode(nodes[i].username + ':' + nodes[i].password);
+	    var encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
 
 
 	    $http({
@@ -40,7 +42,7 @@ angular.module("myApp.postStream", [
 		method:'GET',
 		url: nodes[i].url+'/posts/',
 		headers:{
-		    'Authentication: Basic '+ encoded
+		    'Authentication': 'Basic '+ encoded
 
 		}
 		
@@ -50,6 +52,10 @@ angular.module("myApp.postStream", [
 
 
 		$scope.nodePosts.push(result.data);
+		console.log($scope.nodePosts);
+
+	    },function(err){
+		console.log(err);
 
 	    });
 	    
@@ -57,8 +63,9 @@ angular.module("myApp.postStream", [
 	}
 
     }
-*/ 
-$scope.nodePosts = [{}];
+    
+    getNodePosts(nodes);
+ 
 
     // If something else tells us what authorId to use, then
     // we know that we should load the posts of that user.
@@ -86,7 +93,7 @@ $scope.nodePosts = [{}];
     var loadGit = function () {
 	//change $scope.git_username to the author's github user name
 	
-	console.log('hello??????');
+	console.log($scope.user.github);
 	var gitHubURL = $scope.user.github;
 	
 
@@ -137,6 +144,7 @@ $scope.nodePosts = [{}];
        
     };
 
+    
 //localhost/api/posts/{postid}/comments
 
 //POST : author id, comment, postid
