@@ -90,8 +90,7 @@ angular.module("myApp.services.authorHandler", [
     };
 
     this.acceptFriend = function(follower){
-    
-	//accept friend request
+        return $http.get(urlHandler.serviceURL() + "api/friends/acceptfriend/", {friend:follower.author_id});
     };
 
 });
