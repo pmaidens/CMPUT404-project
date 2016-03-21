@@ -261,7 +261,6 @@ class apiTests(TestCase):
 	# 	"url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e"
 	# }
 
-
         
         data = {"query":"friends",
                 "author":{ "id": str(self.author.id),
