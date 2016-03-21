@@ -80,7 +80,7 @@ angular.module("myApp.services.authorHandler", [
     this.unfriend = function(friend){
 
 	//delete friend
-	return $http.post('http://localhost:8000/' + 'api/friends/removefriend/' , {friend:friend.id});
+	return $http.post('http://localhost:8000/' + 'api/friends/removefriend/' , {friend:friend.author_id});
 
     };
 
