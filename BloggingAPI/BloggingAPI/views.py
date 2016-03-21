@@ -544,11 +544,7 @@ class AcceptFriendViewSet(APIView):
 
         # Get friend
         for friend in author.pendingFriends.all():
-            print 'friend.author_id:'
-            print friend.author_id
             if str(friend.author_id) == str(friendID):
-                # print 'friend:'
-                # print Friend.objects.all().filter(author_id=friend.author_id)
                 friendObj = Friend.objects.create(
                                 author_id=friend.author_id,
                                 host=friend.host,
@@ -556,9 +552,7 @@ class AcceptFriendViewSet(APIView):
                                 url=friend.url)
                 author.pendingFriends.all().filter(author_id=friendID).delete()
                 author.friends.add(friendObj)
-                # print 'friends:'
                 print author.friends.all()
-                # print Friend.objects.all().filter(author_id=friend.author_id)
                 return  Response('Success', status=status.HTTP_200_OK)
 
         return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
@@ -579,7 +573,7 @@ class RemoveFriendViewSet(APIView):
         toDelete = None
 
         # Get friend
-        for friend in author.pendingFriends.all():
+        for friend in author.friends.all():
             if str(friend.author_id) == str(friendID):
                 toDelete = friend
                 break
