@@ -257,3 +257,10 @@ body{
   background-color: #1CA347;
   border-color: #1CA347;
 }
+
+.friendlyDisplayName{
+
+    color:#3b5998;
+    font-weight:bold;
+
+}
