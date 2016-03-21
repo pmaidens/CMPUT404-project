@@ -35,25 +35,23 @@ angular.module("myApp.friendsFeed", [
     });
 
     $scope.getfollowers = function(){
-
-
-    return authorHandler.getFollowers($scope.user.id).then(function(result){
-
-        $scope.followers = result.data[0].friendrequests;
-	//console.log($scope.followers);
-	if($scope.followers.length){
-	
-	    $scope.hasFollowers = true;
-	    
-	}
-
-
-        $scope.followers = result.data[0].friendrequests;
-
+        // return authorHandler.getFollowers($scope.user.id).then(function(result){
+        // 	//console.log($scope.followers);
+        //     $scope.followers = result.data[0].friendrequests;
+        // 	if($scope.followers.length){
+        // 	    $scope.hasFollowers = true;
+        // 	}
+        // });
+        return $q(function(resolve, reject) {
+            authorHandler.getFollowers($scope.user.id).then(function(result){
+                // console.log($scope.followers);
+                $scope.followers = result.data[0].friendrequests;
+                if($scope.followers.length){
+                    $scope.hasFollowers = true;
+                }
+                resolve(result);
+            });
         });
-
- 
-
     };  
 
     var getRefresh = function(user){
@@ -65,7 +63,7 @@ angular.module("myApp.friendsFeed", [
     
     var filteredStuff = function(potentialFriends, followers, user, friends){
 
-     $scope.filteredPotentialFriends = potentialFriends.filter(function(filteredPotentialFriends){
+        $scope.filteredPotentialFriends = potentialFriends.filter(function(filteredPotentialFriends){
             console.log(filteredPotentialFriends.id);
             return (!followers.some(function(follower){
                 return filteredPotentialFriends.id === follower.author_id;
@@ -74,7 +72,7 @@ angular.module("myApp.friendsFeed", [
                 return filteredPotentialFriends.id === friend.author_id;
             })&& filteredPotentialFriends.id !== user.id);
         
-            });
+        });
     };
 
     authorHandler.getFollowing($scope.user.id).then(function(result){
