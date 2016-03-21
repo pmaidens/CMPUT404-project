@@ -529,6 +529,26 @@ class ConnectedNodesViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, view
 # /api/friends/acceptfriend/
 class AcceptFriendViewSet(APIView):
 
+    """
+    Endpoint: /api/author/friends/acceptfriend/
+    Available Methods: POST
+
+    Accepts a friend request for the currently authenticated author
+
+    POST Request properties:
+        friend - the author id of the friend you want to befriend.
+                 the friend should have already sent a request to the
+                 currently authenticated user.
+    
+    POST Response properties:
+       No JSON is returned. If the id posted is valid, the friend will
+       be removed from the currently authenticated author's pending
+       friends attribute, and added to their friends attribute. A success
+       message is returned alongside an HTTP 200 OK. If the ID is invalid,
+       no database changes are made, and an error message is returned 
+       alongside an HTTP 400 OK response.
+    """
+
     #POST:
     # { friend: <author_id> }
 
@@ -552,13 +572,30 @@ class AcceptFriendViewSet(APIView):
                                 url=friend.url)
                 author.pendingFriends.all().filter(author_id=friendID).delete()
                 author.friends.add(friendObj)
-                print author.friends.all()
                 return  Response('Success', status=status.HTTP_200_OK)
 
         return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
 
 # /api/friends/removefriend/
 class RemoveFriendViewSet(APIView):
+    """
+    Endpoint: /api/author/friends/removefriend/
+    Available Methods: POST
+
+    Removes a friend attached to the currently authenticated author
+
+    POST Request properties:
+        friend - the author id of the friend you want to un-befriend.
+                 the friend should already have been accepted by the
+                 currently authenticated user.
+    
+    POST Response properties:
+       No JSON is returned. If the id posted is valid, the friend will
+       be removed from the currently authenticated author's friends attribute.
+       A success message is returned alongside an HTTP 200 OK. If the ID 
+       is invalid, no database changes are made, and an error message is 
+       returned alongside an HTTP 400 BAD REQUEST response.
+    """
 
     # POST:
     # { friend: <author_id> }
@@ -585,8 +622,26 @@ class RemoveFriendViewSet(APIView):
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
 
 # view for /api/friends/unfollow
-
 class UnfollowFriendViewSet(APIView):
+    """
+    Endpoint: /api/author/friends/unfollow/
+    Available Methods: POST
+
+    Unfollows a given friend, essentially dropping the friend request 
+    the currently authenticated author sent.
+
+    POST Request properties:
+        friend - the author id of the friend you want to unfollow.
+                 the currently authenticated user should have already 
+                 sent a friend request to the friend
+    
+    POST Response properties:
+       No JSON is returned. If the id posted is valid, the friend will
+       be removed from the currently authenticated author's following
+       attribute. A success message is returned alongside an HTTP 200 OK. 
+       If the ID is invalid, no database changes are made, and an error 
+       message is returned alongside an HTTP 400 BAD REQUEST response.
+    """
     
     # Post:
     # {friend: <author_id> }
@@ -602,6 +657,14 @@ class UnfollowFriendViewSet(APIView):
         # Get friend
         for friend in author.following.all():
             if str(friend.author_id == str(friendID)):
+                # found it
+
+                # theUnfollowed = Author.objects.all().filter(author_id = friendID)
+                # theUnfollowed = theUnfollowed[0]
+                # if theUnfollowed.host == author.host:
+                #     #locally remove 
+                #     theUnfollowed.pendingFriends.objects.all().filter(author_id = author.id).delete()
+
                 author.following.all().filter(author_id=friendID).delete()
                 return  Response('Success', status=status.HTTP_200_OK)
         return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
