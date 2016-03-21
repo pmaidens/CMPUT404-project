@@ -17,9 +17,55 @@ angular.module("myApp.postStream", [
 .controller("PostStreamController", function($scope, $http, $location ,postHandler, authenticationHandler, urlHandler) {
     var targetAuthor, targetAuthorId;
     $scope.user = authenticationHandler.user;
+    //console.log($scope.user);
     $scope.posts = [];
-    //TODO change to author.github
-    $scope.git_username = "sjpartri";  // This will have to be changed "hard-coded for now"
+    //$scope.nodes = 
+
+
+
+    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com','username':'c404','password':'asdf'}];
+    
+
+
+    var getNodePosts = function(nodes){
+	
+	$scope.nodePosts = [];
+
+	for (var i=0; i < nodes.length ; i++){
+	    console.log(nodes);
+	    
+	    var encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
+
+
+	    $http({
+
+		method:'GET',
+		url: nodes[i].url+'/posts/',
+		headers:{
+		    'Authentication': 'Basic '+ encoded
+
+		}
+		
+
+	    }).then(function(result){
+
+
+
+		$scope.nodePosts.push(result.data);
+		console.log($scope.nodePosts);
+
+	    },function(err){
+		console.log(err);
+
+	    });
+	    
+
+	}
+
+    }
+    
+    getNodePosts(nodes);
+ 
 
     // If something else tells us what authorId to use, then
     // we know that we should load the posts of that user.
@@ -47,7 +93,7 @@ angular.module("myApp.postStream", [
     var loadGit = function () {
 	//change $scope.git_username to the author's github user name
 	
-
+	console.log($scope.user.github);
 	var gitHubURL = $scope.user.github;
 	
 
@@ -98,6 +144,7 @@ angular.module("myApp.postStream", [
        
     };
 
+    
 //localhost/api/posts/{postid}/comments
 
 //POST : author id, comment, postid

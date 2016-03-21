@@ -17,6 +17,10 @@ angular.module("myApp.friendsFeed", [
 .controller("FriendsFeedController", function($scope, $http, $location, $q, authenticationHandler, urlHandler, authorHandler) {
 	$scope.potentialFriends = [];
 	$scope.user = authenticationHandler.user;
+    $scope.isFollowing = false;
+    $scope.hasFollowers = false;
+    $scope.friends = $scope.user.friends;
+    //console.log($scope.friends.length!=0);
 
     authorHandler.getAllAuthors().then(function(result) {
 
@@ -32,7 +36,17 @@ angular.module("myApp.friendsFeed", [
 
     $scope.getfollowers = function(){
 
+
     return authorHandler.getFollowers($scope.user.id).then(function(result){
+
+        $scope.followers = result.data[0].friendrequests;
+	//console.log($scope.followers);
+	if($scope.followers.length){
+	
+	    $scope.hasFollowers = true;
+	    
+	}
+
 
         $scope.followers = result.data[0].friendrequests;
 
@@ -64,8 +78,12 @@ angular.module("myApp.friendsFeed", [
     };
 
     authorHandler.getFollowing($scope.user.id).then(function(result){
+        $scope.friendsSOON = result.data[0].following;
+	if($scope.friendsSOON.length){
 
-        $scope.friendsSOON = result.data;
+	    $scope.isFollowing = true;
+	}
+	
 
     
     });
