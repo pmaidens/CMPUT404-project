@@ -10,6 +10,7 @@ from rest_framework.decorators import detail_route
 from .permissions import *
 from .pagination import *
 from django.db.models import Q
+from django.contrib.sites.models import Site
 
 class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
     """
@@ -168,19 +169,6 @@ class PostsViewSet(viewsets.ModelViewSet):
         return serializer_class
 
 
-# class CurrentAuthorPostsViewSet(viewsets.ModelViewSet):
-#
-#     queryset = Post.objects.all()
-#     serializer_class = PostsSerializer
-#
-#
-# class AuthorPostsViewSet(viewsets.ModelViewSet):
-#
-#     queryset = Post.objects.all()
-#     serializer_class = PostsSerializer
-#
-	#
-
 class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     Endpoint: /api/posts/{POST_ID}/comments/
@@ -336,10 +324,16 @@ class FriendRequestViewSet(APIView):
                                           display_name = request.data['friend']['displayName'],
                                           url = request.data['friend']['url'])
 
+            #API specs doesn't require URL on the author side so if the url is empty in the request generate it
+            if 'url' in request.data['author']:
+                pendingObjURL = request.data['author']['url']
+            else:
+                pendingObjURL = Site.objects.get_current().domain + '/author/' + request.data['author']['id']
+
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
                                           host = authorHost,
                                           display_name = request.data['author']['displayName'],
-                                          url = request.data['author']['url'])
+                                          url = pendingObjURL)
 
 
             try:
@@ -403,10 +397,16 @@ class AddFollowerViewSet(APIView):
 
         author = Author.objects.get(id=request.data['author']['id'])
 
+        #API specs doesn't require URL on the author side so if the url is empty in the request generate it
+        if 'url' in request.data['author']:
+            followingObjURL = request.data['author']['url']
+        else:
+            followingObjURL = Site.objects.get_current().domain + '/author/' + request.data['author']['id']
+
         followingObj = Friend.objects.create(author_id = request.data['friend']['id'],
                                           host = friendHost,
                                           display_name = request.data['friend']['displayName'],
-                                          url = request.data['friend']['url'])
+                                          url = followingObjURL)
 
         try:
             author.following.add(followingObj)
@@ -537,26 +537,25 @@ class AcceptFriendViewSet(APIView):
         currentUser = request.user
         author = Author.objects.all().filter(user = currentUser)
         author = author[0]
-        
+
         friendID = request.data['friend']
-        toAdd = None
+        print 'friendID:'
+        print friendID
 
         # Get friend
         for friend in author.pendingFriends.all():
             if str(friend.author_id) == str(friendID):
-                toAdd = friend
-                break
+                friendObj = Friend.objects.create(
+                                author_id=friend.author_id,
+                                host=friend.host,
+                                display_name=friend.display_name,
+                                url=friend.url)
+                author.pendingFriends.all().filter(author_id=friendID).delete()
+                author.friends.add(friendObj)
+                print author.friends.all()
+                return  Response('Success', status=status.HTTP_200_OK)
 
-        if toAdd is not None:
-            author.pendingFriends.all().filter(author_id=friendID).delete()
-            author.save()
-            print "here"
-            a = Friend.objects.all().filter(id = toAdd.author_id)
-            author.friends.add(a)
-            print author.friends.all()
-            return  Response('Success', status=status.HTTP_200_OK)
-        else:
-            return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
+        return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
 
 # /api/friends/removefriend/
 class RemoveFriendViewSet(APIView):
@@ -574,7 +573,7 @@ class RemoveFriendViewSet(APIView):
         toDelete = None
 
         # Get friend
-        for friend in author.pendingFriends.all():
+        for friend in author.friends.all():
             if str(friend.author_id) == str(friendID):
                 toDelete = friend
                 break
