@@ -38,10 +38,11 @@ angular.module("myApp.friendsFeed", [
 
 	 authorHandler.getFollowers($scope.user.id).then(function(result){
 
-	     $scope.followers = result.data[0].friendrequests;
+	     $scope.followers2 = result.data[0].friendrequests;
 	 });
 
     };
+    $scope.getfollowers2();
 
     $scope.getfollowers = function(){
         // return authorHandler.getFollowers($scope.user.id).then(function(result){
