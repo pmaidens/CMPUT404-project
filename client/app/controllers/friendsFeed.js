@@ -150,10 +150,53 @@ angular.module("myApp.friendsFeed", [
 
     };
 
-    
+     var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
 
 
+    var getAuthorsFromNodes = function(nodes){
 
+	var nodeAuthors = [];
+	var encoded='';
+
+	for (var i=0; i < nodes.length ; i++){
+	    //console.log(nodes);
+	    
+	    //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
+	    if (nodes[i].url =='http://cmput404teamb.herokuapp.com/api'){
+
+
+		encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
+
+	    }
+	    else{
+		encoded = window.btoa('team6@'+ nodes[i].username + ':' + nodes[i].password);
+
+
+	    }
+	    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
+	    $http.defaults.useXDomain=true;
+	    $http({
+
+		method:'GET',
+		url: nodes[i].url+'author/',
+		headers:{
+		    
+
+		}
+		
+
+	    }).then(function(result){
+
+		console.log(result.data);
+
+	    });
+	
+
+
+	}
+    }
+
+    //getAuthorsFromNodes(nodes);
 
 
 });

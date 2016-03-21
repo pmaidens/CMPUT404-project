@@ -25,11 +25,25 @@ angular.module("myApp.postStream", [
 
     var getNodes = function(){
 
-	//$http.get();
-	//we need the endpoint for nodes
+	//CHANGE USERNAME AND PASSWORD TO A REAL ONE.
+	//var credentials = window.btoa('username:password');
+
+
+	//USE THIS IF WE NEED BASIC AUTH TO GET /api/nodes
+	$http.defaults.headers.common.Authorization = authenticationHandler.token;
+	
+	//TODO change the url
+	$http.get('http://localhost:8000/api/nodes/' ).then(function(result){
+
+	    console.log(result.data);
+	    $scope.nodes = result.data;
+
+
+	});
     };
 
     //TODO CHANGE THESE FAKE NODES TO REAL NODES
+    //comment this out when $scope.nodes is being set
     var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
     
 
@@ -37,11 +51,23 @@ angular.module("myApp.postStream", [
     var getNodePosts = function(nodes){
 	
 	$scope.nodePosts = [];
+	var encoded = '';
 
 	for (var i=0; i < nodes.length ; i++){
 	    //console.log(nodes);
 	    
-	    var encoded = window.btoa("team6@"+nodes[i].username + ':' + nodes[i].password);
+	    //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
+	    if (nodes[i].url =='http://cmput404teamb.herokuapp.com/api'){
+
+
+		encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
+
+	    }
+	    else{
+		encoded = window.btoa('team6@'+ nodes[i].username + ':' + nodes[i].password);
+
+
+	    }
 	    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
 	    $http.defaults.useXDomain=true;
 	    $http({
@@ -87,6 +113,9 @@ angular.module("myApp.postStream", [
 
     }
     
+    //TODO
+    //CHANGE nodes TO $scope.nodes
+    getNodes();
     getNodePosts(nodes);
  
 
