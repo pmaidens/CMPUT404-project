@@ -140,11 +140,11 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
 #This serializer is to show the nested author object in a GET request
 class PostAuthorSerializer(serializers.HyperlinkedModelSerializer):
 
-    displayname = serializers.CharField(source='user.username')
+    displayName = serializers.CharField(source='user.username')
 
     class Meta:
         model = Author
-        fields = ('id', 'host', 'displayname', 'url', 'github')
+        fields = ('id', 'host', 'displayName', 'url', 'github')
 
 
 #This serializer is to show the nested comment objects in a GET request
