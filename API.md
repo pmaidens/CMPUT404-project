@@ -218,6 +218,78 @@
          on a successful request, otherwise the response will be
          an error message
 
+###Endpoint: /api/author/<authorid>/friendrequests/###
+    Available Methods: GET
+    Gets all the current friend requests from other authors that want to be your friend.
+    The author will have to approve these authors to be friends.
+
+      GET Response properties:
+            id - the author id
+            friendrequests - the list of friends requests the author has
+
+###Endpoint: /api/author/<authorid>/following/###
+    Available Methods: GET
+    Gets all the authors that the you are following (that you send a friend request to).
+    You are awaiting a for them to accept your friend request.
+
+      GET Response properties:
+            id - the author id
+            following - the list authors that you are following(that you sent a friend request to)
+
+###Endpoint: /api/author/friends/acceptfriend/###
+    Available Methods: POST
+
+    Accepts a friend request for the currently authenticated author
+
+    POST Request properties:
+      friend - the author id of the friend you want to befriend.
+               the friend should have already sent a request to the
+               currently authenticated user.
+    
+    POST Response properties:
+       No JSON is returned. If the id posted is valid, the friend will
+       be removed from the currently authenticated author's pending
+       friends attribute, and added to their friends attribute. A success
+       message is returned alongside an HTTP 200 OK. If the ID is invalid,
+       no database changes are made, and an error message is returned 
+       alongside an HTTP 400 OK response.
+
+###Endpoint: /api/author/friends/removefriend/###
+    Available Methods: POST
+
+    Removes a friend attached to the currently authenticated author
+
+    POST Request properties:
+      friend - the author id of the friend you want to un-befriend.
+               the friend should already have been accepted by the
+               currently authenticated user.
+    
+    POST Response properties:
+       No JSON is returned. If the id posted is valid, the friend will
+       be removed from the currently authenticated author's friends attribute.
+       A success message is returned alongside an HTTP 200 OK. If the ID 
+       is invalid, no database changes are made, and an error message is 
+       returned alongside an HTTP 400 BAD REQUEST response.
+
+###Endpoint: /api/author/friends/unfollow/###
+    Available Methods: POST
+
+    Unfollows a given friend, essentially dropping the friend request 
+    the currently authenticated author sent.
+
+    POST Request properties:
+      friend - the author id of the friend you want to unfollow.
+               the currently authenticated user should have already 
+               sent a friend request to the friend
+    
+    POST Response properties:
+       No JSON is returned. If the id posted is valid, the friend will
+       be removed from the currently authenticated author's following
+       attribute. A success message is returned alongside an HTTP 200 OK. 
+       If the ID is invalid, no database changes are made, and an error 
+       message is returned alongside an HTTP 400 BAD REQUEST response.
+
+
 ###Endpoint: /api/addfollower/###
     Available Methods: POST
     When a friend request is made to a remote author, post
@@ -262,22 +334,3 @@
             email - the email of the user
             password1 - (Required) the password of the user
             password2 - (Required) the password again to verify
-
-
-###Endpoint: /api/author/<authorid>/friendrequests/###
-    Available Methods: GET
-    Gets all the current friend requests from other authors that want to be your friend.
-    The author will have to approve these authors to be friends.
-
-      GET Response properties:
-            id - the author id
-            friendrequests - the list of friends requests the author has
-
-###Endpoint: /api/author/<authorid>/following/###
-    Available Methods: GET
-    Gets all the authors that the you are following (that you send a friend request to).
-    You are awaiting a for them to accept your friend request.
-
-      GET Response properties:
-            id - the author id
-            following - the list authors that you are following(that you sent a friend request to)
