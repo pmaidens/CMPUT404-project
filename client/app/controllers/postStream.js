@@ -19,11 +19,18 @@ angular.module("myApp.postStream", [
     $scope.user = authenticationHandler.user;
     //console.log($scope.user);
     $scope.posts = [];
-    //$scope.nodes = 
+    $scope.allPost = [];
 
 
 
-    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com','username':'c404','password':'asdf'}];
+    var getNodes = function(){
+
+	//$http.get();
+	//we need the endpoint for nodes
+    };
+
+    //TODO CHANGE THESE FAKE NODES TO REAL NODES
+    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
     
 
 
@@ -32,17 +39,17 @@ angular.module("myApp.postStream", [
 	$scope.nodePosts = [];
 
 	for (var i=0; i < nodes.length ; i++){
-	    console.log(nodes);
+	    //console.log(nodes);
 	    
-	    var encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
-
-
+	    var encoded = window.btoa("team6@"+nodes[i].username + ':' + nodes[i].password);
+	    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
+	    $http.defaults.useXDomain=true;
 	    $http({
 
 		method:'GET',
-		url: nodes[i].url+'/posts/',
+		url: nodes[i].url+'posts/',
 		headers:{
-		    'Authentication': 'Basic '+ encoded
+		    
 
 		}
 		
@@ -51,8 +58,24 @@ angular.module("myApp.postStream", [
 
 
 
-		$scope.nodePosts.push(result.data);
-		console.log($scope.nodePosts);
+		//$scope.nodePosts.push(result.data.posts);
+		result.data.posts.forEach(function(post){
+		    $scope.nodePosts.push(post)
+
+		});
+		
+
+		$scope.nodePosts.forEach(function(post){
+
+
+		    $scope.allPost.push(post);
+
+		});
+
+		
+
+		
+		//console.log($scope.nodePosts);
 
 	    },function(err){
 		console.log(err);
@@ -83,7 +106,10 @@ angular.module("myApp.postStream", [
         		return post.author.id === authenticationHandler.user.id;
     	    });
     	}
-        $scope.posts = result.data.posts || result.data;
+	console.log('YOOO LET ME GRAB MY OWN POSTS');
+	$scope.allPost = $scope.allPost.concat(result.data.posts);
+        //$scope.posts = result.data.posts || result.data;
+	//console.log($scope.posts);
         loadGit();
     });
 
@@ -108,7 +134,14 @@ angular.module("myApp.postStream", [
 
 	    });
 	} else {
-        $scope.allPost = $scope.posts;
+
+            $scope.posts.forEach(function(post){
+		
+		$scope.allPost.push(post);
+		
+
+	    });
+	    console.log($scope.allPost);
     }
 
     };
@@ -120,8 +153,13 @@ angular.module("myApp.postStream", [
             .success(function(event_data){
                 $scope.eventData = event_data;
              
-                $scope.allPost = $scope.posts.concat($scope.eventData);
-                //console.log($scope.allPost);
+                //$scope.allPost = $scope.posts.concat($scope.eventData);
+		$scope.eventData.forEach(function(eventData){
+
+		    $scope.allPost.push(eventData);
+
+		});
+                console.log($scope.allPost);
             });
     };
 

@@ -13,7 +13,7 @@ angular.module("myApp.postWriter", [
     });
 }])
 
-.controller("PostWriterController", function($scope, $location, $http, postHandler, authenticationHandler) {
+.controller("PostWriterController", function($scope, $location, $http, postHandler, authenticationHandler , urlHandler) {
 
     function separateCategories(inputValue) {
         return inputValue.split(",").map(function (category) {
