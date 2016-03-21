@@ -583,3 +583,25 @@ class RemoveFriendViewSet(APIView):
             return  Response('Success', status=status.HTTP_200_OK)
         else:
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
+
+# view for /api/friends/unfollow
+
+class UnfollowFriendViewSet(APIView):
+    
+    # Post:
+    # {friend: <author_id> }
+
+    def post(self, request, format=None):
+        # Get Author
+        currentUser = request.user
+        author = Author.objects.all().filter(user = currentUser)
+        author = author[0]
+
+        friendID = request.data['friend']
+
+        # Get friend
+        for friend in author.following.all():
+            if str(friend.author_id == str(friendID)):
+                author.following.all().filter(author_id=friendID).delete()
+                return  Response('Success', status=status.HTTP_200_OK)
+        return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
