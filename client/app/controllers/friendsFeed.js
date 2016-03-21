@@ -164,53 +164,53 @@ angular.module("myApp.friendsFeed", [
     var nodes = [{'url':'http://blooming-earth-94594.herokuapp.com/','username':'sean@cmput404.com','password':'sean'},{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }, {'url': 'http://secret-inlet-51780.herokuapp.com/api/', 'username':'newremoteuser','password':'123456789'}];
 
 
-    var getAuthorsFromNodes = function(nodes, potentialFriends){
+  
+    var getAuthorsFromNodes = function(nodes){
 
-	var nodeAuthors = [];
-	var encoded='';
+    var nodeAuthors = [];
+    var encoded='';
 
-	for (var i=0; i < nodes.length ; i++){
-	    //console.log(nodes);
-	    
-	    //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
-	    if (nodes[i].url =='http://cmput404teamb.herokuapp.com/api/'){
-
-
-		encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
-
-	    }
-	    else{
-		encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
+    for (var i=0; i < nodes.length ; i++){
+        //console.log(nodes);
+        
+        //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
+        if (nodes[i].url =='http://floating-sands-69681.herokuapp.com/api/'){
 
 
-	    }
-	    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
-	    $http.defaults.useXDomain=true;
-	    $http({
+        encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
 
-		method:'GET',
-		url: nodes[i].url+'author/',
-		headers:{
-		    
-
-		}
-		
-
-	    }).then(function(result){
-
-		console.log(result.data);
-		//TODO 
-		$scope.nodeAuthors = result.data;
-		//STEP2
-
-	    });
-	
+        }
+        else{
+        encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
 
 
-	}
+        }
+        $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
+        $http.defaults.useXDomain=true;
+        $http({
+
+        method:'GET',
+        url: nodes[i].url+'author/',
+        headers:{
+            
+
+        }
+        
+
+        }).then(function(result){
+
+        console.log(result.data);
+        //TODO 
+        $scope.nodeAuthors = result.data;
+        //STEP2
+
+        });
+    
+
+
+    }
     }
 
-    
 
 
 });
