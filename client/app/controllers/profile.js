@@ -18,7 +18,7 @@ angular.module("myApp.profile", [
     });
 }])
 
-.controller("Profile", function($scope, $routeParams, authorHandler, authenticationHandler) {
+.controller("Profile", function($scope, $routeParams, $route , $window ,authorHandler, authenticationHandler) {
     $scope.author = {};
     $scope.postStream = {authorId: $routeParams.authorId};
     $scope.editing = false;
@@ -107,6 +107,8 @@ angular.module("myApp.profile", [
 	authorHandler.unfollow(following).then(function(result){
 
 	    //success!
+	    alert('unfriended!');
+	    $window.location.reload();
 
 	});
 
@@ -115,7 +117,8 @@ angular.module("myApp.profile", [
     $scope.acceptFriend = function(follower){
 	
 	authorHandler.acceptFriend(follower).then(function(result){
-
+	    alert('friend request accepted!');
+	    $window.location.reload();
 	
 	});
 
