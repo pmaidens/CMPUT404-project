@@ -27,7 +27,7 @@ angular.module("myApp.friendsFeed", [
         $scope.potentialFriends = result.data;
         var followers = $scope.getfollowers();
 
-        $q.all([followers, getRefresh($scope.user)]).then(function(){
+        $q.all([followers||$scope.followers2, getRefresh($scope.user)]).then(function(){
             filteredStuff($scope.potentialFriends,$scope.followers,$scope.user,$scope.user.friends)
         })
         //var friends = getfriends($scope potentialFriends);
@@ -118,6 +118,8 @@ angular.module("myApp.friendsFeed", [
 	authorHandler.unfriend(friend).then(function(result){
 
 	    //success!
+	    alert('unfriended!');
+	    $window.location.reload();
 
 
 	});
@@ -129,7 +131,8 @@ angular.module("myApp.friendsFeed", [
 	authorHandler.unfollow(following).then(function(result){
 
 	    //success!
-
+	    alert('unfollowed!');
+	    $window.location.reload();
 	});
 
     };
@@ -138,7 +141,11 @@ angular.module("myApp.friendsFeed", [
 	
 	authorHandler.acceptFriend(follower).then(function(result){
 
+		
+	    alert('friend accepted!');
+	    $window.location.reload();
 	
+
 	});
 
     };

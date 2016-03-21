@@ -87,6 +87,7 @@ angular.module("myApp.services.authorHandler", [
     this.unfollow = function(following){
 	//stop following
 	
+	return $http.post(urlHandler.serviceURL()+'api/friends/unfollow',{friend:friend.author_id});	
 
     };
 
