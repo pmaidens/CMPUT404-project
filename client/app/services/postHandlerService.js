@@ -7,6 +7,8 @@ angular.module("myApp.services.postHandler", [
     "myApp.services.authorHandler"
 ])
 .service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler, authorHandler) {
+    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+
     this.posts = [];
     this.getPosts = function (authorId) {
         //TODO change the url to the proper url
@@ -73,6 +75,9 @@ angular.module("myApp.services.postHandler", [
     this.commentPost = function(post,urlToPostTo){
 	console.log(post);
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
+	
+	//TODO check  url root against nodes and then grab the username and password encode it then send it over. 
+	//var 
         return $http.post(urlToPostTo, post);
 
     };

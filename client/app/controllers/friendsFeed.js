@@ -31,7 +31,8 @@ angular.module("myApp.friendsFeed", [
             filteredStuff($scope.potentialFriends,$scope.followers,$scope.user,$scope.user.friends)
         })
         //var friends = getfriends($scope potentialFriends);
-	
+	//STEP 1 
+	//STEP 2
 	getAuthorsFromNodes(nodes);
 	console.log($scope.nodeAuthors);
      
@@ -42,6 +43,7 @@ angular.module("myApp.friendsFeed", [
 	 authorHandler.getFollowers($scope.user.id).then(function(result){
 
 	     $scope.followers2 = result.data[0].friendrequests;
+	     
 	 });
 
     };
@@ -54,6 +56,9 @@ angular.module("myApp.friendsFeed", [
         // 	if($scope.followers.length){
         // 	    $scope.hasFollowers = true;
         // 	}
+	//Step 3
+	//FILTER HERE 
+	//filteredStuff($scope.allAuthors, $scope.followers, authentication.user,authentication.user.friends)
         // });
         return $q(function(resolve, reject) {
             authorHandler.getFollowers($scope.user.id).then(function(result){
@@ -193,6 +198,7 @@ angular.module("myApp.friendsFeed", [
 		console.log(result.data);
 		//TODO 
 		$scope.nodeAuthors = result.data;
+		//STEP2
 
 	    });
 	
