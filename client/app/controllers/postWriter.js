@@ -54,5 +54,5 @@ angular.module("myApp.postWriter", [
     };
 
     $scope.visibility = $scope.visibility || "PUBLIC";
-    $scope.contentType = $scope.contentType || "plain";
+    $scope.contentType = $scope.contentType || "text/plain";
 });
