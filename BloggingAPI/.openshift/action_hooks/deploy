@@ -1,5 +1,6 @@
 #!/bin/bash
 
+python $OPENSHIFT_HOMEDIR/python/virtenv/bin/activate
 python "$OPENSHIFT_REPO_DIR"/manage.py makemigrations --merge --noinput
 python "$OPENSHIFT_REPO_DIR"/manage.py migrate --noinput
-# python "$OPENSHIFT_REPO_DIR"/manage.py collectstatic
+python "$OPENSHIFT_REPO_DIR"/manage.py collectstatic --noinput

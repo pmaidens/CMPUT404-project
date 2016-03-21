@@ -101,11 +101,11 @@ class FriendQuerySerializer(serializers.ModelSerializer):
         return res
 
     def getFriendship(self,obj):
-        author = obj[0]
-        friend = obj[1]
+        author1 = obj[0]
+        author2 = obj[1]
         
-        for frnd in author.friends.all():
-            if frnd.author_id == friend.id:
+        for friend in author1.friends.all():
+            if friend.author_id == author2.id:
                 return True
         return False
         
