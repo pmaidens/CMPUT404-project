@@ -80,17 +80,20 @@ angular.module("myApp.services.authorHandler", [
     this.unfriend = function(friend){
 
 	//delete friend
+	$http.defaults.headers.common.Authorization = authenticationHandler.token;
 	return $http.post(urlHandler.serviceURL() + 'api/friends/removefriend/' , {friend:friend.author_id});
 
     };
 
     this.unfollow = function(following){
 	//stop following
-	
+	$http.defaults.headers.common.Authorization = authenticationHandler.token;
+	return $http.post( urlHandler.serviceURL()+'api/friends/unfollow/',{friend:following.author_id});	
 
     };
 
     this.acceptFriend = function(follower){
+	$http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.post(urlHandler.serviceURL() + "api/friends/acceptfriend/", {friend:follower.author_id});
     };
 

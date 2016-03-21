@@ -70,6 +70,9 @@ angular.module("myApp.profile", [
         authorHandler.postFriendRequest(friend).then(function() {alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
     }
     
+
+    //this stuff below is not being used
+
     $scope.getFollowers = function(){
 	
 	authorHandler.getFollowers($scope.author.id).then(function(result){
@@ -106,9 +109,6 @@ angular.module("myApp.profile", [
 
 	authorHandler.unfollow(following).then(function(result){
 
-	    //success!
-	    alert('unfriended!');
-	    $window.location.reload();
 
 	});
 

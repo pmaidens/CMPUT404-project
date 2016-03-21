@@ -27,10 +27,14 @@ angular.module("myApp.friendsFeed", [
         $scope.potentialFriends = result.data;
         var followers = $scope.getfollowers();
 
-        $q.all([followers, getRefresh($scope.user)]).then(function(){
+        $q.all([followers||$scope.followers2, getRefresh($scope.user)]).then(function(){
             filteredStuff($scope.potentialFriends,$scope.followers,$scope.user,$scope.user.friends)
         })
         //var friends = getfriends($scope potentialFriends);
+	//STEP 1 
+	//STEP 2
+	getAuthorsFromNodes(nodes);
+	console.log($scope.nodeAuthors);
      
     });
 
@@ -39,6 +43,7 @@ angular.module("myApp.friendsFeed", [
 	 authorHandler.getFollowers($scope.user.id).then(function(result){
 
 	     $scope.followers2 = result.data[0].friendrequests;
+	     
 	 });
 
     };
@@ -51,6 +56,9 @@ angular.module("myApp.friendsFeed", [
         // 	if($scope.followers.length){
         // 	    $scope.hasFollowers = true;
         // 	}
+	//Step 3
+	//FILTER HERE 
+	//filteredStuff($scope.allAuthors, $scope.followers, authentication.user,authentication.user.friends)
         // });
         return $q(function(resolve, reject) {
             authorHandler.getFollowers($scope.user.id).then(function(result){
@@ -118,6 +126,8 @@ angular.module("myApp.friendsFeed", [
 	authorHandler.unfriend(friend).then(function(result){
 
 	    //success!
+	    alert('unfriended!');
+	    $window.location.reload();
 
 
 	});
@@ -129,7 +139,8 @@ angular.module("myApp.friendsFeed", [
 	authorHandler.unfollow(following).then(function(result){
 
 	    //success!
-
+	    alert('unfollowed!');
+	    $window.location.reload();
 	});
 
     };
@@ -138,15 +149,65 @@ angular.module("myApp.friendsFeed", [
 	
 	authorHandler.acceptFriend(follower).then(function(result){
 
+		
+	    alert('friend accepted!');
+	    $window.location.reload();
 	
+
 	});
 
     };
 
+    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+
+
+    var getAuthorsFromNodes = function(nodes){
+
+	var nodeAuthors = [];
+	var encoded='';
+
+	for (var i=0; i < nodes.length ; i++){
+	    //console.log(nodes);
+	    
+	    //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
+	    if (nodes[i].url =='http://cmput404teamb.herokuapp.com/api'){
+
+
+		encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
+
+	    }
+	    else{
+		encoded = window.btoa('team6@'+ nodes[i].username + ':' + nodes[i].password);
+
+
+	    }
+	    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
+	    $http.defaults.useXDomain=true;
+	    $http({
+
+		method:'GET',
+		url: nodes[i].url+'author/',
+		headers:{
+		    
+
+		}
+		
+
+	    }).then(function(result){
+
+		console.log(result.data);
+		//TODO 
+		$scope.nodeAuthors = result.data;
+		//STEP2
+
+	    });
+	
+
+
+	}
+    }
+
     
-
-
-
 
 
 });
