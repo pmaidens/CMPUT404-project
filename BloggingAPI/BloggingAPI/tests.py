@@ -261,7 +261,6 @@ class apiTests(TestCase):
 	# 	"url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e"
 	# }
 
-
         
         data = {"query":"friends",
                 "author":{ "id": str(self.author.id),
@@ -288,8 +287,14 @@ class apiTests(TestCase):
         
         friendQuery = self.client.get(url)
         self.assertEqual(friendQuery.status_code, status.HTTP_200_OK)
-        self.assertEqual(friendQuery.data['friends'], True)        
+        self.assertEqual(friendQuery.data['friends'], True) 
 
+        # Try adding a friend, after request
+        data = {'friend':str(self.testEnemy.id)}
+        url = 'http://127.0.0.1:8000/api/friends/acceptfriend/'
+        
+        post = self.client.post(url,data,format='json')
+        self.assertEqual(post.status_code, status.HTTP_200_OK)
 
     def test_Author(self):
        # http://service/author/{AUTHOR_ID}/posts (all posts made by {AUTHOR_ID} visible to the currently authenticated user)

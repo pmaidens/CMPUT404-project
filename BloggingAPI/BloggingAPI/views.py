@@ -499,3 +499,57 @@ class AuthorFollowing(APIView):
 class ConnectedNodesViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
     serializer_class = ConnectedNodeSerializer
     queryset = Node.objects.all()
+
+# /api/friends/acceptfriend/
+class AcceptFriendViewSet(APIView):
+
+    #POST:
+    # { friend: <author_id> }
+    
+    def post(self, request, format=None):
+        # Get Author
+        currentUser = request.user
+        author = Author.objects.all.filter(id = currentUser.id)
+        
+        friendID = request['friend']
+        toAdd = None
+        
+        # Get friend
+        for friend in author.pendingFriends.all():
+            if str(friend.id) == friendID:
+                toAdd = friend
+                break
+
+        if toAdd is not None:
+            author.friends.add(friend)
+            author.pendingFriends.all().filter(id=friendID).delete()
+            return  Response('Success', status=status.HTTP_200_OK)
+        else:
+            return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
+        
+                
+# /api/friends/removefriend/
+class RemoveFriendViewSet(APIView):
+
+    # POST:
+    # { friend: <author_id> }
+    
+    def post(self, request, format=None):
+        # Get Author
+        currentUser = request.user
+        author = Author.objects.all.filter(id = currentUser.id)
+        
+        friendID = request['friend']
+        toDelete = None
+        
+        # Get friend
+        for friend in author.friends.all():
+            if str(friend.id) == friendID:
+                toDelete = friend
+                break
+
+        if toDelete is not None:
+            author.friends.all.filter(id=friend.id).delete()
+            return  Response('Success', status=status.HTTP_200_OK)
+        else:
+            return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
