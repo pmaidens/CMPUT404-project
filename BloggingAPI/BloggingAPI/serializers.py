@@ -147,7 +147,7 @@ class PostAuthorSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'host', 'displayName', 'url', 'github')
 
 #This serializer is to show comment author object
-class PostCommentAuthorSerializer(serializers.HyperlinkedModelSerializer)
+class PostCommentAuthorSerializer(serializers.HyperlinkedModelSerializer):
 
     id = serializers.UUIDField(source='author_id')
 
