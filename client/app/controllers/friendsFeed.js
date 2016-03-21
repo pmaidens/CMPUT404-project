@@ -115,7 +115,10 @@ angular.module("myApp.friendsFeed", [
             "url": author.url
         };
 
-        authorHandler.postFriendRequest(friend).then(function() {alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
+        authorHandler.postFriendRequest(friend).then(function() {
+	    
+	    $http.post(urlHandler.serviceURL() + 'api/addfollower/',requestObject);
+	    alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
     };
 
    

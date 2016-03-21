@@ -57,14 +57,13 @@ angular.module("myApp.postStream", [
 	    //console.log(nodes);
 	    
 	    //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
-	    if (nodes[i].url =='http://cmput404teamb.herokuapp.com/api'){
-
+	    if (nodes[i].url =='http://cmput404team4b.herokuapp.com/api/'){
 
 		encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
 
 	    }
 	    else{
-		encoded = window.btoa('team6@'+ nodes[i].username + ':' + nodes[i].password);
+		encoded = window.btoa( nodes[i].username + ':' + nodes[i].password);
 
 
 	    }
