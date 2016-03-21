@@ -19,14 +19,14 @@
 
         <div class="panel-body">
             <div class="list-group">
-            	<div ng-repeat="author in authors | orderBy: ['createdate' ,'published']" class="list-group-item ">
+            	<div ng-repeat="friend in filteredPotentialFriends  | orderBy: ['createdate' ,'published']" class="list-group-item ">
             		<div class="row">
             			<div class="col-md-8">
-            				{{author.displayname}}
+            				{{friend.displayname}}
             			</div>
             			<div class="col-md-4">
                             <dl class="dl-horizontal">
-                            	 <button class="btn btn-success" data-ng-click="makeFriendReq(author)"><span class="octicon octicon-smiley"></span> Add as Friend</button>
+                            	 <button class="btn btn-success" data-ng-click="makeFriendReq(friend)"><span class="octicon octicon-smiley"></span> Add as Friend</button>
                            	</dl>
                         </div>
             		</div>
