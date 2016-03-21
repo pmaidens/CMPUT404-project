@@ -135,9 +135,14 @@
           guid - the guid of the comment
 
       POST Request object properties:
-          author (UUID) - (Required, takes in AUTHOR_ID) the author id that wrote the comment
+          author (object) - the author that wrote the comment
+                          * id - the author id
+                          * host - the host url of the author
+                          * url - the url of the author
+                          * displayName - the display name of the author
+                          * the github of the author
           comment (string) - the text of the comment
-          post (UUID) - (Required, takes in POST_ID) the post id that the comment belongs to
+          contentType - the content type of the comment
 
 ###Endpoint: /api/posts/{POST_ID}/comments/{COMMENT_ID}/###
     Available Methods: GET
@@ -168,14 +173,14 @@
       POST Request object properties:
           query - the current query
           author - the id of the author in question
-          authors - an array of Author ID's - to bechecked against 
+          authors - an array of Author ID's - to bechecked against
                     the author in question to determine friendship
 
       POST Response object properties:
           query - the current query
           author - the id of the author in question
           authors - and array of Author ID's, all of which are friends
-          with the author in question, and were present on the requested 
+          with the author in question, and were present on the requested
           list
 
 ###Endpoint: /api/friend/{AUTHOR_ID1}/{AUTHOR_ID2}/###
@@ -200,7 +205,7 @@
                     * id - the author id
                     * host - the author host
                     * displayName - the author's display name
-    
+
          friend - an object with the following properties:
                    * id - the friend's author id
                    * host - the friend's host
@@ -225,7 +230,7 @@
                     * id - the author id
                     * host - the author host
                     * displayName - the author's display name
-    
+
           friend - an object with the following properties:
                    * id - the friend's author id
                    * host - the friend's host
@@ -257,3 +262,22 @@
             email - the email of the user
             password1 - (Required) the password of the user
             password2 - (Required) the password again to verify
+
+
+###Endpoint: /api/author/<authorid>/friendrequests/###
+    Available Methods: GET
+    Gets all the current friend requests from other authors that want to be your friend.
+    The author will have to approve these authors to be friends.
+
+      GET Response properties:
+            id - the author id
+            friendrequests - the list of friends requests the author has
+
+###Endpoint: /api/author/<authorid>/following/###
+    Available Methods: GET
+    Gets all the authors that the you are following (that you send a friend request to).
+    You are awaiting a for them to accept your friend request.
+
+      GET Response properties:
+            id - the author id
+            following - the list authors that you are following(that you sent a friend request to)

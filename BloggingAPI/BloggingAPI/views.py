@@ -198,9 +198,14 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
         guid - the guid of the comment
 
     POST Request object properties:
-        author (UUID) - (Required, takes in AUTHOR_ID) the author id that wrote the comment
+        author (object) - the author that wrote the comment
+              * id - the author id
+              * host - the host url of the author
+              * url - the url of the author
+              * displayName - the display name of the author
+              * the github of the author
         comment (string) - the text of the comment
-        post (UUID) - (Required, takes in POST_ID) the post id that the comment belongs to
+        contentType - the content type of the comment
 
     Endpoint: /api/posts/{POST_ID}/comments/{COMMENT_ID}/
     Available Methods: GET
@@ -332,7 +337,7 @@ class FriendRequestViewSet(APIView):
                                           url = request.data['friend']['url'])
 
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
-                                          host = friendHost,
+                                          host = authorHost,
                                           display_name = request.data['author']['displayName'],
                                           url = request.data['author']['url'])
 
@@ -482,6 +487,16 @@ class AuthorSpecificPosts(APIView):
 
 # /api/author/author-id/friendrequests
 class AuthorFriendRequests(APIView):
+    """
+    Endpoint: /api/author/<authorid>/friendrequests/
+    Available Methods: GET
+    Gets all the current friend requests from other authors that want to be your friend.
+    The author will have to approve these authors to be friends.
+
+    GET Response properties:
+        id - the author id
+        friendrequests - the list of friends requests the author has
+    """
 
     def get(self,request,pk,format=None):
         queryset = Author.objects.filter(id=pk)
@@ -490,6 +505,16 @@ class AuthorFriendRequests(APIView):
 
 # /api/author/author-id/following
 class AuthorFollowing(APIView):
+    """
+    Endpoint: /api/author/<authorid>/following/
+    Available Methods: GET
+    Gets all the authors that the you are following (that you send a friend request to).
+    You are awaiting a for them to accept your friend request.
+
+    GET Response properties:
+        id - the author id
+        following - the list authors that you are following(that you sent a friend request to)
+    """
 
     def get(self,request,pk,format=None):
         queryset = Author.objects.filter(id=pk)
@@ -499,6 +524,7 @@ class AuthorFollowing(APIView):
 class ConnectedNodesViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
     serializer_class = ConnectedNodeSerializer
     queryset = Node.objects.all()
+    permission_classes = (IsAuthenticated,)
 
 # /api/friends/acceptfriend/
 class AcceptFriendViewSet(APIView):
@@ -509,26 +535,25 @@ class AcceptFriendViewSet(APIView):
     def post(self, request, format=None):
         # Get Author
         currentUser = request.user
-        author = Author.objects.all().filter(id = currentUser.id)
+        author = Author.objects.all().filter(user = currentUser)
         author = author[0]
-
-        print author.pendingFriends.all()
+        
         friendID = request.data['friend']
         toAdd = None
 
         # Get friend
         for friend in author.pendingFriends.all():
-            if str(friend.id) == str(friendID):
+            if str(friend.author_id) == str(friendID):
                 toAdd = friend
                 break
 
         if toAdd is not None:
             author.friends.add(toAdd)
-            author.pendingFriends.all().filter(id=friendID).delete()
+            author.pendingFriends.all().filter(author_id=friendID).delete()
+            print author.friends.all()
             return  Response('Success', status=status.HTTP_200_OK)
         else:
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
-
 
 # /api/friends/removefriend/
 class RemoveFriendViewSet(APIView):
@@ -539,20 +564,20 @@ class RemoveFriendViewSet(APIView):
     def post(self, request, format=None):
         # Get Author
         currentUser = request.user
-        author = Author.objects.all().filter(id = currentUser.id)
+        author = Author.objects.all().filter(user = currentUser)
         author = author[0]
 
         friendID = request.data['friend']
         toDelete = None
 
         # Get friend
-        for friend in author.friends.all():
-            if str(friend.id) == str(friendID):
+        for friend in author.pendingFriends.all():
+            if str(friend.author_id) == str(friendID):
                 toDelete = friend
                 break
 
         if toDelete is not None:
-            author.friends.all.filter(id=toDelete.id).delete()
+            author.Friends.all().filter(author_id=friendID).delete()
             return  Response('Success', status=status.HTTP_200_OK)
         else:
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
