@@ -540,11 +540,7 @@ class RemoveFriendViewSet(APIView):
         currentUser = request.user
         author = Author.objects.all().filter(user = currentUser)
         author = author[0]
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> e3e8edd1093972a6e4b4b6459ac22a6921957489
         friendID = request.data['friend']
         toDelete = None
 
