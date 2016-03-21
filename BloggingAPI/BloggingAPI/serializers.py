@@ -146,11 +146,19 @@ class PostAuthorSerializer(serializers.HyperlinkedModelSerializer):
         model = Author
         fields = ('id', 'host', 'displayName', 'url', 'github')
 
+#This serializer is to show comment author object
+class PostCommentAuthorSerializer(serializers.HyperlinkedModelSerializer)
+
+    id = serializers.UUIDField(source='author_id')
+
+    class Meta:
+        model = CommentAuthor
+        fields = ('id', 'host', 'displayName', 'url', 'github')
 
 #This serializer is to show the nested comment objects in a GET request
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
 
-    author = PostAuthorSerializer(read_only=True)
+    author = PostCommentAuthorSerializer(read_only=True)
     published = serializers.DateTimeField(source='date_created')
 
     class Meta:
