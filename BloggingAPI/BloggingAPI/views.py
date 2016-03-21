@@ -509,26 +509,25 @@ class AcceptFriendViewSet(APIView):
     def post(self, request, format=None):
         # Get Author
         currentUser = request.user
-        author = Author.objects.all().filter(id = currentUser.id)
+        author = Author.objects.all().filter(user = currentUser)
         author = author[0]
-
-        print author.pendingFriends.all()
+        
         friendID = request.data['friend']
         toAdd = None
         
         # Get friend
         for friend in author.pendingFriends.all():
-            if str(friend.id) == str(friendID):
+            if str(friend.author_id) == str(friendID):
                 toAdd = friend
                 break
 
         if toAdd is not None:
             author.friends.add(toAdd)
-            author.pendingFriends.all().filter(id=friendID).delete()
+            author.pendingFriends.all().filter(author_id=friendID).delete()
+            print author.friends.all()
             return  Response('Success', status=status.HTTP_200_OK)
         else:
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
-        
                 
 # /api/friends/removefriend/
 class RemoveFriendViewSet(APIView):
@@ -539,20 +538,20 @@ class RemoveFriendViewSet(APIView):
     def post(self, request, format=None):
         # Get Author
         currentUser = request.user
-        author = Author.objects.all().filter(id = currentUser.id)
+        author = Author.objects.all().filter(user = currentUser)
         author = author[0]
-  
+        
         friendID = request.data['friend']
         toDelete = None
         
         # Get friend
-        for friend in author.friends.all():
-            if str(friend.id) == str(friendID):
+        for friend in author.pendingFriends.all():
+            if str(friend.author_id) == str(friendID):
                 toDelete = friend
                 break
 
         if toDelete is not None:
-            author.friends.all.filter(id=toDelete.id).delete()
+            author.Friends.all().filter(author_id=friendID).delete()
             return  Response('Success', status=status.HTTP_200_OK)
         else:
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
