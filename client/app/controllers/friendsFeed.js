@@ -34,6 +34,15 @@ angular.module("myApp.friendsFeed", [
      
     });
 
+    $scope.getfollowers2 = function(){
+
+	 authorHandler.getFollowers($scope.user.id).then(function(result){
+
+	     $scope.followers = result.data[0].friendrequests;
+	 });
+
+    };
+
     $scope.getfollowers = function(){
         // return authorHandler.getFollowers($scope.user.id).then(function(result){
         // 	//console.log($scope.followers);
@@ -89,6 +98,7 @@ angular.module("myApp.friendsFeed", [
 
 
     $scope.makeFriendReq = function(author){
+	console.log(author);
         var friend = {
             "id": author.id,
             "host":author.host,

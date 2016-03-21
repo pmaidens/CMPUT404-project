@@ -57,7 +57,7 @@ angular.module("myApp.services.authorHandler", [
             },
             friend: friend
         };
-
+	console.log(authenticationHandler.user.id === friend.id);
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
     };
@@ -86,11 +86,12 @@ angular.module("myApp.services.authorHandler", [
 
     this.unfollow = function(following){
 	//stop following
+	
 
     };
 
     this.acceptFriend = function(follower){
-        return $http.get(urlHandler.serviceURL() + "api/friends/acceptfriend/", {friend:follower.author_id});
+        return $http.post(urlHandler.serviceURL() + "api/friends/acceptfriend/", {friend:follower.author_id});
     };
 
 });

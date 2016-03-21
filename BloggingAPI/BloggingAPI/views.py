@@ -333,8 +333,8 @@ class FriendRequestViewSet(APIView):
 
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
                                           host = friendHost,
-                                          display_name = request.data['friend']['displayName'],
-                                          url = request.data['friend']['url'])
+                                          display_name = request.data['author']['displayName'],
+                                          url = request.data['author']['url'])
 
 
             try:
