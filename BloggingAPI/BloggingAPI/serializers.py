@@ -9,9 +9,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
     #hyperlinkedModelSerializer uses hyperlinks instead of p-keys
+    id = serializers.UUIDField(source='author_id')
     class Meta:
         model = Friend
-        fields = ('id','author_id', 'host', 'display_name', 'url')
+        fields = ('id', 'host', 'display_name', 'url')
 
 
 class ViewAuthorSerializer(serializers.ModelSerializer):
