@@ -54,9 +54,12 @@ angular.module("myApp.services.authorHandler", [
                 "id": authenticationHandler.user.id,
                 "host": authenticationHandler.user.host,
                 "displayName": authenticationHandler.user.displayname,
+                "url": authenticationHandler.user.url
             },
             friend: friend
         };
+
+        console.log(requestObject);
 	console.log(authenticationHandler.user.id === friend.id);
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);

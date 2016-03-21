@@ -33,7 +33,7 @@ angular.module("myApp.friendsFeed", [
         //var friends = getfriends($scope potentialFriends);
 	//STEP 1 
 	//STEP 2
-	getAuthorsFromNodes(nodes);
+	getAuthorsFromNodes(nodes, $scope.potentialFriends);
 	console.log($scope.nodeAuthors);
      
     });
@@ -112,7 +112,7 @@ angular.module("myApp.friendsFeed", [
             "id": author.id,
             "host":author.host,
             "displayName": author.displayname,
-            "url": author.url
+            "url": author.url || author.host
         };
 
         authorHandler.postFriendRequest(friend).then(function() {alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
@@ -158,10 +158,10 @@ angular.module("myApp.friendsFeed", [
 
     };
 
-    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+    var nodes = [{'url':'http://blooming-earth-94594.herokuapp.com/','username':'sean@cmput404.com','password':'sean'},{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }, {'url': 'http://secret-inlet-51780.herokuapp.com/api/', 'username':'newremoteuser','password':'123456789'}];
 
 
-    var getAuthorsFromNodes = function(nodes){
+    var getAuthorsFromNodes = function(nodes, potentialFriends){
 
 	var nodeAuthors = [];
 	var encoded='';
@@ -170,14 +170,14 @@ angular.module("myApp.friendsFeed", [
 	    //console.log(nodes);
 	    
 	    //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
-	    if (nodes[i].url =='http://cmput404teamb.herokuapp.com/api'){
+	    if (nodes[i].url =='http://cmput404teamb.herokuapp.com/api/'){
 
 
 		encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
 
 	    }
 	    else{
-		encoded = window.btoa('team6@'+ nodes[i].username + ':' + nodes[i].password);
+		encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
 
 
 	    }
