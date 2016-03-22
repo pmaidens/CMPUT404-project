@@ -112,10 +112,13 @@ angular.module("myApp.friendsFeed", [
             "id": author.id,
             "host":author.host,
             "displayName": author.displayname,
-            "url": author.url
+            "url": author.url || author.host
         };
 
-        authorHandler.postFriendRequest(friend).then(function() {alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
+        authorHandler.postFriendRequest(friend).then(function() {
+	    
+	    $http.post(urlHandler.serviceURL() + 'api/addfollower/',requestObject);
+	    alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
     };
 
    
@@ -158,57 +161,89 @@ angular.module("myApp.friendsFeed", [
 
     };
 
-    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+    var nodes = [{'url':'http://blooming-earth-94594.herokuapp.com/','username':'sean@cmput404.com','password':'sean'},{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }, {'url': 'http://secret-inlet-51780.herokuapp.com/api/', 'username':'newremoteuser','password':'123456789'}];
 
 
+  
     var getAuthorsFromNodes = function(nodes){
 
-	var nodeAuthors = [];
-	var encoded='';
+    var nodeAuthors = [];
+    var encoded='';
+    
+
 
 	for (var i=0; i < nodes.length ; i++){
 	    //console.log(nodes);
 	    
 	    //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
-	    if (nodes[i].url =='http://cmput404teamb.herokuapp.com/api'){
+	  //  if (nodes[i].url =='http://cmput404team4b.herokuapp.com/api/'){
 
 
-		encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
 
-	    }
-	    else{
-		encoded = window.btoa('team6@'+ nodes[i].username + ':' + nodes[i].password);
+     //   encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
 
 
-	    }
-	    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
-	    $http.defaults.useXDomain=true;
-	    $http({
-
-		method:'GET',
-		url: nodes[i].url+'author/',
-		headers:{
-		    
-
-		}
-		
-
-	    }).then(function(result){
-
-		console.log(result.data);
-		//TODO 
-		$scope.nodeAuthors = result.data;
-		//STEP2
-
-	    });
-	
+	//    }else{
+      //      console.log(nodes[i].url);
+	//	encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
 
 
-	}
-    }
+
+     //   }
+      //  $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
+     //   $http.defaults.useXDomain=true;
+     //   $http({
+
+     /*   method:'GET',
+        url: nodes[i].url+'author/',
+        headers:{
+            
+
+        }
+        
+
+        }).then(function(result){
+
+    */
+    console.log(nodes[i].url);
+    encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
+    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
+    $http.defaults.useXDomain=true;
+    if (nodes[i].url =='http://secret-inlet-51780.herokuapp.com/api/'){
+
+    $http({
+
+        method:'GET',
+        url: nodes[i].url+'author/',
+        headers:{
+            
+
+        }
+        
+
+        }).then(function(result){
 
     
 
+        console.log(result.data.authors);
+        //TODO 
+       // if(nodes[i].url == 'http://secret-inlet-51780.herokuapp.com/api/'){
+
+        $scope.nodeAuthors = result.data.authors;
+        //}
+        //$scope.nodeAuthors = result.data;
+        //STEP2
+
+     //   });
+    
+
+
+    });
+}
+
+}
+
+};
 
 });
 

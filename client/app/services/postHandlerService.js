@@ -74,7 +74,34 @@ angular.module("myApp.services.postHandler", [
 
     this.commentPost = function(post,urlToPostTo){
 	console.log(post);
-        $http.defaults.headers.common.Authorization = authenticationHandler.token;
+	var urlToCheck = urlToPostTo.split('/').splice(0,4);
+	console.log(urlToCheck);
+	var realUrlToCheck = urlToCheck.join('/') + '/';
+	console.log(realUrlToCheck);
+	var encoded ='';
+	nodes.forEach(function(node){
+
+	    if (node.url == realUrlToCheck){
+	    
+		if(node.url=='http://cmput404team4b.herokuapp.com/api/'){
+
+		    encoded = window.btoa('team6@' + node.username +':' + node.password);
+
+		}else{
+
+		    encoded = window.btoa(node.username + ':' + node.password);
+
+		}
+		
+		$http.defaults.headers.common.Authorization = 'Basic ' +  encoded;
+	    }
+	    else{
+
+		$http.defaults.headers.common.Authorization = authenticationHandler.token;
+	    }
+
+	});
+        //$http.defaults.headers.common.Authorization = authenticationHandler.token;
 	
 	//TODO check  url root against nodes and then grab the username and password encode it then send it over. 
 	//var 

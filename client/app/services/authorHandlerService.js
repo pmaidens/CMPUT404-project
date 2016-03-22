@@ -5,6 +5,7 @@ angular.module("myApp.services.authorHandler", [
     "myApp.services.authenticationHandler"
 ])
 .service("authorHandler", function($q, $http, urlHandler, authenticationHandler) {
+    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
     this.getAllAuthors = function(){
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.get(urlHandler.serviceURL() + "api/author/");
@@ -54,13 +55,41 @@ angular.module("myApp.services.authorHandler", [
                 "id": authenticationHandler.user.id,
                 "host": authenticationHandler.user.host,
                 "displayName": authenticationHandler.user.displayname,
+                "url": authenticationHandler.user.url
             },
             friend: friend
         };
+
+        console.log(requestObject);
 	console.log(authenticationHandler.user.id === friend.id);
-        $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
-    };
+	if(friend.host != urlHandler.serviceURL()){
+	    var encoded = '';
+	    nodes.forEach(function(node){
+
+		if (friend.host == node.host){
+
+		    if(node.host =='http://cmput404team4b.herokuapp.com/api/'){
+
+			encoded = window.btoa('team6@' + node.username +':' +node.password);
+		    }
+		    else{
+
+			encoded = window.btoa(node.username + ':' + node.password);
+		    }
+		}
+
+	    });
+	    console.log("i am HERE "+ friend.host+'/friendRequest/'+friend.displayName,requestObject);
+	    $http.defaults.headers.common.Authorization =  'Basic ' + encoded;
+        //TODO Submits local host in the http post request
+	    return $http.post(friend.host+'/friendRequest/'+friend.displayName,requestObject);
+
+	}else{
+               console.log("i am HERE"+ friend.host);
+            $http.defaults.headers.common.Authorization = authenticationHandler.token;
+            return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
+	    }
+	};
 
 
     this.getFollowers = function(authorId){

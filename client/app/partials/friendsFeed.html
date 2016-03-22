@@ -4,14 +4,8 @@
         	<div class="panel-heading">
             	<form class="form-inline">
                 	<span>
-                    	<h4>Friend Feed <span class="badge">{{author.length}}</span></h4>
-                    	<h4>
-                        	<a href="{{gitUserData.html_url}}" class="btn btn-primary">
-                            	<span class="octicon octicon-mark-github">
-                                {{gitUserData.login}}
-                            	</span>
-                        	</a>
-                    	</h4>
+                    	<h4>Friend Feed <span class="badge">{{filteredPotentialFriends.length}}</span></h4>
+                    	
                 	</span>
             	</form>
         	</div>
@@ -19,14 +13,14 @@
 
         <div class="panel-body">
             <div class="list-group">
-            	<div ng-repeat="friend in filteredPotentialFriends  | orderBy: ['createdate' ,'published']" class="list-group-item ">
+            	<div ng-repeat="friend in nodeAuthors | orderBy: ['createdate' ,'published']" class="list-group-item ">
             		<div class="row">
-            			<div class="col-md-8">
-            				{{friend.displayname}}
+            			<div class="col-md-10">
+            				{{friend.displayName}}
             			</div>
-            			<div class="col-md-4">
+            			<div class="col-md-2">
                             <dl class="dl-horizontal">
-                            	 <button class="btn btn-success" data-ng-click="makeFriendReq(friend)"><span class="octicon octicon-smiley"></span> Add as Friend</button>
+                            	 <button class="btn btn-success" data-ng-click="makeFriendReq(friend)"><span class="octicon octicon-smiley"></span>  Add as Friend</button>
                            	</dl>
                         </div>
             		</div>
