@@ -221,8 +221,9 @@ angular.module("myApp.postStream", [
 
 	    toAppend = 'api';
 	}
-	console.log(post);
+	console.log(post.id);
 	var urlToComment = post.author.host + toAppend + '/posts/' + post.id + '/comments/';
+	console.log(urlToComment);
 	var commentAuthor = authenticationHandler.user;
 	var DisplayName = commentAuthor.displayname;
 	commentAuthor['displayName'] = DisplayName;

@@ -75,20 +75,20 @@ angular.module("myApp.services.postHandler", [
     this.commentPost = function(post,urlToPostTo){
 	console.log(post);
     console.log("HI" + urlToPostTo);
-	var urlToCheck = urlToPostTo.split('/').splice(0,4);
+	var urlToCheck = urlToPostTo.split('/');
 	console.log(urlToCheck);
 	if(urlToCheck[0] !='http:'){
 	    urlToCheck.unshift( "http:/" );
 	}
 
-	var realUrlToCheck = urlToCheck.join('/') + '/comments/';
+	var realUrlToCheck = urlToCheck.join('/');
 	console.log(realUrlToCheck);
 	var encoded ='';
 
-    var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+    var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/' , 'username': 'team6', 'password':'team6' }];
 	nodes.forEach(function(node){
 
-	    if (node.url == realUrlToCheck){
+	    if (urlToCheck[2] == 'cmput404-team-4b.herokuapp.com'){
 	   
 
 		encoded = window.btoa(node.username + ':' + node.password);
@@ -108,7 +108,7 @@ angular.module("myApp.services.postHandler", [
 	//var 
         return $http({
 	    method:'POST',
-	    url:realUrlToCheck,
+	    url:urlToPostTo,
 	    //url:'http://project-c404.rhcloud.com/api/posts/8e4f11cf-8e3f-4468-9a53-8835a1dd65ac/comments/',
 	    data:post});
     };
