@@ -150,13 +150,18 @@ class PostsViewSet(viewsets.ModelViewSet):
         #query set for private posts (has to be the post owner)
         privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
         #query set for friends
-        # friendsQuerySet = Post.objects.all().filter(visibility='FRIENDS')
+        authorFriends = Author.objects.get(user__username=currentUser).friends.all()
+        #first get only your own 'friends' posts
+        friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
+        #next get all your friends 'friends' posts
+        for friend in authorFriends:
+            friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
         #query set for friends of friends
         # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
         #query set for server only
-        friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='SERVERONLY')
+        serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY')
 
-        return publicQuerySet | privateQuerySet | friendsOfFriendsQuerySet
+        return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
 
     def get_serializer_class(self):
         serializer_class = ViewPostsSerializer
@@ -573,7 +578,7 @@ class AcceptFriendViewSet(APIView):
 
                 # theNewlyFriended = Author.objects.all().filter(author_id = friendID)
                 # theNewlyFriended = theNewlyFriended[0]
-                                            
+
                 # if theNewlyFriended.host == author.host:
                 #    #locally add
                      #authorObj = Friend.objects.create(author_id = author.id,
@@ -628,13 +633,13 @@ class RemoveFriendViewSet(APIView):
             if str(friend.author_id) == str(friendID):
                 toDelete = friend
                 break
-    
+
         if toDelete is not None:
 
             # theUnfriended = Author.objects.all().filter(author_id = friendID)
             # theUnfriended = theUnfriended[0]
             # if theUnfriended.host == author.host:
-            #     #locally remove 
+            #     #locally remove
             #     theUnfriended.friends.objects.all().filter(author_id = author.id).delete()
 
             author.friends.all().filter(author_id=friendID).delete()
