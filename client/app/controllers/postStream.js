@@ -78,8 +78,6 @@ angular.module("myApp.postStream", [
 
 	    }).then(function(result){
 
-		console.log('i should be here');
-
 		//$scope.nodePosts.push(result.data.posts);
 		result.data.posts.forEach(function(post){
 
@@ -221,9 +219,7 @@ angular.module("myApp.postStream", [
 
 	    toAppend = 'api';
 	}
-	console.log(post.id);
 	var urlToComment = post.author.host + toAppend + '/posts/' + post.id + '/comments/';
-	console.log(urlToComment);
 	var commentAuthor = authenticationHandler.user;
 	var DisplayName = commentAuthor.displayname;
 	commentAuthor['displayName'] = DisplayName;

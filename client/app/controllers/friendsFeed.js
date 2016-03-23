@@ -62,7 +62,7 @@ angular.module("myApp.friendsFeed", [
         // });
         return $q(function(resolve, reject) {
             authorHandler.getFollowers($scope.user.id).then(function(result){
-                // console.log($scope.followers);
+
                 $scope.followers = result.data[0].friendrequests;
                 if($scope.followers.length){
                     $scope.hasFollowers = true;

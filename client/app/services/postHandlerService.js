@@ -73,19 +73,16 @@ angular.module("myApp.services.postHandler", [
     };
 
     this.commentPost = function(post,urlToPostTo){
-	console.log(post);
-    console.log("HI" + urlToPostTo);
+	
 	var urlToCheck = urlToPostTo.split('/');
-	console.log(urlToCheck);
 	if(urlToCheck[0] !='http:'){
 	    urlToCheck.unshift( "http:/" );
 	}
 
 	var realUrlToCheck = urlToCheck.join('/');
-	console.log(realUrlToCheck);
 	var encoded ='';
 
-    var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/' , 'username': 'team6', 'password':'team6' }];
+	var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/' , 'username': 'team6', 'password':'team6' }];
 	nodes.forEach(function(node){
 
 	    if (urlToCheck[2] == 'cmput404-team-4b.herokuapp.com'){
