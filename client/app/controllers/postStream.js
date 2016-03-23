@@ -17,7 +17,7 @@ angular.module("myApp.postStream", [
 .controller("PostStreamController", function($scope, $http, $location ,postHandler, authenticationHandler, urlHandler) {
     var targetAuthor, targetAuthorId;
     $scope.user = authenticationHandler.user;
-    //console.log($scope.user);
+
     $scope.posts = [];
     $scope.allPost = [];
 
@@ -35,7 +35,6 @@ angular.module("myApp.postStream", [
 	//TODO change the url
 	$http.get('http://localhost:8000/api/nodes/' ).then(function(result){
 
-	    console.log(result.data);
 	    $scope.nodes = result.data;
 
 
@@ -44,7 +43,7 @@ angular.module("myApp.postStream", [
 
     //TODO CHANGE THESE FAKE NODES TO REAL NODES
     //comment this out when $scope.nodes is being set
-    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+    var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
     
 
 
@@ -56,17 +55,9 @@ angular.module("myApp.postStream", [
 	for (var i=0; i < nodes.length ; i++){
 	    //console.log(nodes);
 	    
-	    //TODO CHANGE encoded SO THAT IT MATCHES WHAT EACH GROUP WANTS.
-	    if (nodes[i].url =='http://cmput404team4b.herokuapp.com/api/'){
-
-		encoded = window.btoa('team6@' + nodes[i].username + ':' + nodes[i].password);
-
-	    }
-	    else{
+	  
 		encoded = window.btoa( nodes[i].username + ':' + nodes[i].password);
 
-
-	    }
 	    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
 	    $http.defaults.useXDomain=true;
 	    $http({
@@ -85,7 +76,7 @@ angular.module("myApp.postStream", [
 
 		//$scope.nodePosts.push(result.data.posts);
 		result.data.posts.forEach(function(post){
-		    console.log(post);
+
 		    $scope.nodePosts.push(post)
 
 		});
@@ -135,10 +126,10 @@ angular.module("myApp.postStream", [
         		return post.author.id === authenticationHandler.user.id;
     	    });
     	}
-	console.log('YOOO LET ME GRAB MY OWN POSTS');
+
 	$scope.allPost = $scope.allPost.concat(result.data.posts);
         //$scope.posts = result.data.posts || result.data;
-	//console.log($scope.posts);
+
         loadGit();
     });
 
@@ -147,8 +138,7 @@ angular.module("myApp.postStream", [
 
     var loadGit = function () {
 	//change $scope.git_username to the author's github user name
-	
-	console.log($scope.user.github);
+
 	var gitHubURL = $scope.user.github;
 	
 
@@ -170,7 +160,7 @@ angular.module("myApp.postStream", [
 		
 
 	    });
-	    console.log($scope.allPost);
+	
     }
 
     };
@@ -188,7 +178,7 @@ angular.module("myApp.postStream", [
 		    $scope.allPost.push(eventData);
 
 		});
-                console.log($scope.allPost);
+                
             });
     };
 
@@ -217,6 +207,7 @@ angular.module("myApp.postStream", [
 //POST : author id, comment, postid
     $scope.AddComment = function (post, comments) {
 	var date = new Date();
+	console.log(post.author.host);
 	var urlToComment = post.author.host + 'api/posts/' + post.id + '/comments/';
         postHandler.commentPost({
             //author: authenticationHandler.user,
@@ -234,8 +225,6 @@ angular.module("myApp.postStream", [
 	    $http.get(urlHandler.serviceURL()+'api/posts/'+post.id+'/').then(function(postData){
 
 
-		console.log("POST STUFF BELOW");
-		console.log(postData);
 		post.comments = postData.data.comments;
 
 	    });

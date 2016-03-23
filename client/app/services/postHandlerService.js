@@ -7,7 +7,7 @@ angular.module("myApp.services.postHandler", [
     "myApp.services.authorHandler"
 ])
 .service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler, authorHandler) {
-    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404-team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
 
     this.posts = [];
     this.getPosts = function (authorId) {
@@ -74,28 +74,24 @@ angular.module("myApp.services.postHandler", [
 
     this.commentPost = function(post,urlToPostTo){
 	console.log(post);
+    console.log("HI" + urlToPostTo);
 	var urlToCheck = urlToPostTo.split('/').splice(0,4);
 	console.log(urlToCheck);
 	var realUrlToCheck = urlToCheck.join('/') + '/';
 	console.log(realUrlToCheck);
 	var encoded ='';
+    var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
 	nodes.forEach(function(node){
 
 	    if (node.url == realUrlToCheck){
-	    
-		if(node.url=='http://cmput404team4b.herokuapp.com/api/'){
+	   
 
-		    encoded = window.btoa('team6@' + node.username +':' + node.password);
+		encoded = window.btoa(node.username + ':' + node.password);
 
-		}else{
-
-		    encoded = window.btoa(node.username + ':' + node.password);
-
-		}
-		
+	
 		$http.defaults.headers.common.Authorization = 'Basic ' +  encoded;
-	    }
-	    else{
+	   
+	    }else{
 
 		$http.defaults.headers.common.Authorization = authenticationHandler.token;
 	    }

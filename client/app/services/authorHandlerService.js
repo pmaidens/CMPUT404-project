@@ -60,32 +60,31 @@ angular.module("myApp.services.authorHandler", [
             friend: friend
         };
 
-        console.log(requestObject);
-	console.log(authenticationHandler.user.id === friend.id);
+       var node1 = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+   // console.log(requestObject);
+	//console.log(authenticationHandler.user.id === friend.id);
 	if(friend.host != urlHandler.serviceURL()){
 	    var encoded = '';
 	    nodes.forEach(function(node){
 
 		if (friend.host == node.host){
 
-		    if(node.host =='http://cmput404team4b.herokuapp.com/api/'){
-
-			encoded = window.btoa('team6@' + node.username +':' +node.password);
-		    }
-		    else{
-
 			encoded = window.btoa(node.username + ':' + node.password);
-		    }
+	
 		}
 
 	    });
-	    console.log("i am HERE "+ friend.host+'/friendRequest/'+friend.displayName,requestObject);
+	  //  console.log("i am HERE "+ friend.host+'/friendRequest/'+friend.displayName,requestObject);
+      //  console.log(friend);
+        //HARDCODED FOR GROUP 8 WILL HAVE TO CHANGE THIS.
+        var node1 = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+        var username = 'team6';
+        var password = 'team6'
+        encoded = window.btoa('team6:team6');
 	    $http.defaults.headers.common.Authorization =  'Basic ' + encoded;
-        //TODO Submits local host in the http post request
-	    return $http.post(friend.host+'/friendRequest/'+friend.displayName,requestObject);
+	    return $http.post(urlHandler.remoteURL(friend.host)+'api/friendrequest/'+friend.displayName,requestObject);
 
 	}else{
-               console.log("i am HERE"+ friend.host);
             $http.defaults.headers.common.Authorization = authenticationHandler.token;
             return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
 	    }

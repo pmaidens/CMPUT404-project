@@ -34,7 +34,7 @@ angular.module("myApp.friendsFeed", [
 	//STEP 1 
 	//STEP 2
 	getAuthorsFromNodes(nodes);
-	console.log($scope.nodeAuthors);
+	//console.log($scope.nodeAuthors);
      
     });
 
@@ -82,7 +82,7 @@ angular.module("myApp.friendsFeed", [
     var filteredStuff = function(potentialFriends, followers, user, friends){
 
         $scope.filteredPotentialFriends = potentialFriends.filter(function(filteredPotentialFriends){
-            console.log(filteredPotentialFriends.id);
+           
             return (!followers.some(function(follower){
                 return filteredPotentialFriends.id === follower.author_id;
             })
@@ -107,7 +107,7 @@ angular.module("myApp.friendsFeed", [
 
 
     $scope.makeFriendReq = function(author){
-	console.log(author);
+	
         var friend = {
             "id": author.id,
             "host":author.host,
@@ -161,7 +161,7 @@ angular.module("myApp.friendsFeed", [
 
     };
 
-    var nodes = [{'url':'http://blooming-earth-94594.herokuapp.com/','username':'sean@cmput404.com','password':'sean'},{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }, {'url': 'http://secret-inlet-51780.herokuapp.com/api/', 'username':'newremoteuser','password':'123456789'}];
+    var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
 
 
   
@@ -205,12 +205,13 @@ angular.module("myApp.friendsFeed", [
         }).then(function(result){
 
     */
-    console.log(nodes[i].url);
+//    console.log(nodes[i].url);
+//     console.log("here");
     encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
     $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
     $http.defaults.useXDomain=true;
-    if (nodes[i].url =='http://secret-inlet-51780.herokuapp.com/api/'){
-
+    if (nodes[i].url == 'http://cmput404-team-4b.herokuapp.com/api/'){
+// console.log("here2");
     $http({
 
         method:'GET',
@@ -225,11 +226,11 @@ angular.module("myApp.friendsFeed", [
 
     
 
-        console.log(result.data.authors);
+        console.log("here3");
         //TODO 
        // if(nodes[i].url == 'http://secret-inlet-51780.herokuapp.com/api/'){
-
-        $scope.nodeAuthors = result.data.authors;
+        $scope.nodeAuthors = result.data;
+       // console.log("here444"+$scope.nodeAuthors);
         //}
         //$scope.nodeAuthors = result.data;
         //STEP2
