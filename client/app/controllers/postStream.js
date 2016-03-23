@@ -60,10 +60,16 @@ angular.module("myApp.postStream", [
 
 	    $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
 	    $http.defaults.useXDomain=true;
+	    var posts = '';
+	    if (nodes[i].url=="http://floating-sands-69681.herokuapp.com/api/"){
+		posts = 'posts';
+	    }else{
+		posts = 'posts/'
+	    }
 	    $http({
 
 		method:'GET',
-		url: nodes[i].url+'posts/',
+		url: nodes[i].url+posts,
 		headers:{
 		    
 
@@ -72,7 +78,7 @@ angular.module("myApp.postStream", [
 
 	    }).then(function(result){
 
-
+		console.log('i should be here');
 
 		//$scope.nodePosts.push(result.data.posts);
 		result.data.posts.forEach(function(post){
@@ -207,7 +213,7 @@ angular.module("myApp.postStream", [
 //POST : author id, comment, postid
     $scope.AddComment = function (post, comments) {
 	var date = new Date();
-	console.log(post.author.host);
+
 	var urlToComment = post.author.host + 'api/posts/' + post.id + '/comments/';
         postHandler.commentPost({
             //author: authenticationHandler.user,

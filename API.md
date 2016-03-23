@@ -162,7 +162,7 @@
           query - the current query
           authors - the list of friends the current author has
 
-###Endpoint: /api/friends/<author-id>###
+###Endpoint: /api/friends/{author-id}###
     Available Methods: GET, POST
     This endpoint lists any friends that an author has.
 
@@ -218,7 +218,7 @@
          on a successful request, otherwise the response will be
          an error message
 
-###Endpoint: /api/author/<authorid>/friendrequests/###
+###Endpoint: /api/author/{authorid}/friendrequests/###
     Available Methods: GET
     Gets all the current friend requests from other authors that want to be your friend.
     The author will have to approve these authors to be friends.
@@ -227,7 +227,7 @@
             id - the author id
             friendrequests - the list of friends requests the author has
 
-###Endpoint: /api/author/<authorid>/following/###
+###Endpoint: /api/author/{authorid}/following/###
     Available Methods: GET
     Gets all the authors that the you are following (that you send a friend request to).
     You are awaiting a for them to accept your friend request.

@@ -570,6 +570,20 @@ class AcceptFriendViewSet(APIView):
                                 host=friend.host,
                                 display_name=friend.display_name,
                                 url=friend.url)
+
+                # theNewlyFriended = Author.objects.all().filter(author_id = friendID)
+                # theNewlyFriended = theNewlyFriended[0]
+                                            
+                # if theNewlyFriended.host == author.host:
+                #    #locally add
+                     #authorObj = Friend.objects.create(author_id = author.id,
+                #                                       host = author.host
+                #                                       display_name = author.display_name,
+                #                                       url = author.url,)
+
+                #    theNewlyFriended.following.objects.all().filter(author_id = author.id).delete()
+                #    theNewlyFriended.friends.add(authorObj)
+
                 author.pendingFriends.all().filter(author_id=friendID).delete()
                 author.friends.add(friendObj)
                 return  Response('Success', status=status.HTTP_200_OK)
@@ -614,14 +628,21 @@ class RemoveFriendViewSet(APIView):
             if str(friend.author_id) == str(friendID):
                 toDelete = friend
                 break
-
+    
         if toDelete is not None:
+
+            # theUnfriended = Author.objects.all().filter(author_id = friendID)
+            # theUnfriended = theUnfriended[0]
+            # if theUnfriended.host == author.host:
+            #     #locally remove 
+            #     theUnfriended.friends.objects.all().filter(author_id = author.id).delete()
+
             author.friends.all().filter(author_id=friendID).delete()
             return  Response('Success', status=status.HTTP_200_OK)
         else:
             return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
 
-# view for /api/friends/unfollow
+# view for /api/friends/unfollow/
 class UnfollowFriendViewSet(APIView):
     """
     Endpoint: /api/author/friends/unfollow/
