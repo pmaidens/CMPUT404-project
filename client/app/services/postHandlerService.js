@@ -77,9 +77,14 @@ angular.module("myApp.services.postHandler", [
     console.log("HI" + urlToPostTo);
 	var urlToCheck = urlToPostTo.split('/').splice(0,4);
 	console.log(urlToCheck);
-	var realUrlToCheck = urlToCheck.join('/') + '/';
+	if(urlToCheck[0] !='http:'){
+	    urlToCheck.unshift( "http:/" );
+	}
+
+	var realUrlToCheck = urlToCheck.join('/') + '/comments/';
 	console.log(realUrlToCheck);
 	var encoded ='';
+
     var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
 	nodes.forEach(function(node){
 
@@ -101,8 +106,11 @@ angular.module("myApp.services.postHandler", [
 	
 	//TODO check  url root against nodes and then grab the username and password encode it then send it over. 
 	//var 
-        return $http.post(urlToPostTo, post);
-
+        return $http({
+	    method:'POST',
+	    url:realUrlToCheck,
+	    //url:'http://project-c404.rhcloud.com/api/posts/8e4f11cf-8e3f-4468-9a53-8835a1dd65ac/comments/',
+	    data:post});
     };
 
     this.updatePost = function (post) {

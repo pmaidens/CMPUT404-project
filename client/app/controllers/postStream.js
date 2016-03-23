@@ -214,9 +214,20 @@ angular.module("myApp.postStream", [
     $scope.AddComment = function (post, comments) {
 	var date = new Date();
 
-	var urlToComment = post.author.host + 'api/posts/' + post.id + '/comments/';
+//	var urlToComment = post.author.host + 'api/posts/' + post.id + '/comments/';
+	var appendCheck = post.author.host.split('/');
+	var toAppend = '';
+	if(appendCheck[appendCheck.length-1]!='api'){
+
+	    toAppend = 'api';
+	}
+	console.log(post);
+	var urlToComment = post.author.host + toAppend + '/posts/' + post.id + '/comments/';
+	var commentAuthor = authenticationHandler.user;
+	var DisplayName = commentAuthor.displayname;
+	commentAuthor['displayName'] = DisplayName;
         postHandler.commentPost({
-            //author: authenticationHandler.user,
+            author: commentAuthor,
             comment: comments,
 	    //we need to allow different contenttypes for comments
 	    contentType: 'text/plain'//,
