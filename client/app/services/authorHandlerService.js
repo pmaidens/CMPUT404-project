@@ -63,7 +63,9 @@ angular.module("myApp.services.authorHandler", [
        var node1 = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
    // console.log(requestObject);
 	//console.log(authenticationHandler.user.id === friend.id);
-	if(friend.host != urlHandler.serviceURL()){
+	console.log(friend.host);
+	
+	if(friend.host != 'project-c404.rhcloud.com/api'){
 	    var encoded = '';
 	    nodes.forEach(function(node){
 
@@ -109,20 +111,23 @@ angular.module("myApp.services.authorHandler", [
 
 	//delete friend
 	$http.defaults.headers.common.Authorization = authenticationHandler.token;
-	return $http.post(urlHandler.serviceURL() + 'api/friends/removefriend/' , {friend:friend.author_id});
+	console.log(friend);
+	console.log(urlHandler.serviceURL());
+	console.log(friend.author_id);
+	return $http.post(urlHandler.serviceURL() + 'api/friends/removefriend/' , {'friend':friend.id});
 
     };
 
     this.unfollow = function(following){
 	//stop following
 	$http.defaults.headers.common.Authorization = authenticationHandler.token;
-	return $http.post( urlHandler.serviceURL()+'api/friends/unfollow/',{friend:following.author_id});	
+	return $http.post( urlHandler.serviceURL()+'api/friends/unfollow/',{'friend':following.author_id});	
 
     };
 
     this.acceptFriend = function(follower){
 	$http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.post(urlHandler.serviceURL() + "api/friends/acceptfriend/", {friend:follower.author_id});
+        return $http.post(urlHandler.serviceURL() + "api/friends/acceptfriend/", {'friend':follower.author_id});
     };
 
 });

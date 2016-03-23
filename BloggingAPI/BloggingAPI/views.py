@@ -486,7 +486,7 @@ class AuthorSpecificPosts(APIView):
         return publicQuerySet | privateQuerySet | friendsOfFriendsQuerySet
 
     def get(self,request,pk,format=None):
-        queryset = self.get_queryset(request).filter(id=pk)
+        queryset = self.get_queryset().filter(id=pk)
         serializer = AuthorPostSerializer(queryset,many=True)
         return Response(serializer.data)
 
