@@ -108,7 +108,7 @@ angular.module("myApp.services.postHandler", [
 	//var 
         return $http({
 	    method:'POST',
-	    url:urlToPostTo,
+	    url:realUrlToCheck,
 	    //url:'http://project-c404.rhcloud.com/api/posts/8e4f11cf-8e3f-4468-9a53-8835a1dd65ac/comments/',
 	    data:post});
     };
