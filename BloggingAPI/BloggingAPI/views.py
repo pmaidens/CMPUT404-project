@@ -173,6 +173,12 @@ class PostsViewSet(viewsets.ModelViewSet):
             serializer_class = UpdatePostsSerializer
         return serializer_class
 
+    #only list public posts for /posts endpoint
+    # def list(self, request):
+    #     queryset = Post.objects.all().filter(visibility='PUBLIC')
+    #     serializer = ViewPostsSerializer(queryset, many=True)
+    #     return Response(serializer.data)
+
 
 class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
