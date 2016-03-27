@@ -487,28 +487,32 @@ class AuthorSpecificPosts(APIView):
 
     def get_queryset(self):
         currentUser = self.request.user.username
-        authorFriends = Author.objects.get(user__username=currentUser).friends.all()
-        #query set for public posts
-        publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
-        #query set for private posts (has to be the post owner)
-        privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
-        #query set for friends
-        #first get only your own 'friends' posts
-        friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
-        #next get all your friends 'friends' posts
-        for friend in authorFriends:
-            friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
-        #query set for friends of friends
-        # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
-        #query set for server only friends
-        #first get the current user server only posts
-        serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY', author__user__username=currentUser)
-        #next get the current user's friends that are on this server posts
-        for friend in authorFriends:
-            if friend.host in Site.objects.get_current().domain:
-                serverOnlyQuerySet = serverOnlyQuerySet | Post.objects.all().filter(visibility='SERVERONLY', author__id=friend.author_id)
+        if currentUser:
+            authorFriends = Author.objects.get(user__username=currentUser).friends.all()
+            #query set for public posts
+            publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
+            #query set for private posts (has to be the post owner)
+            privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+            #query set for friends
+            #first get only your own 'friends' posts
+            friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
+            #next get all your friends 'friends' posts
+            for friend in authorFriends:
+                friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+            #query set for friends of friends
+            # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+            #query set for server only friends
+            #first get the current user server only posts
+            serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY', author__user__username=currentUser)
+            #next get the current user's friends that are on this server posts
+            for friend in authorFriends:
+                if friend.host in Site.objects.get_current().domain:
+                    serverOnlyQuerySet = serverOnlyQuerySet | Post.objects.all().filter(visibility='SERVERONLY', author__id=friend.author_id)
 
-        return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+            return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+
+        else:
+            return Post.objects.all().filter(visibility='PUBLIC')
 
     def get(self,request,pk,format=None):
         print pk
