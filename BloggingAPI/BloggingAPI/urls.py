@@ -40,18 +40,12 @@ apiRouter.register(r'nodes', ConnectedNodesViewSet)
 # apiRouter.register(r'author/posts', CurrentAuthorPostsViewSet)
 
 # http://service/author/{AUTHOR_ID}/posts
-#posts_router = routers.NestedSimpleRouter(apiRouter, r'author', lookup='author')
-#posts_router.register(r'posts', AuthorPostsViewSet)
+apiRouter.register(r'author/(?P<pk>[^/.]+)/posts', AuthorSpecificPosts)
 
 # http://service/posts/{post_id}/comments
 comments_router = routers.NestedSimpleRouter(apiRouter, r'posts', lookup='posts')
 comments_router.register(r'comments', PostCommentsViewSet, base_name='comments')
 
-# http://service/friends/<authorid>
-#apiRouter.register(r'friends', FriendDetailViewSet,'friends')
-
-#POST FriendReq data to
-#/api/addfollower/
 
 urlpatterns = [
     # Examples:
@@ -63,7 +57,6 @@ urlpatterns = [
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include(apiRouter.urls)),
-    # url(r'^', include(posts_router.urls)),
     url(r'^api/', include(comments_router.urls)),
     url(r'^api/friends/$', FriendOverviewView.as_view()),
     url(r'^api/friends/unfollow/$',UnfollowFriendViewSet.as_view()),
@@ -71,7 +64,7 @@ urlpatterns = [
     url(r'^api/friends/removefriend/$',RemoveFriendViewSet.as_view()),
     url(r'^api/friends/(?P<pk>[^/.]+)/$', FriendDetailView.as_view()),
     url(r'^api/friends/(?P<pk1>[^/.]+)/(?P<pk2>[^/.]+)/$', FriendQueryViewSet.as_view()),
-    url(r'^api/author/(?P<pk>[^/.]+)/posts/$', AuthorSpecificPosts.as_view()),
+    # url(r'^api/author/(?P<pk>[^/.]+)/posts/$', AuthorSpecificPosts.as_view()),
     url(r'^api/author/(?P<pk>[^/.]+)/friendrequests/$', AuthorFriendRequests.as_view()),
     url(r'^api/author/(?P<pk>[^/.]+)/following/$', AuthorFollowing.as_view()),
     url(r'^api/friendrequest/$',FriendRequestViewSet.as_view()),

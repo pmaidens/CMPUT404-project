@@ -195,12 +195,76 @@ class PostsViewSet(viewsets.ModelViewSet):
 
 
 # /api/author/author-id/posts
-class AuthorSpecificPosts(APIView):
+class AuthorSpecificPosts(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     Endpoint: /api/author/<authorid>/posts/
     Available Methods: GET
     Gets all posts made by <author-id> that are visible to the
     currently authenticated User
+
+    GET Response properties:
+        title - the title of the post
+        source - the last place this post was
+        origin - the original url of the post
+        description - the description of the post
+        contentType - content type of the post
+        content - the text of the post
+        categories - a list of categories that the post belongs to
+        count - number of posts
+        comments - the list of comments of a post
+        published - the date the post was created
+        id - the guid of the post
+        visibility - the visibility level of this post
+    """
+    queryset = Post.objects.all()
+    pagination_class = PostsPagination
+
+    def get_queryset(self):
+        currentUser = self.request.user.username
+        if currentUser:
+            authorFriends = Author.objects.get(user__username=currentUser).friends.all()
+            #query set for public posts
+            publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
+            #query set for private posts (has to be the post owner)
+            privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+            #query set for friends
+            #first get only your own 'friends' posts
+            friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
+            #next get all your friends 'friends' posts
+            for friend in authorFriends:
+                friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+            #query set for friends of friends
+            # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+            #query set for server only friends
+            #first get the current user server only posts
+            serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY', author__user__username=currentUser)
+            #next get the current user's friends that are on this server posts
+            for friend in authorFriends:
+                if friend.host in Site.objects.get_current().domain:
+                    serverOnlyQuerySet = serverOnlyQuerySet | Post.objects.all().filter(visibility='SERVERONLY', author__id=friend.author_id)
+
+            return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+
+        else:
+            return Post.objects.all().filter(visibility='PUBLIC')
+
+    def list(self, request, pk):
+        queryset = self.get_queryset().filter(author__id=pk)
+        serializer = AuthorPostSerializer(queryset,many=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            return self.get_paginated_response(serializer.data)
+
+        return Response(serializer.data)
+
+
+# /api/author/posts
+class CurrentPostsAvailable(APIView):
+    """
+    Endpoint: /api/author/posts/
+    Available Methods: GET
+    Gets all posts that are available to the currently authenticated user.
 
     GET Response properties:
         title - the title of the post
@@ -247,11 +311,9 @@ class AuthorSpecificPosts(APIView):
             return Post.objects.all().filter(visibility='PUBLIC')
 
     def get(self,request,pk,format=None):
-        print pk
         queryset = self.get_queryset().filter(author__id=pk)
         serializer = AuthorPostSerializer(queryset,many=True)
         return Response(serializer.data)
-
 
 
 class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
