@@ -17,3 +17,11 @@ class PostPermissions(permissions.BasePermission):
             return request.user == obj.author.user or request.user.is_staff
         else:
             return True
+
+class NodePermissions(permissions.BasePermission):
+    #only allow admins to add and remove nodes
+    def has_permission(self, request, view):
+        if request.method == 'POST' or request.method == 'PUT' or request.method == 'PATCH' or request.method == 'DELETE':
+            return request.user.is_staff
+        else:
+            return True
