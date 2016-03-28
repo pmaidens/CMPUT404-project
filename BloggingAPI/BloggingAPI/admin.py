@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from .models import Author
+from .models import Author, Node
 #
 # # Define an inline admin descriptor for Author model
 # # which acts a bit like a singleton
@@ -22,4 +22,9 @@ class AuthorAdmin(admin.ModelAdmin):
     list_display = ['user', 'url']
     ordering = ['user']
 
+class NodeAdmin(admin.ModelAdmin):
+    list_display = ['url', 'username', 'password']
+    ordering = ['url']
+
 admin.site.register(Author, AuthorAdmin)
+admin.site.register(Node, NodeAdmin)
