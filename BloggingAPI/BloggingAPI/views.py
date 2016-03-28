@@ -328,12 +328,18 @@ class FriendRequestViewSet(APIView):
     def post(self,request,format=None):
         authorHost = request.data['author']['host']
         friendHost = request.data['friend']['host']
+        currentUser = self.request.user.username
+        requester = Author.objects.get(user__username=currentUser)
 
         # Assume local author, and thus local friend
         if (authorHost == friendHost):
 
             # Get Requester
             author = Author.objects.get(id=request.data['author']['id'])
+            
+            # may need this?
+            # if requester != author:
+            #     return Response('Invalid', status=status.HTTP_400_BAD_REQUEST)
 
             # Get Requested
             friend = Author.objects.get(id=request.data['friend']['id'])
@@ -590,8 +596,6 @@ class AcceptFriendViewSet(APIView):
         author = author[0]
 
         friendID = request.data['friend']
-        print 'friendID:'
-        print friendID
 
         # Get friend
         for friend in author.pendingFriends.all():
@@ -602,18 +606,23 @@ class AcceptFriendViewSet(APIView):
                                 display_name=friend.display_name,
                                 url=friend.url)
 
-                # theNewlyFriended = Author.objects.all().filter(author_id = friendID)
-                # theNewlyFriended = theNewlyFriended[0]
+                if friend.host == author.host:
+                    # modify friend too
 
-                # if theNewlyFriended.host == author.host:
-                #    #locally add
-                     #authorObj = Friend.objects.create(author_id = author.id,
-                #                                       host = author.host
-                #                                       display_name = author.display_name,
-                #                                       url = author.url,)
+                    theNewlyFriended = Author.objects.all().filter(id = friendID)
+                    theNewlyFriended = theNewlyFriended[0]
+                    
+                     # friend object of author
+                    authObj = Friend.objects.all().filter(author_id = author.id)
+                    authObj = authObj[0]
+                    
+                    authorFriendObj = Friend.objects.create(author_id = authObj.author_id,
+                                                      host = authObj.host,
+                                                      display_name = authObj.display_name,
+                                                      url = authObj.url)
 
-                #    theNewlyFriended.following.objects.all().filter(author_id = author.id).delete()
-                #    theNewlyFriended.friends.add(authorObj)
+                    theNewlyFriended.following.all().filter(author_id = author.id).delete()
+                    theNewlyFriended.friends.add(authorFriendObj)
 
                 author.pendingFriends.all().filter(author_id=friendID).delete()
                 author.friends.add(friendObj)
