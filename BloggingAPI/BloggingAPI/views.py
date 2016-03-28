@@ -673,21 +673,17 @@ class RemoveFriendViewSet(APIView):
         # Get friend
         for friend in author.friends.all():
             if str(friend.author_id) == str(friendID):
-                toDelete = friend
-                break
+                
+                if friend.host == author.host:
+                    # symetrically remove
+                    theUnfriended = Author.objects.all().filter(id = friendID)
+                    theUnfriended = theUnfriended[0]
+                    theUnfriended.friends.all().filter(author_id = author.id).delete()
 
-        if toDelete is not None:
+                author.friends.all().filter(author_id=friendID).delete()
+                return  Response('Success', status=status.HTTP_200_OK)
 
-            # theUnfriended = Author.objects.all().filter(author_id = friendID)
-            # theUnfriended = theUnfriended[0]
-            # if theUnfriended.host == author.host:
-            #     #locally remove
-            #     theUnfriended.friends.objects.all().filter(author_id = author.id).delete()
-
-            author.friends.all().filter(author_id=friendID).delete()
-            return  Response('Success', status=status.HTTP_200_OK)
-        else:
-            return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
+        return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
 
 # view for /api/friends/unfollow/
 class UnfollowFriendViewSet(APIView):

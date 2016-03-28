@@ -279,8 +279,8 @@ class apiTests(TestCase):
         self.assertEqual(friendQuery.data['friends'], True) 
 
 
-        # Not Friends
-        url = 'http://127.0.0.1:8000/api/friends/'+str(self.author.id) +'/'+ str(self.testEnemy.id)+'/'
+        # Not Friends - also switch IDs
+        url = 'http://127.0.0.1:8000/api/friends/'+str(self.testEnemy.id) +'/'+ str(self.author.id)+'/'
         
         friendQuery = self.client.get(url)
         self.assertEqual(friendQuery.status_code, status.HTTP_200_OK)
@@ -288,8 +288,6 @@ class apiTests(TestCase):
 
         # Accept friend request
         data = {'friend':str(self.testEnemy.id)}
-        print self.testEnemy.id
-        print self.author.id
         url = 'http://127.0.0.1:8000/api/friends/acceptfriend/'
         
         post = self.client.post(url,data,format='json')
@@ -301,9 +299,22 @@ class apiTests(TestCase):
         # Friend fields updated
         self.assertEqual(len(self.author.friends.all()),2)
         self.assertEqual(len(self.testEnemy.friends.all()),1)
+
+        # Query friendship again
+        url = 'http://127.0.0.1:8000/api/friends/'+str(self.author.id) +'/'+ str(self.testEnemy.id)+'/'
+        friendQuery = self.client.get(url)
+        self.assertEqual(friendQuery.status_code, status.HTTP_200_OK)
+        self.assertEqual(friendQuery.data['friends'], True) 
+
+        # Un-befriend local author
+        url = 'http://127.0.0.1:8000/api/friends/removefriend/'
+        post = self.client.post(url,data,format='json')
+        self.assertEqual(post.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(self.author.friends.all()),1) # Friend removed
+        self.assertEqual(len(Friend.objects.all()),1) # friends count decreased
+        self.assertEqual(len(self.testEnemy.friends.all()),0) # Friend removed
       
         
-
 
     def test_Author(self):
        # http://service/author/{AUTHOR_ID}/posts (all posts made by {AUTHOR_ID} visible to the currently authenticated user)
