@@ -188,10 +188,10 @@ class PostsViewSet(viewsets.ModelViewSet):
         return serializer_class
 
     #only list public posts for /posts endpoint
-    # def list(self, request):
-    #     queryset = Post.objects.all().filter(visibility='PUBLIC')
-    #     serializer = ViewPostsSerializer(queryset, many=True)
-    #     return Response(serializer.data)
+    def list(self, request):
+        queryset = Post.objects.all().filter(visibility='PUBLIC')
+        serializer = ViewPostsSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 # /api/author/author-id/posts
