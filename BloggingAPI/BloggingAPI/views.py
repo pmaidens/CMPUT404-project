@@ -319,6 +319,7 @@ class CurrentPostsAvailable(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         page = self.paginate_queryset(queryset)
         if page is not None:
+            serializer = AuthorPostSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
         return Response(serializer.data)
