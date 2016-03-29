@@ -36,11 +36,12 @@ apiRouter.register(r'posts', PostsViewSet)
 #http://service/nodes/
 apiRouter.register(r'nodes', ConnectedNodesViewSet)
 
-# http://service/author/posts
-# apiRouter.register(r'author/posts', CurrentAuthorPostsViewSet)
-
 # http://service/author/{AUTHOR_ID}/posts
 apiRouter.register(r'author/(?P<pk>[^/.]+)/posts', AuthorSpecificPosts)
+
+# http://service/author/posts
+# apiRouter.register(r'author/posts', CurrentAuthorPostsViewSet)
+apiRouter.register(r'author/posts/', CurrentPostsAvailable)
 
 # http://service/posts/{post_id}/comments
 comments_router = routers.NestedSimpleRouter(apiRouter, r'posts', lookup='posts')

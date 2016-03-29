@@ -254,13 +254,14 @@ class AuthorSpecificPosts(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         page = self.paginate_queryset(queryset)
         if page is not None:
+            serializer = AuthorPostSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
         return Response(serializer.data)
 
 
 # /api/author/posts
-class CurrentPostsAvailable(APIView):
+class CurrentPostsAvailable(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     Endpoint: /api/author/posts/
     Available Methods: GET
@@ -280,6 +281,8 @@ class CurrentPostsAvailable(APIView):
         id - the guid of the post
         visibility - the visibility level of this post
     """
+    queryset = Post.objects.all()
+    pagination_class = PostsPagination
 
     def get_queryset(self):
         currentUser = self.request.user.username
@@ -310,9 +313,14 @@ class CurrentPostsAvailable(APIView):
         else:
             return Post.objects.all().filter(visibility='PUBLIC')
 
-    def get(self,request,pk,format=None):
-        queryset = self.get_queryset().filter(author__id=pk)
+    def list(self, request):
+        queryset = self.get_queryset()
         serializer = AuthorPostSerializer(queryset,many=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            return self.get_paginated_response(serializer.data)
+
         return Response(serializer.data)
 
 
@@ -463,7 +471,7 @@ class FriendRequestViewSet(APIView):
 
             # Get Requester
             author = Author.objects.get(id=request.data['author']['id'])
-            
+
             # may need this?
             # if requester != author:
             #     return Response('Invalid', status=status.HTTP_400_BAD_REQUEST)
@@ -680,11 +688,11 @@ class AcceptFriendViewSet(APIView):
 
                     theNewlyFriended = Author.objects.all().filter(id = friendID)
                     theNewlyFriended = theNewlyFriended[0]
-                    
+
                      # friend object of author
                     authObj = Friend.objects.all().filter(author_id = author.id)
                     authObj = authObj[0]
-                    
+
                     authorFriendObj = Friend.objects.create(author_id = authObj.author_id,
                                                       host = authObj.host,
                                                       display_name = authObj.display_name,
@@ -735,7 +743,7 @@ class RemoveFriendViewSet(APIView):
         # Get friend
         for friend in author.friends.all():
             if str(friend.author_id) == str(friendID):
-                
+
                 if friend.host == author.host:
                     # symetrically remove
                     theUnfriended = Author.objects.all().filter(id = friendID)
