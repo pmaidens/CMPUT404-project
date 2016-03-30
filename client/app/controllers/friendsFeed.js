@@ -111,12 +111,24 @@ angular.module("myApp.friendsFeed", [
         var friend = {
             "id": author.id,
             "host":author.host,
-            "displayName": author.displayname,
+            "displayName": author.displayName,
             "url": author.url || author.host
+        };
+
+        var requestObject = {
+            query: "friendrequest",
+            author:  {
+                "id": authenticationHandler.user.id,
+                "host": authenticationHandler.user.host,
+                "displayName": authenticationHandler.user.displayname,
+                "url": authenticationHandler.user.url
+            },
+            friend: friend
         };
 
         authorHandler.postFriendRequest(friend).then(function() {
 	    
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
 	    $http.post(urlHandler.serviceURL() + 'api/addfollower/',requestObject);
 	    alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
     };

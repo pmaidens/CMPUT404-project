@@ -82,7 +82,7 @@ angular.module("myApp.services.authorHandler", [
         var password = 'team6'
         encoded = window.btoa('team6:team6');
 	    $http.defaults.headers.common.Authorization =  'Basic ' + encoded;
-	    return $http.post(urlHandler.remoteURL(friend.host)+'api/friendrequest/'+friend.displayName,requestObject);
+	    return $http.post(urlHandler.remoteURL(friend.host)+'api/friendrequest/',requestObject);
 
 	}else{
             $http.defaults.headers.common.Authorization = authenticationHandler.token;
