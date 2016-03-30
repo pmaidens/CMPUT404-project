@@ -101,6 +101,7 @@ class PostsViewSet(viewsets.ModelViewSet):
         published - the date the post was created
         id - the guid of the post
         visibility - the visibility level of this post
+        image - an image url
 
     POST Request objects properties:
         title (string) - the title of the post

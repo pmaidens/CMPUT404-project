@@ -179,7 +179,7 @@ class ViewPostsSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('title', 'source', 'origin', 'description', 'contentType',
           'content', 'author', 'categories', 'count', 'comments', 'published',
-          'id', 'visibility')
+          'id', 'visibility', 'image')
 
 
     def get_count(self, obj):
@@ -193,7 +193,7 @@ class UpdatePostsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('title', 'source', 'origin', 'description', 'date_created','contentType',
-              'content', 'author', 'categories', 'visibility')
+              'content', 'author', 'categories', 'visibility', 'image')
 
 
 #Serializer for Comments
