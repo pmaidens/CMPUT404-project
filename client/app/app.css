@@ -31,7 +31,7 @@
 
 .navbar-custom {
     background-color: #3b5998;
-   
+
 }
 
 
@@ -89,7 +89,7 @@ textarea#styled {
 .panel > .profile{
   background-image: none;
   background-color: #f7f7f7;
-  
+
   font-family: Tahoma, sans-serif;
   text-align: center
 }
@@ -115,7 +115,7 @@ textarea#styled {
     padding-bottom:40px;
 }
 
-.navbar-brand img { 
+.navbar-brand img {
   position: relative;
   padding-left: 10px; }
 
@@ -134,14 +134,14 @@ textarea#styled {
 .navbar-custom .navbar-nav > li > a:focus {
     color: #3b5998;
 }
-.navbar-default .navbar-nav > .active > a, 
-.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
     color: #3b5998;
     background-color: #3b5998;
 }
-.navbar-default .navbar-nav > .open > a, 
-.navbar-default .navbar-nav > .open > a:hover, 
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
     color: #3b5998;
     background-color: #3b5998;
@@ -154,7 +154,7 @@ textarea#styled {
 
 .custom-list-group-item{
   background-color: #dfe3ee;
-  
+
 }
 
 body{
@@ -263,4 +263,11 @@ body{
     color:#3b5998;
     font-weight:bold;
 
+}
+
+.thumb {
+    width: 30px;
+    height: 30px;
+    float: none;
+    position: relative;
 }

@@ -33,7 +33,7 @@ angular.module("myApp.postStream", [
 	$http.defaults.headers.common.Authorization = authenticationHandler.token;
 	
 	//TODO change the url
-	$http.get('http://localhost:8000/api/nodes/' ).then(function(result){
+	$http.get(urlHandler.serviceURL() + 'api/nodes/').then(function(result){
 
 	    $scope.nodes = result.data;
 
@@ -214,9 +214,21 @@ angular.module("myApp.postStream", [
     $scope.AddComment = function (post, comments) {
 	var date = new Date();
 
-	var urlToComment = post.author.host + 'api/posts/' + post.id + '/comments/';
+//	var urlToComment = post.author.host + 'api/posts/' + post.id + '/comments/';
+	var appendCheck = post.author.host.split('/');
+	var toAppend = '';
+	if(appendCheck[appendCheck.length-1]!='api'){
+
+	    toAppend = 'api';
+	}
+	console.log(post.id);
+	var urlToComment = post.author.host + toAppend + '/posts/' + post.id + '/comments/';
+	console.log(urlToComment);
+	var commentAuthor = authenticationHandler.user;
+	var DisplayName = commentAuthor.displayname;
+	commentAuthor['displayName'] = DisplayName;
         postHandler.commentPost({
-            //author: authenticationHandler.user,
+            author: commentAuthor,
             comment: comments,
 	    //we need to allow different contenttypes for comments
 	    contentType: 'text/plain'//,
