@@ -33,7 +33,7 @@ angular.module("myApp.postStream", [
 	$http.defaults.headers.common.Authorization = authenticationHandler.token;
 	
 	//TODO change the url
-	$http.get('http://localhost:8000/api/nodes/' ).then(function(result){
+	$http.get(urlHandler.serviceURL() + 'api/nodes/').then(function(result){
 
 	    $scope.nodes = result.data;
 
