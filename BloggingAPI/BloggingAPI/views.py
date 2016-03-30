@@ -557,6 +557,8 @@ class AddFollowerViewSet(APIView):
     """
 
     def post(self,request,format=None):
+        authorHost = request.data['author']['host']
+        friendHost = request.data['friend']['host']
 
         author = Author.objects.get(id=request.data['author']['id'])
 
@@ -685,6 +687,9 @@ class AcceptFriendViewSet(APIView):
                                 display_name=friend.display_name,
                                 url=friend.url)
 
+                print 'WAZOOOO'
+                print 'adfsj'
+                print '-----------'
                 if friend.host == author.host:
                     # modify friend too
 
