@@ -70,10 +70,10 @@ class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.L
 
     def get_queryset(self):
         queryset = Author.objects.all()
-        displayname = self.request.query_params.get('displayname', None)
+        displayName = self.request.query_params.get('displayName', None)
 
-        if displayname is not None:
-            queryset = queryset.filter(user__username=displayname)
+        if displayName is not None:
+            queryset = queryset.filter(user__username=displayName)
 
         return queryset
 

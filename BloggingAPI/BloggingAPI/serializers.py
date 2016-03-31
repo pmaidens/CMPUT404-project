@@ -12,7 +12,7 @@ class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.UUIDField(source='author_id')
     class Meta:
         model = Friend
-        fields = ('id', 'host', 'display_name', 'url')
+        fields = ('id', 'host', 'displayName', 'url')
 
 
 class ViewAuthorSerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class ViewAuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Author
-        fields = ('id', 'host', 'displayname', 'url', 'friends', 'github',
+        fields = ('id', 'host', 'displayName', 'url', 'friends', 'github',
           'first_name', 'last_name', 'email', 'bio')
 
 
@@ -263,7 +263,7 @@ class AuthorPostSerializer(serializers.ModelSerializer):
 class ViewFriendSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Friend
-        fields = ('author_id', 'host', 'display_name', 'url')
+        fields = ('author_id', 'host', 'displayName', 'url')
 
 class ViewFriendRequestsSerializer(serializers.ModelSerializer):
     friendrequests = ViewFriendSerializer(source='pendingFriends', many=True, read_only=True)
