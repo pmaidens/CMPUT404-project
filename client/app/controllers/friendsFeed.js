@@ -15,7 +15,7 @@ angular.module("myApp.friendsFeed", [
 }])
 
 .controller("FriendsFeedController", function($scope, $http, $location, $q, authenticationHandler, urlHandler, authorHandler) {
-	$scope.potentialFriends = [];
+	$scope.localAuthors = [];
 	$scope.user = authenticationHandler.user;
     $scope.isFollowing = false;
     $scope.hasFollowers = false;
@@ -24,13 +24,13 @@ angular.module("myApp.friendsFeed", [
 
     authorHandler.getAllAuthors().then(function(result) {
 
-        $scope.potentialFriends = result.data;
+        $scope.localAuthors = result.data;
         var followers = $scope.getfollowers();
 
         $q.all([followers||$scope.followers2, getRefresh($scope.user)]).then(function(){
-            filteredStuff($scope.potentialFriends,$scope.followers,$scope.user,$scope.user.friends)
+            filteredStuff($scope.localAuthors,$scope.followers,$scope.user,$scope.user.friends)
         })
-        //var friends = getfriends($scope potentialFriends);
+        //var friends = getfriends($scope localAuthors);
 	//STEP 1 
 	//STEP 2
 	getAuthorsFromNodes(nodes);
@@ -79,16 +79,16 @@ angular.module("myApp.friendsFeed", [
         });
     }; 
     
-    var filteredStuff = function(potentialFriends, followers, user, friends){
+    var filteredStuff = function(localAuthors, followers, user, friends){
 
-        $scope.filteredPotentialFriends = potentialFriends.filter(function(filteredPotentialFriends){
+        $scope.filteredlocalAuthors = localAuthors.filter(function(filteredlocalAuthors){
            
             return (!followers.some(function(follower){
-                return filteredPotentialFriends.id === follower.author_id;
+                return filteredlocalAuthors.id === follower.author_id;
             })
             && !friends.some(function(friend){
-                return filteredPotentialFriends.id === friend.author_id;
-            })&& filteredPotentialFriends.id !== user.id);
+                return filteredlocalAuthors.id === friend.author_id;
+            })&& filteredlocalAuthors.id !== user.id);
         
         });
     };
@@ -111,12 +111,24 @@ angular.module("myApp.friendsFeed", [
         var friend = {
             "id": author.id,
             "host":author.host,
-            "displayName": author.displayname,
+            "displayName": author.displayName,
             "url": author.url || author.host
+        };
+
+        var requestObject = {
+            query: "friendrequest",
+            author:  {
+                "id": authenticationHandler.user.id,
+                "host": authenticationHandler.user.host,
+                "displayName": authenticationHandler.user.displayname,
+                "url": authenticationHandler.user.url
+            },
+            friend: friend
         };
 
         authorHandler.postFriendRequest(friend).then(function() {
 	    
+        $http.defaults.headers.common.Authorization = authenticationHandler.token;
 	    $http.post(urlHandler.serviceURL() + 'api/addfollower/',requestObject);
 	    alert("Friend Request Sent")}, function() {alert("uh-oh, something went wrong")});
     };
