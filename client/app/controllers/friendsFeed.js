@@ -173,7 +173,7 @@ angular.module("myApp.friendsFeed", [
 
     };
 
-    var nodes = [{'url':'http://mighty-cliffs-82717.herokuapp.com/api/','username':'Team6','password':'Team6'}];
+    var nodes = [{'url':'http://mighty-cliffs-82717.herokuapp.com/api/','username':'Team6','password':'Team6'},{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
 
 
   
