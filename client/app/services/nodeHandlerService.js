@@ -7,7 +7,7 @@ angular.module("myApp.services.nodeHandler", [
 .service("nodeHandler", function($q, $http, urlHandler, authenticationHandler) {
     this.nodes = [
         {
-            "url":"http://mighty-cliffs-82717.herokuapp.com/api/",
+            "url":"https://mighty-cliffs-82717.herokuapp.com/api/",
             "username":"Team6",
             "password":"Team6"
         },

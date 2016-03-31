@@ -108,39 +108,55 @@ angular.module("myApp.postStream", [
 
     //POST : author id, comment, postid
     $scope.AddComment = function (post, comments) {
-        //	var urlToComment = post.author.host + "api/posts/" + post.id + "/comments/";
-        var appendCheck = post.author.host.split("/");
-        var toAppend = "";
-        if(appendCheck[appendCheck.length-1]!="api"){
+        var nodeURL;
+        var postURL = post.author.host;
 
-            toAppend = "api";
+        if(postURL !== urlHandler.serviceURL() && !~postURL.indexOf("/api/")) {
+            nodeURL = postURL + "api/";
         }
-        console.log(post.id);
-        var urlToComment = post.author.host + toAppend + "/posts/" + post.id + "/comments/";
-        console.log(urlToComment);
-        var commentAuthor = authenticationHandler.user;
-        var DisplayName = commentAuthor.displayname;
-        commentAuthor["displayName"] = DisplayName;
+
         postHandler.commentPost({
-            author: commentAuthor,
+            author: authenticationHandler.user,
             comment: comments,
-            //we need to allow different contenttypes for comments
-            contentType: "text/plain"//,
-            // published: date,
-            //id
-        },urlToComment).then(function(){
-
-            comments = "";
-
-            //TODO
-
-            $http.get(urlHandler.serviceURL()+"api/posts/"+post.id+"/").then(function(postData){
-
-
-                post.comments = postData.data.comments;
-
+            contentType: "text/plain"
+        },post.id, nodeURL).then(function () {
+            postHandler.getPost(nodeURL, post.id).then(function (result) {
+                post.comments = result.data.comments;
             });
-
         });
+        //	var urlToComment = post.author.host + "api/posts/" + post.id + "/comments/";
+        // var appendCheck = post.author.host.split("/");
+        // var toAppend = "";
+        // if(appendCheck[appendCheck.length-1]!="api"){
+        //
+        //     toAppend = "api";
+        // }
+        // console.log(post.id);
+        // var urlToComment = post.author.host + toAppend + "/posts/" + post.id + "/comments/";
+        // console.log(urlToComment);
+        // var commentAuthor = authenticationHandler.user;
+        // var DisplayName = commentAuthor.displayname;
+        // commentAuthor["displayName"] = DisplayName;
+        // postHandler.commentPost({
+        //     author: commentAuthor,
+        //     comment: comments,
+        //     //we need to allow different contenttypes for comments
+        //     contentType: "text/plain"//,
+        //     // published: date,
+        //     //id
+        // },urlToComment).then(function(){
+        //
+        //     comments = "";
+        //
+        //     //TODO
+        //
+        //     $http.get(urlHandler.serviceURL()+"api/posts/"+post.id+"/").then(function(postData){
+        //
+        //
+        //         post.comments = postData.data.comments;
+        //
+        //     });
+        //
+        // });
     };
 });
