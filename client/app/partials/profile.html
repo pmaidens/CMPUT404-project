@@ -13,7 +13,7 @@
             <h4>UserName: </h4>
             </div>
             <div class="col-lg-6">
-            <h5> {{ author.displayname }}</h5>
+            <h5> {{ author.displayName }}</h5>
             </div>
         </div>
          <div class="form-group">
@@ -90,7 +90,7 @@
       <div class ='panel-body ' ng-repeat="friend in friends">
 	  <div class = 'row' >
 	    <div class ="col-lg-2"> display Name: </div>
-	    <div class ="col-lg-4"> <h4 class="friendlyDisplayName" >{{friend.display_name}}</h4> </div>
+	    <div class ="col-lg-4"> <h4 class="friendlyDisplayName" >{{friend.displayName}}</h4> </div>
 	    <div class ="col-lg-3"><button class="btn btn-success"  data-ng-click="unfriend(friend)"> Unfriend</button></div>
 	  </div>
 	<div class = 'row' >  
@@ -115,7 +115,7 @@
       <div class ='panel-body ' ng-repeat="follower in followers2">
 	  <div class = 'row' >
 	    <div class ="col-lg-2"> display Name: </div>
-	    <div class ="col-lg-4"><h4 class="friendlyDisplayName" >{{follower.display_name}}</h4></div>
+	    <div class ="col-lg-4"><h4 class="friendlyDisplayName" >{{follower.displayName}}</h4></div>
 	    <div class ="col-lg-3"><button class="btn btn-success" data-ng-click="acceptFriend(follower)">Accept Friend </button></div>
 	  </div>
 	<div class = 'row' >  
@@ -142,7 +142,7 @@
       <div class ='panel-body ' ng-repeat="following in friendsSOON">
 	  <div class = 'row' >
 	    <div class ="col-lg-2"> display Name: </div>
-	    <div class ="col-lg-4"><h4 class="friendlyDisplayName">{{following.display_name}}</4></div>
+	    <div class ="col-lg-4"><h4 class="friendlyDisplayName">{{following.displayName}}</4></div>
 	    <div class ="col-lg-3"><button class="btn btn-success"  data-ng-click="unfollow(following)"> Unfollow</button></div>
 	  </div>
 	<div class = 'row' >  

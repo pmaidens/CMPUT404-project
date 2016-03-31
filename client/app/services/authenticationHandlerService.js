@@ -70,7 +70,7 @@ angular.module("myApp.services.authenticationHandler", [
     this.determineUser = function (displayname) {
         return $http.get(urlHandler.serviceURL()+"api/author/").then(function (result) {
             result.data.some(function (author) {
-                if(author.displayname === displayname) {
+                if(author.displayName === displayname) {
                     this.user = $localStorage.user = author;
                     $rootScope.loggedIn = true;
                     return true;

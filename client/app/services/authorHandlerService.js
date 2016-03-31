@@ -5,7 +5,7 @@ angular.module("myApp.services.authorHandler", [
     "myApp.services.authenticationHandler"
 ])
 .service("authorHandler", function($q, $http, urlHandler, authenticationHandler) {
-    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+    var nodes = [{'url':'http://mighty-cliffs-82717.herokuapp.com/api/','username':'Team6','password':'Team6'},{'url':'http://cmput404team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
     this.getAllAuthors = function(){
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.get(urlHandler.serviceURL() + "api/author/");
@@ -54,13 +54,13 @@ angular.module("myApp.services.authorHandler", [
             author:  {
                 "id": authenticationHandler.user.id,
                 "host": authenticationHandler.user.host,
-                "displayName": authenticationHandler.user.displayname,
+                "displayName": authenticationHandler.user.displayName,
                 "url": authenticationHandler.user.url
             },
             friend: friend
         };
 
-       var node1 = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+       var node1 = [{'url':'http://mighty-cliffs-82717.herokuapp.com/api/','username':'Team6','password':'Team6'},{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
    // console.log(requestObject);
 	//console.log(authenticationHandler.user.id === friend.id);
 	console.log(friend.host);
@@ -79,7 +79,7 @@ angular.module("myApp.services.authorHandler", [
 	  //  console.log("i am HERE "+ friend.host+'/friendRequest/'+friend.displayName,requestObject);
       //  console.log(friend);
         //HARDCODED FOR GROUP 8 WILL HAVE TO CHANGE THIS.
-        var node1 = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+        var node1 = [{'url':'http://mighty-cliffs-82717.herokuapp.com/api/','username':'Team6','password':'Team6'},{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
         var username = 'team6';
         var password = 'team6'
         encoded = window.btoa('team6:team6');

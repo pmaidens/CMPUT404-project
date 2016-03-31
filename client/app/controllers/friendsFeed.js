@@ -120,7 +120,7 @@ angular.module("myApp.friendsFeed", [
             author:  {
                 "id": authenticationHandler.user.id,
                 "host": authenticationHandler.user.host,
-                "displayName": authenticationHandler.user.displayname,
+                "displayName": authenticationHandler.user.displayName,
                 "url": authenticationHandler.user.url
             },
             friend: friend
@@ -173,13 +173,13 @@ angular.module("myApp.friendsFeed", [
 
     };
 
-    var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
+    var nodes = [{'url':'http://mighty-cliffs-82717.herokuapp.com/api/','username':'Team6','password':'Team6'}];
 
 
   
     var getAuthorsFromNodes = function(nodes){
 
-    var nodeAuthors = [];
+    $scope.nodeAuthors = [];
     var encoded='';
     
 
@@ -222,12 +222,12 @@ angular.module("myApp.friendsFeed", [
     encoded = window.btoa(nodes[i].username + ':' + nodes[i].password);
     $http.defaults.headers.common.Authorization = 'Basic ' + encoded; 
     $http.defaults.useXDomain=true;
-    if (nodes[i].url == 'http://cmput404-team-4b.herokuapp.com/api/'){
+  //  if (nodes[i].url == 'http://cmput404-team-4b.herokuapp.com/api/'){
 // console.log("here2");
     $http({
 
         method:'GET',
-        url: nodes[i].url+'author/',
+        url: ~nodes[i].url.indexOf("mighty-cliffs-82717") ? nodes[i].url+'authors/' : nodes[i].url+'author/',
         headers:{
             
 
@@ -241,7 +241,7 @@ angular.module("myApp.friendsFeed", [
         console.log("here3");
         //TODO 
        // if(nodes[i].url == 'http://secret-inlet-51780.herokuapp.com/api/'){
-        $scope.nodeAuthors = result.data;
+        $scope.nodeAuthors = $scope.nodeAuthors.concat(result.data);
        // console.log("here444"+$scope.nodeAuthors);
         //}
         //$scope.nodeAuthors = result.data;
@@ -252,7 +252,7 @@ angular.module("myApp.friendsFeed", [
 
 
     });
-}
+//}
 
 }
 
