@@ -192,6 +192,12 @@ class PostsViewSet(viewsets.ModelViewSet):
     def list(self, request):
         queryset = Post.objects.all().filter(visibility='PUBLIC')
         serializer = ViewPostsSerializer(queryset, many=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = ViewPostsSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         return Response(serializer.data)
 
 
@@ -484,7 +490,7 @@ class FriendRequestViewSet(APIView):
 
             followingObj = Friend.objects.create(author_id = request.data['friend']['id'],
                                           host = friendHost,
-                                          display_name = request.data['friend']['displayName'],
+                                          displayName = request.data['friend']['displayName'],
                                           url = request.data['friend']['url'])
 
             #API specs doesn't require URL on the author side so if the url is empty in the request generate it
@@ -495,7 +501,7 @@ class FriendRequestViewSet(APIView):
 
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
                                           host = authorHost,
-                                          display_name = request.data['author']['displayName'],
+                                          displayName = request.data['author']['displayName'],
                                           url = pendingObjURL)
 
 
@@ -516,7 +522,7 @@ class FriendRequestViewSet(APIView):
 
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
                                                host = authorHost,
-                                               display_name = request.data['author']['displayName'],
+                                               displayName = request.data['author']['displayName'],
                                                url = request.data['author']['url'])
 
             try:
@@ -570,7 +576,7 @@ class AddFollowerViewSet(APIView):
 
         followingObj = Friend.objects.create(author_id = request.data['friend']['id'],
                                           host = friendHost,
-                                          display_name = request.data['friend']['displayName'],
+                                          displayName = request.data['friend']['displayName'],
                                           url = followingObjURL)
 
         try:
@@ -684,12 +690,9 @@ class AcceptFriendViewSet(APIView):
                 friendObj = Friend.objects.create(
                                 author_id=friend.author_id,
                                 host=friend.host,
-                                display_name=friend.display_name,
+                                displayName=friend.displayName,
                                 url=friend.url)
 
-                print 'WAZOOOO'
-                print 'adfsj'
-                print '-----------'
                 if friend.host == author.host:
                     # modify friend too
 
@@ -702,7 +705,7 @@ class AcceptFriendViewSet(APIView):
 
                     authorFriendObj = Friend.objects.create(author_id = authObj.author_id,
                                                       host = authObj.host,
-                                                      display_name = authObj.display_name,
+                                                      displayName = authObj.displayName,
                                                       url = authObj.url)
 
                     theNewlyFriended.following.all().filter(author_id = author.id).delete()

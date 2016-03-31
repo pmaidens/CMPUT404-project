@@ -45,7 +45,7 @@ class Friend(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author_id = models.UUIDField(default=None)
     host = models.CharField(max_length=2000, blank=False)
-    display_name = models.CharField(max_length=30, blank=False)
+    displayName = models.CharField(max_length=30, blank=False)
     url = models.CharField(max_length=2000, blank=False)
 
 class Post(models.Model):
