@@ -29,7 +29,6 @@ angular.module("myApp.services.nodeHandler", [
             allRequest.push(this.sendTo(urlHandler.serviceURL(), httpVerb, relativeURL, requestParameters));
             this.nodes.forEach(function (node) {
                 var currentRelativeURL = relativeURL;
-                // var differentCase = specialCase && specialCase.url === node.url ? specialCase : undefined;
                 if (specialCase && specialCase.url === node.url) {
                     if (specialCase.relativeURL) {
                         currentRelativeURL = specialCase.relativeURL;

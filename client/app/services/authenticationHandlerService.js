@@ -21,9 +21,6 @@ angular.module("myApp.services.authenticationHandler", [
                 }.bind(this));
 
                 var token = "Basic " + window.btoa(username+":"+password);
-                // $http.defaults.headers.common.Authorization = "Token " + result.data.key;
-                // this.token = "Token " + result.data.key;
-                // $localStorage.token = this.token;
                 $http.defaults.headers.common.Authorization = token;
                 this.token = token;
                 $localStorage.token = this.token;
@@ -36,7 +33,7 @@ angular.module("myApp.services.authenticationHandler", [
 
     this.logout = function() {
         //Keep this wrapped in 'q' just to keep everything consistent.
-        return $q(function(resolve/*, reject*/) {
+        return $q(function(resolve) {
             $http.defaults.headers.common.Authorization = undefined;
             this.token = "";
             delete $localStorage.token;

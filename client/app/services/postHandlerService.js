@@ -10,7 +10,7 @@ angular.module("myApp.services.postHandler", [
 .service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler, authorHandler, nodeHandler) {
     this.posts = [];
     this.getPosts = function (authorId, nodeURL) {
-        return $q(function(resolve, reject) { //eslint-disable-line no-unused-vars
+        return $q(function(resolve) {
             var relativeURL;
             var results = {
                 data: []
@@ -40,19 +40,14 @@ angular.module("myApp.services.postHandler", [
     };
 
     this.deletePost = function(id) {
-        //TODO change the url to the proper url
-        //make sure you have the slash at the end
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.delete(urlHandler.serviceURL() + "api/posts/"+id+"/").then(function(){
-
             $route.reload();
-
         },function(err){
-
             console.log(err);
-
         });
     };
+
     this.createPost = function(post) {
         //TODO change the url to the proper url
         $http.defaults.headers.common.Authorization = authenticationHandler.token;

@@ -62,49 +62,28 @@ angular.module("myApp.services.authorHandler", [
         };
 
         return nodeHandler.sendTo(friend.host, "post", "friendrequest/", requestObject);
-        // if(friend.host != "project-c404.rhcloud.com/api"){
-        //     var encoded;
-        //     nodes.forEach(function(node){
-        //         if (friend.host == node.host){
-        //             encoded = window.btoa(node.username + ":" + node.password);
-        //         }
-        //     });
-        //     $http.defaults.headers.common.Authorization =  "Basic " + encoded;
-        //     return $http.post(urlHandler.remoteURL(friend.host)+"api/friendrequest/",requestObject);
-        // }else{
-        //     $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        //     return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
-        // }
     };
 
     this.getFollowers = function(authorId){
         //get followers
-        // return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId|| authenticationHandler.user.id) + "/friendrequests/");
         return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "author/" + (authorId || authenticationHandler.user.id) + "/friendrequests/");
     };
     this.getFollowing = function(authorId){
         //get ppl who the author is following
-        // return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/following/");
         return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "author/" + (authorId || authenticationHandler.user.id) + "/following/");
     };
 
     this.unfriend = function(friend){
         //delete friend
-        // $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        // return $http.post(urlHandler.serviceURL() + "api/friends/removefriend/" , {"friend":friend.id});
         return nodeHandler.sendTo(urlHandler.serviceURL(), "post", "friends/removefriend/",  {"friend":friend.id});
     };
 
     this.unfollow = function(following){
         //stop following
-        // $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        // return $http.post( urlHandler.serviceURL()+"api/friends/unfollow/",{"friend":following.author_id});
         return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "friends/unfollow/", {"friend":following.author_id});
     };
 
     this.acceptFriend = function(follower){
-        // $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        // return $http.post(urlHandler.serviceURL() + "api/friends/acceptfriend/", {"friend":follower.author_id});
         return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "friends/acceptfriend/", {"friend":follower.author_id});
     };
 
