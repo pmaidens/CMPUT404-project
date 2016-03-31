@@ -20,20 +20,29 @@ angular.module("myApp.friendsFeed", [
     $scope.isFollowing = false;
     $scope.hasFollowers = false;
     $scope.friends = $scope.user.friends;
-
-    authorHandler.getAllAuthors().then(function(result) {
-        $scope.localAuthors = result.data;
-        var followers = $scope.getfollowers();
-
-        $q.all([followers||$scope.followers2, getRefresh($scope.user)]).then(function(){
-            filteredStuff($scope.localAuthors,$scope.followers,$scope.user,$scope.user.friends);
+    $scope.nodeAuthors = [];
+    authorHandler.getAllAuthors().then(function (results) {
+        results.data.forEach(function (author) {
+            if(~urlHandler.apiURL().indexOf(author.host)) {
+                $scope.localAuthors.push(author);
+            } else {
+                $scope.nodeAuthors.push(author);
+            }
         });
-        //var friends = getfriends($scope localAuthors);
-        //STEP 1
-        //STEP 2
-        getAuthorsFromNodes(nodes);
-        //console.log($scope.nodeAuthors);
     });
+
+    // authorHandler.getAllAuthors().then(function(result) {
+    //     $scope.localAuthors = result.data;
+    //     var followers = $scope.getfollowers();
+    //
+    //     $q.all([followers||$scope.followers2, getRefresh($scope.user)]).then(function(){
+    //         filteredStuff($scope.localAuthors,$scope.followers,$scope.user,$scope.user.friends);
+    //     });
+    //     //var friends = getfriends($scope localAuthors);
+    //     //STEP 1
+    //     //STEP 2
+    //     //console.log($scope.nodeAuthors);
+    // });
 
     $scope.getfollowers2 = function(){
         authorHandler.getFollowers($scope.user.id).then(function(result){
@@ -53,7 +62,7 @@ angular.module("myApp.friendsFeed", [
         //FILTER HERE
         //filteredStuff($scope.allAuthors, $scope.followers, authentication.user,authentication.user.friends)
         // });
-        return $q(function(resolve, reject) {
+        return $q(function(resolve, reject) { //eslint-disable-line no-unused-vars
             authorHandler.getFollowers($scope.user.id).then(function(result){
                 // console.log($scope.followers);
                 $scope.followers = result.data[0].friendrequests;
@@ -65,23 +74,23 @@ angular.module("myApp.friendsFeed", [
         });
     };
 
-    var getRefresh = function(user){
-        return authorHandler.getAuthor(user.id).then(function(result){
-            $scope.followers = result.data.friendrequests;
-            $scope.friends = result.data.friends;
-        });
-    };
+    // var getRefresh = function(user){
+    //     return authorHandler.getAuthor(user.id).then(function(result){
+    //         $scope.followers = result.data.friendrequests;
+    //         $scope.friends = result.data.friends;
+    //     });
+    // };
 
-    var filteredStuff = function(localAuthors, followers, user, friends){
-        $scope.filteredlocalAuthors = localAuthors.filter(function(filteredlocalAuthors){
-            return (!followers.some(function(follower){
-                return filteredlocalAuthors.id === follower.author_id;
-            })
-            && !friends.some(function(friend){
-                return filteredlocalAuthors.id === friend.author_id;
-            })&& filteredlocalAuthors.id !== user.id);
-        });
-    };
+    // var filteredStuff = function(localAuthors, followers, user, friends){
+    //     $scope.filteredlocalAuthors = localAuthors.filter(function(filteredlocalAuthors){
+    //         return (!followers.some(function(follower){
+    //             return filteredlocalAuthors.id === follower.author_id;
+    //         })
+    //         && !friends.some(function(friend){
+    //             return filteredlocalAuthors.id === friend.author_id;
+    //         })&& filteredlocalAuthors.id !== user.id);
+    //     });
+    // };
 
     authorHandler.getFollowing($scope.user.id).then(function(result){
         $scope.friendsSOON = result.data[0].following;
@@ -132,25 +141,5 @@ angular.module("myApp.friendsFeed", [
         authorHandler.acceptFriend(follower).then(function(){
             alert("friend accepted!");
         });
-    };
-
-    var nodes = [{"url":"http://mighty-cliffs-82717.herokuapp.com/api/","username":"Team6","password":"Team6"},{"url":"http://cmput404-team-4b.herokuapp.com/api/" , "username": "team6", "password":"team6" }];
-
-    var getAuthorsFromNodes = function(nodes){
-        $scope.nodeAuthors = [];
-        var encoded="";
-        for (var i=0; i < nodes.length ; i++){
-            encoded = window.btoa(nodes[i].username + ":" + nodes[i].password);
-            $http.defaults.headers.common.Authorization = "Basic " + encoded;
-            $http.defaults.useXDomain=true;
-            $http({
-                method:"GET",
-                url: ~nodes[i].url.indexOf("mighty-cliffs-82717") ? nodes[i].url+"authors/" : nodes[i].url+"author/",
-                headers:{
-                }
-            }).then(function(result){
-                $scope.nodeAuthors = $scope.nodeAuthors.concat(result.data);
-            });
-        }
     };
 });

@@ -22,13 +22,20 @@ angular.module("myApp.services.nodeHandler", [
         return this.nodes;
     };
 
-    this.sendToAll = function (httpVerb, relativeURL, requestParameters) {
+    this.sendToAll = function (httpVerb, relativeURL, requestParameters, specialCase) {
         return $q(function (resolve, reject) {
             var allRequest = [];
 
             allRequest.push(this.sendTo(urlHandler.serviceURL(), httpVerb, relativeURL, requestParameters));
             this.nodes.forEach(function (node) {
-                allRequest.push(this.sendTo(node.url, httpVerb, relativeURL, requestParameters));
+                var currentRelativeURL = relativeURL;
+                // var differentCase = specialCase && specialCase.url === node.url ? specialCase : undefined;
+                if (specialCase && specialCase.url === node.url) {
+                    if (specialCase.relativeURL) {
+                        currentRelativeURL = specialCase.relativeURL;
+                    }
+                }
+                allRequest.push(this.sendTo(node.url, httpVerb, currentRelativeURL, requestParameters));
             }.bind(this));
 
             $q.all(allRequest).then(function (results) {

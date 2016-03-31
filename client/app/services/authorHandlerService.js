@@ -7,7 +7,24 @@ angular.module("myApp.services.authorHandler", [
 ])
 .service("authorHandler", function($q, $http, urlHandler, authenticationHandler, nodeHandler) {
     this.getAllAuthors = function(){
-        return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "author/");
+        return $q(function (resolve) {
+            nodeHandler.sendToAll("get", "author/", undefined, {
+                url: "https://mighty-cliffs-82717.herokuapp.com/api/",
+                relativeURL: "authors/"
+            }).then(function (results) {
+                var returnValue = {
+                    data:[]
+                };
+                results.forEach(function (result) {
+                    if(result.data instanceof Array) {
+                        returnValue.data = returnValue.data.concat(result.data);
+                    } else {
+                        returnValue.data = returnValue.data.concat(result.data.authors);
+                    }
+                });
+                resolve(returnValue);
+            });
+        });
     };
     this.getAuthor = function (authorId) {
         return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "author/" + (authorId || authenticationHandler.user.id) + "/");
