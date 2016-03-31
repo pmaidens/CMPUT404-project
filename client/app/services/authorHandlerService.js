@@ -7,12 +7,10 @@ angular.module("myApp.services.authorHandler", [
 ])
 .service("authorHandler", function($q, $http, urlHandler, authenticationHandler, nodeHandler) {
     this.getAllAuthors = function(){
-        $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.get(urlHandler.serviceURL() + "api/author/");
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "author/");
     };
     this.getAuthor = function (authorId) {
-        $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/");
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "author/" + (authorId || authenticationHandler.user.id) + "/");
     };
 
 
@@ -28,10 +26,6 @@ angular.module("myApp.services.authorHandler", [
         return nodeHandler.sendTo(urlHandler.serviceURL(), "put", "author/" + author.id + "/", putParameters).then(function() {
             authenticationHandler.updateUser(author);
         });
-        // $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        // return $http.put(urlHandler.serviceURL() + "api/author/" + author.id + "/", putParameters).then(function() {
-        //     authenticationHandler.updateUser(author);
-        // });
     };
 
     this.postFriendRequest = function(friend){
@@ -68,28 +62,33 @@ angular.module("myApp.services.authorHandler", [
 
     this.getFollowers = function(authorId){
         //get followers
-        return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId|| authenticationHandler.user.id) + "/friendrequests/");
+        // return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId|| authenticationHandler.user.id) + "/friendrequests/");
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "author/" + (authorId || authenticationHandler.user.id) + "/friendrequests/");
     };
     this.getFollowing = function(authorId){
         //get ppl who the author is following
-        return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/following/");
+        // return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/following/");
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "author/" + (authorId || authenticationHandler.user.id) + "/following/");
     };
 
     this.unfriend = function(friend){
         //delete friend
-        $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.post(urlHandler.serviceURL() + "api/friends/removefriend/" , {"friend":friend.id});
+        // $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        // return $http.post(urlHandler.serviceURL() + "api/friends/removefriend/" , {"friend":friend.id});
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "post", "friends/removefriend/",  {"friend":friend.id});
     };
 
     this.unfollow = function(following){
         //stop following
-        $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.post( urlHandler.serviceURL()+"api/friends/unfollow/",{"friend":following.author_id});
+        // $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        // return $http.post( urlHandler.serviceURL()+"api/friends/unfollow/",{"friend":following.author_id});
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "friends/unfollow/", {"friend":following.author_id});
     };
 
     this.acceptFriend = function(follower){
-        $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.post(urlHandler.serviceURL() + "api/friends/acceptfriend/", {"friend":follower.author_id});
+        // $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        // return $http.post(urlHandler.serviceURL() + "api/friends/acceptfriend/", {"friend":follower.author_id});
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "friends/acceptfriend/", {"friend":follower.author_id});
     };
 
 });

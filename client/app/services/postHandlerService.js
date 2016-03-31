@@ -4,55 +4,73 @@ angular.module("myApp.services.postHandler", [
     "ngRoute",
     "myApp.services.urlHandler",
     "myApp.services.authenticationHandler",
-    "myApp.services.authorHandler"
+    "myApp.services.authorHandler",
+    "myApp.services.nodeHandler"
 ])
-.service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler, authorHandler) {
-    var nodes = [
-        {
-            "url":"http://floating-sands-69681.herokuapp.com/api/",
-            "username":"c404",
-            "password":"asdf"
-        },{
-            "url":"http://cmput404-team4b.herokuapp.com/api/",
-            "username": "team6",
-            "password":"team6"
-        }
-    ];
+.service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler, authorHandler, nodeHandler) {
+    // var nodes = [
+    //     {
+    //         "url":"http://floating-sands-69681.herokuapp.com/api/",
+    //         "username":"c404",
+    //         "password":"asdf"
+    //     },{
+    //         "url":"http://cmput404-team4b.herokuapp.com/api/",
+    //         "username": "team6",
+    //         "password":"team6"
+    //     }
+    // ];
 
     this.posts = [];
-    this.getPosts = function (authorId) {
-        return $q(function(resolve, reject) {
-            var url;
+    this.getPosts = function (authorId, nodeURL) {
+        return $q(function(resolve, reject) { //eslint-disable-line no-unused-vars
+            var relativeURL;
+            var results = {
+                data: []
+            };
             if(authorId) {
-                url = urlHandler.serviceURL() + "api/author/" + (authorId ? authorId + "/posts/" : "");
-            } else {
-                url = urlHandler.serviceURL() + "api/posts/" + (authorId ? authorId + "/" : "");//eslint-disable-line no-unused-vars
-            }
-            $http.defaults.headers.common.Authorization = authenticationHandler.token;
-            $http.get(url, {author: authorId}).then(function(result) {
-                if(result.data instanceof Array) {
-                    authorHandler.getAuthor(authorId).then(function(authorResult) {
-                        var author = authorResult.data;
-                        result.data.forEach(function(post) {
-                            post.author = {
-                                id: author.id,
-                                host: author.host,
-                                displayname: author.displayname,
-                                url: author.url,
-                                github: author.github
-                            };
-                        });
-                        resolve(result);
-                    });
-                } else {
+                relativeURL = "author/" + authorId + "/posts/";
+                nodeHandler.sendTo(nodeURL, "get", relativeURL).then(function (result) {
+                    console.log(result);
                     resolve(result);
-                }
-            }.bind(this), function(err){
-                console.log(err);
-                reject(err);
-            });
+                });
+            } else {
+                relativeURL = "posts/";
+                nodeHandler.sendToAll("get", relativeURL).then(function (result) {
+                    result.forEach(function (r) {
+                        r.data.posts.forEach(function (post) {
+                            results.data.push(post);
+                        });
+                    });
+                    resolve(results);
+                });
+            }
+
+            // $http.defaults.headers.common.Authorization = authenticationHandler.token;
+            // $http.get(url, {author: authorId}).then(function(result) {
+            //     if(result.data instanceof Array) {
+            //         authorHandler.getAuthor(authorId).then(function(authorResult) {
+            //             var author = authorResult.data;
+            //             result.data.forEach(function(post) {
+            //                 post.author = {
+            //                     id: author.id,
+            //                     host: author.host,
+            //                     displayname: author.displayname,
+            //                     url: author.url,
+            //                     github: author.github
+            //                 };
+            //             });
+            //             resolve(result);
+            //         });
+            //     } else {
+            //         resolve(result);
+            //     }
+            // }.bind(this), function(err){
+            //     console.log(err);
+            //     reject(err);
+            // });
         }.bind(this));
     };
+
     this.deletePost = function(id) {
         //TODO change the url to the proper url
         //make sure you have the slash at the end
@@ -87,13 +105,7 @@ angular.module("myApp.services.postHandler", [
         console.log(realUrlToCheck);
         var encoded ="";
 
-        var nodes = [
-            {
-                "url":"http://cmput404-team-4b.herokuapp.com/",
-                "username": "team6",
-                "password":"team6"
-            }
-        ];
+        var nodes = nodeHandler.nodes;
         nodes.forEach(function(node){
 
             if (urlToCheck[2] == "cmput404-team-4b.herokuapp.com"){
