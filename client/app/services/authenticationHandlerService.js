@@ -32,17 +32,6 @@ angular.module("myApp.services.authenticationHandler", [
                 reject(err);
             });
         }.bind(this));
-        // return $http.post(url,{"username":username, "password":password}).then(function(result){
-        //     this.determineUser(username).then(function () {
-        //         this.updateWatchers(true);
-        //     }.bind(this));
-        //     $http.defaults.headers.common.Authorization = "Token " + result.data.key;
-        //     this.token = "Token " + result.data.key;
-        //     $localStorage.token = this.token;
-
-        // }.bind(this),function(err){
-        //     console.log(err);
-        // });
     };
 
     this.logout = function() {
@@ -91,5 +80,9 @@ angular.module("myApp.services.authenticationHandler", [
 
     this.updateUser = function(user) {
         this.user = $localStorage.user = user;
+    };
+
+    this.generateToken = function (username, password) {
+        return "Basic " + window.btoa(username+":"+password);
     };
 });

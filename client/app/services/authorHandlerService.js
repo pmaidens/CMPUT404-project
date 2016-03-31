@@ -2,10 +2,10 @@
 
 angular.module("myApp.services.authorHandler", [
     "myApp.services.urlHandler",
-    "myApp.services.authenticationHandler"
+    "myApp.services.authenticationHandler",
+    "myApp.services.nodeHandler"
 ])
-.service("authorHandler", function($q, $http, urlHandler, authenticationHandler) {
-    var nodes = [{"url":"http://mighty-cliffs-82717.herokuapp.com/api/","username":"Team6","password":"Team6"},{"url":"http://cmput404team4b.herokuapp.com/api/" , "username": "team6", "password":"team6" }];
+.service("authorHandler", function($q, $http, urlHandler, authenticationHandler, nodeHandler) {
     this.getAllAuthors = function(){
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.get(urlHandler.serviceURL() + "api/author/");
@@ -25,10 +25,13 @@ angular.module("myApp.services.authorHandler", [
             bio: author.bio
         };
 
-        $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.put(urlHandler.serviceURL() + "api/author/" + author.id + "/", putParameters).then(function() {
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "put", "author/" + author.id + "/", putParameters).then(function() {
             authenticationHandler.updateUser(author);
         });
+        // $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        // return $http.put(urlHandler.serviceURL() + "api/author/" + author.id + "/", putParameters).then(function() {
+        //     authenticationHandler.updateUser(author);
+        // });
     };
 
     this.postFriendRequest = function(friend){
@@ -47,69 +50,41 @@ angular.module("myApp.services.authorHandler", [
             friend: friend
         };
 
-        var node1 = [{"url":"http://mighty-cliffs-82717.herokuapp.com/api/","username":"Team6","password":"Team6"},{"url":"http://cmput404-team-4b.herokuapp.com/api/" , "username": "team6", "password":"team6" }];
-        // console.log(requestObject);
-        //console.log(authenticationHandler.user.id === friend.id);
-        console.log(friend.host);
-
-        if(friend.host != "project-c404.rhcloud.com/api"){
-            var encoded = "";
-            nodes.forEach(function(node){
-
-                if (friend.host == node.host){
-
-                    encoded = window.btoa(node.username + ":" + node.password);
-
-                }
-
-            });
-            //  console.log("i am HERE "+ friend.host+"/friendRequest/"+friend.displayName,requestObject);
-            //  console.log(friend);
-            //HARDCODED FOR GROUP 8 WILL HAVE TO CHANGE THIS.
-            node1 = [{"url":"http://mighty-cliffs-82717.herokuapp.com/api/","username":"Team6","password":"Team6"},{"url":"http://cmput404-team-4b.herokuapp.com/api/" , "username": "team6", "password":"team6" }];
-            var username = "team6";
-            var password = "team6";
-            encoded = window.btoa("team6:team6");
-            $http.defaults.headers.common.Authorization =  "Basic " + encoded;
-            return $http.post(urlHandler.remoteURL(friend.host)+"api/friendrequest/",requestObject);
-
-        }else{
-            $http.defaults.headers.common.Authorization = authenticationHandler.token;
-            return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
-        }
+        return nodeHandler.sendTo(friend.host, "post", "friendrequest/", requestObject);
+        // if(friend.host != "project-c404.rhcloud.com/api"){
+        //     var encoded;
+        //     nodes.forEach(function(node){
+        //         if (friend.host == node.host){
+        //             encoded = window.btoa(node.username + ":" + node.password);
+        //         }
+        //     });
+        //     $http.defaults.headers.common.Authorization =  "Basic " + encoded;
+        //     return $http.post(urlHandler.remoteURL(friend.host)+"api/friendrequest/",requestObject);
+        // }else{
+        //     $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        //     return $http.post(urlHandler.serviceURL() + "api/friendrequest/", requestObject);
+        // }
     };
-
 
     this.getFollowers = function(authorId){
-
         //get followers
         return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId|| authenticationHandler.user.id) + "/friendrequests/");
-
     };
     this.getFollowing = function(authorId){
-
         //get ppl who the author is following
         return $http.get(urlHandler.serviceURL() + "api/author/" + (authorId || authenticationHandler.user.id) + "/following/");
-
-
     };
 
     this.unfriend = function(friend){
-
         //delete friend
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        console.log(friend);
-        console.log(urlHandler.serviceURL());
-        console.log(friend.author_id);
         return $http.post(urlHandler.serviceURL() + "api/friends/removefriend/" , {"friend":friend.id});
-
     };
 
     this.unfollow = function(following){
         //stop following
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.post( urlHandler.serviceURL()+"api/friends/unfollow/",{"friend":following.author_id});
-
     };
 
     this.acceptFriend = function(follower){

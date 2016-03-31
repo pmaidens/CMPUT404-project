@@ -6,7 +6,10 @@ angular.module("myApp.services.urlHandler", [])
         return "http://project-c404.rhcloud.com/";
     };
     this.remoteURL = function(friendurl){
-    	console.log("friendurl "+friendurl);
-    	return friendurl;
+        console.log("friendurl "+friendurl);
+        return friendurl;
+    };
+    this.apiURL = function () {
+        return "http://project-c404.rhcloud.com/api/";
     };
 });
