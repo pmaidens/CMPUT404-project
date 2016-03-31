@@ -192,6 +192,12 @@ class PostsViewSet(viewsets.ModelViewSet):
     def list(self, request):
         queryset = Post.objects.all().filter(visibility='PUBLIC')
         serializer = ViewPostsSerializer(queryset, many=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = ViewPostsSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         return Response(serializer.data)
 
 
