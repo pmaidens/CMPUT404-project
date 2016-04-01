@@ -40,7 +40,7 @@ angular.module("myApp.services.postHandler", [
     };
 
     this.getPost = function (nodeURL, postId) {
-        return nodeHandler.sendTo(nodeURL, "get", "posts/" + postId);
+        return nodeHandler.sendTo(nodeURL, "get", "posts/" + postId + "/");
     };
 
     this.deletePost = function(id) {

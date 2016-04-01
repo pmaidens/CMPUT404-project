@@ -114,7 +114,7 @@ angular.module("myApp.postStream", [
         if(postURL !== urlHandler.serviceURL() && !~postURL.indexOf("/api/")) {
             nodeURL = postURL + "api/";
         } else if (~postURL.indexOf("project-c404.rhcloud.com")) {
-            nodeURL = urlHandler.serviceURL();
+            nodeURL = urlHandler.apiURL();
         } else {
             nodeURL = postURL;
         }

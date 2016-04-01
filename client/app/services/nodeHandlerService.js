@@ -48,7 +48,7 @@ angular.module("myApp.services.nodeHandler", [
             this.nodesRequest.then(function (result) {
                 var nodes = result.data;
                 var node;
-                if(nodeURL === urlHandler.serviceURL()) {
+                if(urlHandler.apiURL().includes(nodeURL)) {
                     $http.defaults.headers.common.Authorization = authenticationHandler.token;
                     $http[httpVerb](urlHandler.apiURL() + relativeURL, requestParameters).then(function (result) {
                         resolve(result);
