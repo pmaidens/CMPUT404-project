@@ -44,12 +44,13 @@ angular.module("myApp.friendsFeed", [
     //     //console.log($scope.nodeAuthors);
     // });
 
-    // $scope.getfollowers2 = function(){
-    //     authorHandler.getFollowers($scope.user.id).then(function(result){
-    //         $scope.followers2 = result.data[0].friendrequests;
-    //     });
-    // };
-    // $scope.getfollowers2();
+    $scope.getfollowers2 = function(){
+        authorHandler.getFollowers($scope.user.id).then(function(result){
+            $scope.followers2 = result.data[0].friendrequests;
+        });
+    };
+
+    $scope.getfollowers2();
     //
     // $scope.getfollowers = function(){
     //     // return authorHandler.getFollowers($scope.user.id).then(function(result){
@@ -142,4 +143,21 @@ angular.module("myApp.friendsFeed", [
             alert("friend accepted!");
         });
     };
+
+    $scope.showFollowTag = function(friend){
+	var show = false;
+	$scope.friendsSOON.forEach(function(following){
+	    if (friend.host == following.host){
+		if(friend.id == following.author_id){
+		    show = true;
+		    return;
+		}
+
+	    }
+
+	});
+
+	return show;
+    };
+
 });
