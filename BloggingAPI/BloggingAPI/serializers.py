@@ -199,7 +199,7 @@ class UpdatePostsSerializer(serializers.ModelSerializer):
 #Serializer for Comments
 #This serializer is for viewing author of Comments
 class ViewCommentAuthorSerializer(serializers.ModelSerializer):
-
+    id = serializers.UUIDField(source='author_id')
     class Meta:
         model = CommentAuthor
         fields = ('id', 'host', 'displayName')
