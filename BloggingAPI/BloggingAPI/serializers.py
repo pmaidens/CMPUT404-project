@@ -236,8 +236,8 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
         #create the comment author object
         commentAuthorData = validated_data.pop('author')
         author = CommentAuthor.objects.create(**commentAuthorData)
-        post = Post.objects.filter(id=self.context['post_pk'])
-        comment = Comment.objects.create(post=post[0], author=author, **validated_data)
+        post_id = Post.objects.get(id=self.context['post_pk'])
+        comment = Comment.objects.create(post=post_id, author=author, **validated_data)
         return comment
 
 

@@ -380,6 +380,25 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
     def get_serializer_context(self):
         return {'post_pk': self.kwargs['posts_pk']}
 
+    def list(self, request, posts_pk=None):
+        queryset = Comment.objects.filter(post=posts_pk)
+        serializer = ViewCommentSerializer(queryset, many=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = ViewCommentSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        return Response(serializer.data)
+
+    def retrieve(self, request, posts_pk=None, pk=None):
+        try:
+            queryset = Comment.objects.get(post=posts_pk, id=pk)
+            serializer = ViewCommentSerializer(queryset)
+            return Response(serializer.data)
+        except Comment.DoesNotExist:
+            return Response("Comment not found.", status=status.HTTP_404_NOT_FOUND)
+
 
 # view for /api/friends/
 class FriendOverviewView(APIView):
