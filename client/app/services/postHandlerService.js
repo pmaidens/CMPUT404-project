@@ -22,8 +22,12 @@ angular.module("myApp.services.postHandler", [
                     resolve(result);
                 });
             } else {
+                // relativeURL = "author/posts/";
                 relativeURL = "posts/";
-                nodeHandler.sendToAll("get", relativeURL).then(function (result) {
+                nodeHandler.sendToAll("get", relativeURL/*, undefined, {
+                    url: "https://mighty-cliffs-82717.herokuapp.com/api/",
+                    relativeURL: relativeURL + "?id=" + authenticationHandler.user.id
+                }*/).then(function (result) {
                     result.forEach(function (r) {
                         r.data.posts.forEach(function (post) {
                             results.data.push(post);
