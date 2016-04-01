@@ -60,11 +60,8 @@ angular.module("myApp.services.postHandler", [
     };
 
     this.commentPost = function(comment, parentPostId, sourceURL){
-        if (sourceURL !== urlHandler.serviceURL()) {
-            sourceURL = sourceURL;
-        }
 
-        nodeHandler.sendTo(sourceURL, "post", "posts/" + parentPostId + "/comments/", comment);
+        return nodeHandler.sendTo(sourceURL, "post", "posts/" + parentPostId + "/comments/", comment);
         // var urlToCheck = urlToPostTo.split("/");
         // if(urlToCheck[0] !="http:"){
         //     urlToCheck.unshift( "http:/" );

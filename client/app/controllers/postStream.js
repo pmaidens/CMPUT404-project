@@ -113,6 +113,10 @@ angular.module("myApp.postStream", [
 
         if(postURL !== urlHandler.serviceURL() && !~postURL.indexOf("/api/")) {
             nodeURL = postURL + "api/";
+        } else if (~postURL.indexOf("project-c404.rhcloud.com")) {
+            nodeURL = urlHandler.serviceURL();
+        } else {
+            nodeURL = postURL;
         }
 
         postHandler.commentPost({
@@ -123,6 +127,8 @@ angular.module("myApp.postStream", [
             postHandler.getPost(nodeURL, post.id).then(function (result) {
                 post.comments = result.data.comments;
             });
+        }, function (err) {
+            alert(err);
         });
         //	var urlToComment = post.author.host + "api/posts/" + post.id + "/comments/";
         // var appendCheck = post.author.host.split("/");
