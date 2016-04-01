@@ -44,35 +44,35 @@ angular.module("myApp.friendsFeed", [
     //     //console.log($scope.nodeAuthors);
     // });
 
-    $scope.getfollowers2 = function(){
-        authorHandler.getFollowers($scope.user.id).then(function(result){
-            $scope.followers2 = result.data[0].friendrequests;
-        });
-    };
-    $scope.getfollowers2();
-
-    $scope.getfollowers = function(){
-        // return authorHandler.getFollowers($scope.user.id).then(function(result){
-        // 	//console.log($scope.followers);
-        //     $scope.followers = result.data[0].friendrequests;
-        // 	if($scope.followers.length){
-        // 	    $scope.hasFollowers = true;
-        // 	}
-        //Step 3
-        //FILTER HERE
-        //filteredStuff($scope.allAuthors, $scope.followers, authentication.user,authentication.user.friends)
-        // });
-        return $q(function(resolve, reject) { //eslint-disable-line no-unused-vars
-            authorHandler.getFollowers($scope.user.id).then(function(result){
-                // console.log($scope.followers);
-                $scope.followers = result.data[0].friendrequests;
-                if($scope.followers.length){
-                    $scope.hasFollowers = true;
-                }
-                resolve(result);
-            });
-        });
-    };
+    // $scope.getfollowers2 = function(){
+    //     authorHandler.getFollowers($scope.user.id).then(function(result){
+    //         $scope.followers2 = result.data[0].friendrequests;
+    //     });
+    // };
+    // $scope.getfollowers2();
+    //
+    // $scope.getfollowers = function(){
+    //     // return authorHandler.getFollowers($scope.user.id).then(function(result){
+    //     // 	//console.log($scope.followers);
+    //     //     $scope.followers = result.data[0].friendrequests;
+    //     // 	if($scope.followers.length){
+    //     // 	    $scope.hasFollowers = true;
+    //     // 	}
+    //     //Step 3
+    //     //FILTER HERE
+    //     //filteredStuff($scope.allAuthors, $scope.followers, authentication.user,authentication.user.friends)
+    //     // });
+    //     return $q(function(resolve, reject) { //eslint-disable-line no-unused-vars
+    //         authorHandler.getFollowers($scope.user.id).then(function(result){
+    //             // console.log($scope.followers);
+    //             $scope.followers = result.data[0].friendrequests;
+    //             if($scope.followers.length){
+    //                 $scope.hasFollowers = true;
+    //             }
+    //             resolve(result);
+    //         });
+    //     });
+    // };
 
     // var getRefresh = function(user){
     //     return authorHandler.getAuthor(user.id).then(function(result){
