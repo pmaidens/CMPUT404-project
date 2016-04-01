@@ -10,14 +10,15 @@ angular.module("myApp", [
     "myApp.version",
     "myApp.navbar",
     "myApp.login",
-    "myApp.friendsFeed"
+    "myApp.friendsFeed",
+    "ngFileUpload"
 ]).
 config(["$routeProvider", function($routeProvider) {
     $routeProvider.otherwise({redirectTo: "/stream"});
 }]).run(["$rootScope", "$location", function($rootscope, $location) {
-	$rootscope.$on("$locationChangeStart", function(event) {
-		if(!$rootscope.loggedIn && $location.url !== "/login") {
-			$location.path("/login");
-		}
-	});
+    $rootscope.$on("$locationChangeStart", function(event) {
+        if(!$rootscope.loggedIn && $location.url !== "/login") {
+            $location.path("/login");
+        }
+    });
 }]);

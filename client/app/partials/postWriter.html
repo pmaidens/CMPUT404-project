@@ -1,72 +1,74 @@
 <div class=" container">
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h1>Write Something EarthShattering!</h1>
-        </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h1>Write Something EarthShattering!</h1>
+    </div>
     <div class="panel-body">
-        <form class="form-horizontal" role="form">
-            <fieldset class="form-group">
-                <div class = "col-md-8">
-                        <input class="form-control"  data-ng-model="title" data-ng-trim="true" placeholder="Title"></input>
-                </div>
-            </fieldset>
+      <form class="form-horizontal" role="form">
+        <fieldset class="form-group">
+          <div class="col-md-8">
+            <input class="form-control" data-ng-model="title" data-ng-trim="true" placeholder="Title"></input>
+          </div>
+        </fieldset>
 
-            <fieldset class="form-group">
-                <div class = "col-md-8">
-                    <input class="form-control" type="text" data-ng-model="description" data-ng-trim="true" placeholder="Description"></input>
-                </div>
-            </fieldset>
-           
-         <div class="form-group">
-            <label class="col-md-12" for="Content Type">Content Type:</label>
-                <div class="col-md-6">
-                    <select class="form-control" data-ng-model="contentType">
-                    <option value="text/plain">Plain Text</option>
-                    <option value="x-markdown">Markdown</option>
-                </select>
-                </div>
+        <fieldset class="form-group">
+          <div class="col-md-8">
+            <input class="form-control" type="text" data-ng-model="description" data-ng-trim="true" placeholder="Description"></input>
+          </div>
+        </fieldset>
+
+        <div class="form-group">
+          <label class="col-md-12" for="Content Type">Content Type:</label>
+          <div class="col-md-6">
+            <select class="form-control" data-ng-model="contentType">
+              <option value="text/plain">Plain Text</option>
+              <option value="x-markdown">Markdown</option>
+            </select>
+          </div>
         </div>
 
         <fieldset class="form-group">
-            <div class = "col-md-8">
-                <input class="form-control" type="text" data-ng-model="categories" data-ng-trim="true" placeholder="Categories"></input>
-            </div>
+          <div class="col-md-8">
+            <input class="form-control" type="text" data-ng-model="categories" data-ng-trim="true" placeholder="Categories"></input>
+          </div>
         </fieldset>
 
         <fieldset class="form-group">
-            <div class = "col-md-8">
-                <span class="btn btn-primary btn-file">
-                            Add Images<input type="file" multiple>
-                </span>
-            </div>
+          <div class="col-md-8">
+            <span class="btn btn-primary btn-file">
+              Add Image
+              <input type="file" ngf-select ng-model="file" name="file" accept="image/*" ngf-max-size="10MB" ng-multiple="false"></input>
+            </span>
+            (Max 10mb)
+            <img ngf-thumbnail="file" class="thumb"/>
+          </div>
         </fieldset>
 
         <fieldset class="form-group">
-                <div class = "col-md-12">
-                    <textarea data-ng-model="content" data-ng-maxlength="9000" id="styled" placeholder="Post Content"></textarea>
-                </div>
+          <div class="col-md-12">
+            <textarea data-ng-model="content" data-ng-maxlength="9000" id="styled" placeholder="Post Content"></textarea>
+          </div>
         </fieldset>
-      
+
         <fieldset class="form-group">
-                    
-                <label class="col-md-12" for="visibility">Who Can See Your Post?</label>
-                <div class="col-md-4">
-                    <select class="form-control" data-ng-model="visibility">
-                        <option value="PUBLIC">Everyone</option>
-                        <option value="FOAF">Friends of Friends</option>
-                        <option value="FRIENDS">Friends</option>
-                        <option value="PRIVATE">Only Me</option>
-                        <option value="SERVERONLY">Server Users</option>
-                    </select>
-                </div>
-       
+
+          <label class="col-md-12" for="visibility">Who Can See Your Post?</label>
+          <div class="col-md-4">
+            <select class="form-control" data-ng-model="visibility">
+              <option value="PUBLIC">Everyone</option>
+              <option value="FOAF">Friends of Friends</option>
+              <option value="FRIENDS">Friends</option>
+              <option value="PRIVATE">Only Me</option>
+              <option value="SERVERONLY">Server Users</option>
+            </select>
+          </div>
+
         </fieldset>
 
         <button class="btn btn-success" data-ng-click="SubmitPost()">Submit</button>
-        
 
-    </form>
-</div>
-</div>
+      </form>
+    </div>
+  </div>
 </div>

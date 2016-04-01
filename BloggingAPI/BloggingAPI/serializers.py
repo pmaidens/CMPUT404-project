@@ -12,12 +12,12 @@ class AuthorFriendSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.UUIDField(source='author_id')
     class Meta:
         model = Friend
-        fields = ('id', 'host', 'display_name', 'url')
+        fields = ('id', 'host', 'displayName', 'url')
 
 
 class ViewAuthorSerializer(serializers.ModelSerializer):
 
-    displayname = serializers.CharField(source='user.username')
+    displayName = serializers.CharField(source='user.username')
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
     email = serializers.CharField(source='user.email')
@@ -26,7 +26,7 @@ class ViewAuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Author
-        fields = ('id', 'host', 'displayname', 'url', 'friends', 'github',
+        fields = ('id', 'host', 'displayName', 'url', 'friends', 'github',
           'first_name', 'last_name', 'email', 'bio')
 
 
@@ -179,7 +179,7 @@ class ViewPostsSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('title', 'source', 'origin', 'description', 'contentType',
           'content', 'author', 'categories', 'count', 'comments', 'published',
-          'id', 'visibility')
+          'id', 'visibility', 'image')
 
 
     def get_count(self, obj):
@@ -193,13 +193,13 @@ class UpdatePostsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('title', 'source', 'origin', 'description', 'date_created','contentType',
-              'content', 'author', 'categories', 'visibility')
+              'content', 'author', 'categories', 'visibility', 'image')
 
 
 #Serializer for Comments
 #This serializer is for viewing author of Comments
 class ViewCommentAuthorSerializer(serializers.ModelSerializer):
-
+    id = serializers.UUIDField(source='author_id')
     class Meta:
         model = CommentAuthor
         fields = ('id', 'host', 'displayName')
@@ -236,8 +236,8 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
         #create the comment author object
         commentAuthorData = validated_data.pop('author')
         author = CommentAuthor.objects.create(**commentAuthorData)
-        post = Post.objects.filter(id=self.context['post_pk'])
-        comment = Comment.objects.create(post=post[0], author=author, **validated_data)
+        post_id = Post.objects.get(id=self.context['post_pk'])
+        comment = Comment.objects.create(post=post_id, author=author, **validated_data)
         return comment
 
 
@@ -263,7 +263,7 @@ class AuthorPostSerializer(serializers.ModelSerializer):
 class ViewFriendSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Friend
-        fields = ('author_id', 'host', 'display_name', 'url')
+        fields = ('author_id', 'host', 'displayName', 'url')
 
 class ViewFriendRequestsSerializer(serializers.ModelSerializer):
     friendrequests = ViewFriendSerializer(source='pendingFriends', many=True, read_only=True)

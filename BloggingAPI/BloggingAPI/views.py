@@ -12,6 +12,11 @@ from .pagination import *
 from django.db.models import Q
 from django.contrib.sites.models import Site
 
+class ConnectedNodesViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
+    serializer_class = ConnectedNodeSerializer
+    queryset = Node.objects.all()
+    permission_classes = (IsAuthenticated, NodePermissions,)
+
 class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
     """
     Endpoint: /api/author/
@@ -65,10 +70,10 @@ class AuthorViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.L
 
     def get_queryset(self):
         queryset = Author.objects.all()
-        displayname = self.request.query_params.get('displayname', None)
+        displayName = self.request.query_params.get('displayName', None)
 
-        if displayname is not None:
-            queryset = queryset.filter(user__username=displayname)
+        if displayName is not None:
+            queryset = queryset.filter(user__username=displayName)
 
         return queryset
 
@@ -96,6 +101,7 @@ class PostsViewSet(viewsets.ModelViewSet):
         published - the date the post was created
         id - the guid of the post
         visibility - the visibility level of this post
+        image - an image url
 
     POST Request objects properties:
         title (string) - the title of the post
@@ -145,23 +151,32 @@ class PostsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         currentUser = self.request.user.username
-        #query set for public posts
-        publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
-        #query set for private posts (has to be the post owner)
-        privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
-        #query set for friends
-        authorFriends = Author.objects.get(user__username=currentUser).friends.all()
-        #first get only your own 'friends' posts
-        friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
-        #next get all your friends 'friends' posts
-        for friend in authorFriends:
-            friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
-        #query set for friends of friends
-        # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
-        #query set for server only
-        serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY')
+        if currentUser:
+            authorFriends = Author.objects.get(user__username=currentUser).friends.all()
+            #query set for public posts
+            publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
+            #query set for private posts (has to be the post owner)
+            privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+            #query set for friends
+            #first get only your own 'friends' posts
+            friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
+            #next get all your friends 'friends' posts
+            for friend in authorFriends:
+                friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+            #query set for friends of friends
+            # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+            #query set for server only friends
+            #first get the current user server only posts
+            serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY', author__user__username=currentUser)
+            #next get the current user's friends that are on this server posts
+            for friend in authorFriends:
+                if friend.host in Site.objects.get_current().domain:
+                    serverOnlyQuerySet = serverOnlyQuerySet | Post.objects.all().filter(visibility='SERVERONLY', author__id=friend.author_id)
 
-        return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+            return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+
+        else:
+            return Post.objects.all().filter(visibility='PUBLIC')
 
     def get_serializer_class(self):
         serializer_class = ViewPostsSerializer
@@ -172,6 +187,149 @@ class PostsViewSet(viewsets.ModelViewSet):
         elif self.request.method == 'DELETE':
             serializer_class = UpdatePostsSerializer
         return serializer_class
+
+    #only list public posts for /posts endpoint
+    def list(self, request):
+        queryset = Post.objects.all().filter(visibility='PUBLIC')
+        serializer = ViewPostsSerializer(queryset, many=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = ViewPostsSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        return Response(serializer.data)
+
+
+# /api/author/author-id/posts
+class AuthorSpecificPosts(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Endpoint: /api/author/<authorid>/posts/
+    Available Methods: GET
+    Gets all posts made by <author-id> that are visible to the
+    currently authenticated User
+
+    GET Response properties:
+        title - the title of the post
+        source - the last place this post was
+        origin - the original url of the post
+        description - the description of the post
+        contentType - content type of the post
+        content - the text of the post
+        categories - a list of categories that the post belongs to
+        count - number of posts
+        comments - the list of comments of a post
+        published - the date the post was created
+        id - the guid of the post
+        visibility - the visibility level of this post
+    """
+    queryset = Post.objects.all()
+    pagination_class = PostsPagination
+
+    def get_queryset(self):
+        currentUser = self.request.user.username
+        if currentUser:
+            authorFriends = Author.objects.get(user__username=currentUser).friends.all()
+            #query set for public posts
+            publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
+            #query set for private posts (has to be the post owner)
+            privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+            #query set for friends
+            #first get only your own 'friends' posts
+            friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
+            #next get all your friends 'friends' posts
+            for friend in authorFriends:
+                friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+            #query set for friends of friends
+            # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+            #query set for server only friends
+            #first get the current user server only posts
+            serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY', author__user__username=currentUser)
+            #next get the current user's friends that are on this server posts
+            for friend in authorFriends:
+                if friend.host in Site.objects.get_current().domain:
+                    serverOnlyQuerySet = serverOnlyQuerySet | Post.objects.all().filter(visibility='SERVERONLY', author__id=friend.author_id)
+
+            return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+
+        else:
+            return Post.objects.all().filter(visibility='PUBLIC')
+
+    def list(self, request, pk):
+        queryset = self.get_queryset().filter(author__id=pk)
+        serializer = AuthorPostSerializer(queryset,many=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = AuthorPostSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        return Response(serializer.data)
+
+
+# /api/author/posts
+class CurrentPostsAvailable(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Endpoint: /api/author/posts/
+    Available Methods: GET
+    Gets all posts that are available to the currently authenticated user.
+
+    GET Response properties:
+        title - the title of the post
+        source - the last place this post was
+        origin - the original url of the post
+        description - the description of the post
+        contentType - content type of the post
+        content - the text of the post
+        categories - a list of categories that the post belongs to
+        count - number of posts
+        comments - the list of comments of a post
+        published - the date the post was created
+        id - the guid of the post
+        visibility - the visibility level of this post
+    """
+    queryset = Post.objects.all()
+    pagination_class = PostsPagination
+
+    def get_queryset(self):
+        currentUser = self.request.user.username
+        if currentUser:
+            authorFriends = Author.objects.get(user__username=currentUser).friends.all()
+            #query set for public posts
+            publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
+            #query set for private posts (has to be the post owner)
+            privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+            #query set for friends
+            #first get only your own 'friends' posts
+            friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
+            #next get all your friends 'friends' posts
+            for friend in authorFriends:
+                friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+            #query set for friends of friends
+            # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+            #query set for server only friends
+            #first get the current user server only posts
+            serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY', author__user__username=currentUser)
+            #next get the current user's friends that are on this server posts
+            for friend in authorFriends:
+                if friend.host in Site.objects.get_current().domain:
+                    serverOnlyQuerySet = serverOnlyQuerySet | Post.objects.all().filter(visibility='SERVERONLY', author__id=friend.author_id)
+
+            return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+
+        else:
+            return Post.objects.all().filter(visibility='PUBLIC')
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = AuthorPostSerializer(queryset,many=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = AuthorPostSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        return Response(serializer.data)
 
 
 class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -221,6 +379,25 @@ class PostCommentsViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mi
 
     def get_serializer_context(self):
         return {'post_pk': self.kwargs['posts_pk']}
+
+    def list(self, request, posts_pk=None):
+        queryset = Comment.objects.filter(post=posts_pk)
+        serializer = ViewCommentSerializer(queryset, many=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = ViewCommentSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        return Response(serializer.data)
+
+    def retrieve(self, request, posts_pk=None, pk=None):
+        try:
+            queryset = Comment.objects.get(post=posts_pk, id=pk)
+            serializer = ViewCommentSerializer(queryset)
+            return Response(serializer.data)
+        except Comment.DoesNotExist:
+            return Response("Comment not found.", status=status.HTTP_404_NOT_FOUND)
 
 
 # view for /api/friends/
@@ -313,6 +490,8 @@ class FriendRequestViewSet(APIView):
     def post(self,request,format=None):
         authorHost = request.data['author']['host']
         friendHost = request.data['friend']['host']
+        currentUser = self.request.user.username
+        requester = Author.objects.get(user__username=currentUser)
 
         # Assume local author, and thus local friend
         if (authorHost == friendHost):
@@ -320,13 +499,17 @@ class FriendRequestViewSet(APIView):
             # Get Requester
             author = Author.objects.get(id=request.data['author']['id'])
 
+            # may need this?
+            # if requester != author:
+            #     return Response('Invalid', status=status.HTTP_400_BAD_REQUEST)
+
             # Get Requested
             friend = Author.objects.get(id=request.data['friend']['id'])
 
 
             followingObj = Friend.objects.create(author_id = request.data['friend']['id'],
                                           host = friendHost,
-                                          display_name = request.data['friend']['displayName'],
+                                          displayName = request.data['friend']['displayName'],
                                           url = request.data['friend']['url'])
 
             #API specs doesn't require URL on the author side so if the url is empty in the request generate it
@@ -337,7 +520,7 @@ class FriendRequestViewSet(APIView):
 
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
                                           host = authorHost,
-                                          display_name = request.data['author']['displayName'],
+                                          displayName = request.data['author']['displayName'],
                                           url = pendingObjURL)
 
 
@@ -358,7 +541,7 @@ class FriendRequestViewSet(APIView):
 
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
                                                host = authorHost,
-                                               display_name = request.data['author']['displayName'],
+                                               displayName = request.data['author']['displayName'],
                                                url = request.data['author']['url'])
 
             try:
@@ -399,6 +582,8 @@ class AddFollowerViewSet(APIView):
     """
 
     def post(self,request,format=None):
+        authorHost = request.data['author']['host']
+        friendHost = request.data['friend']['host']
 
         author = Author.objects.get(id=request.data['author']['id'])
 
@@ -410,7 +595,7 @@ class AddFollowerViewSet(APIView):
 
         followingObj = Friend.objects.create(author_id = request.data['friend']['id'],
                                           host = friendHost,
-                                          display_name = request.data['friend']['displayName'],
+                                          displayName = request.data['friend']['displayName'],
                                           url = followingObjURL)
 
         try:
@@ -446,49 +631,6 @@ class FriendQueryViewSet(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-# /api/author/author-id/posts
-class AuthorSpecificPosts(APIView):
-    """
-    Endpoint: /api/author/<authorid>/posts/
-    Available Methods: GET
-    Gets all posts made by <author-id> that are visible to the
-    currently authenticated User
-
-    GET Response properties:
-        title - the title of the post
-        source - the last place this post was
-        origin - the original url of the post
-        description - the description of the post
-        contentType - content type of the post
-        content - the text of the post
-        categories - a list of categories that the post belongs to
-        count - number of posts
-        comments - the list of comments of a post
-        published - the date the post was created
-        id - the guid of the post
-        visibility - the visibility level of this post
-    """
-
-    def get_queryset(self):
-        currentUser = self.request.user.username
-        #query set for public posts
-        publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
-        #query set for private posts (has to be the post owner)
-        privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
-        #query set for friends
-        # friendsQuerySet = Post.objects.all().filter(visibility='FRIENDS')
-        #query set for friends of friends
-        # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
-        #query set for server only
-        friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='SERVERONLY')
-
-        return publicQuerySet | privateQuerySet | friendsOfFriendsQuerySet
-
-    def get(self,request,pk,format=None):
-        queryset = self.get_queryset().filter(id=pk)
-        serializer = AuthorPostSerializer(queryset,many=True)
-        return Response(serializer.data)
 
 # /api/author/author-id/friendrequests
 class AuthorFriendRequests(APIView):
@@ -526,10 +668,6 @@ class AuthorFollowing(APIView):
         serializer = ViewFollowingSerializer(queryset,many=True)
         return Response(serializer.data)
 
-class ConnectedNodesViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
-    serializer_class = ConnectedNodeSerializer
-    queryset = Node.objects.all()
-    permission_classes = (IsAuthenticated,)
 
 # /api/friends/acceptfriend/
 class AcceptFriendViewSet(APIView):
@@ -564,8 +702,6 @@ class AcceptFriendViewSet(APIView):
         author = author[0]
 
         friendID = request.data['friend']
-        print 'friendID:'
-        print friendID
 
         # Get friend
         for friend in author.pendingFriends.all():
@@ -573,21 +709,26 @@ class AcceptFriendViewSet(APIView):
                 friendObj = Friend.objects.create(
                                 author_id=friend.author_id,
                                 host=friend.host,
-                                display_name=friend.display_name,
+                                displayName=friend.displayName,
                                 url=friend.url)
 
-                # theNewlyFriended = Author.objects.all().filter(author_id = friendID)
-                # theNewlyFriended = theNewlyFriended[0]
+                if friend.host == author.host:
+                    # modify friend too
 
-                # if theNewlyFriended.host == author.host:
-                #    #locally add
-                     #authorObj = Friend.objects.create(author_id = author.id,
-                #                                       host = author.host
-                #                                       display_name = author.display_name,
-                #                                       url = author.url,)
+                    theNewlyFriended = Author.objects.all().filter(id = friendID)
+                    theNewlyFriended = theNewlyFriended[0]
 
-                #    theNewlyFriended.following.objects.all().filter(author_id = author.id).delete()
-                #    theNewlyFriended.friends.add(authorObj)
+                     # friend object of author
+                    authObj = Friend.objects.all().filter(author_id = author.id)
+                    authObj = authObj[0]
+
+                    authorFriendObj = Friend.objects.create(author_id = authObj.author_id,
+                                                      host = authObj.host,
+                                                      displayName = authObj.displayName,
+                                                      url = authObj.url)
+
+                    theNewlyFriended.following.all().filter(author_id = author.id).delete()
+                    theNewlyFriended.friends.add(authorFriendObj)
 
                 author.pendingFriends.all().filter(author_id=friendID).delete()
                 author.friends.add(friendObj)
@@ -631,21 +772,17 @@ class RemoveFriendViewSet(APIView):
         # Get friend
         for friend in author.friends.all():
             if str(friend.author_id) == str(friendID):
-                toDelete = friend
-                break
 
-        if toDelete is not None:
+                if friend.host == author.host:
+                    # symetrically remove
+                    theUnfriended = Author.objects.all().filter(id = friendID)
+                    theUnfriended = theUnfriended[0]
+                    theUnfriended.friends.all().filter(author_id = author.id).delete()
 
-            # theUnfriended = Author.objects.all().filter(author_id = friendID)
-            # theUnfriended = theUnfriended[0]
-            # if theUnfriended.host == author.host:
-            #     #locally remove
-            #     theUnfriended.friends.objects.all().filter(author_id = author.id).delete()
+                author.friends.all().filter(author_id=friendID).delete()
+                return  Response('Success', status=status.HTTP_200_OK)
 
-            author.friends.all().filter(author_id=friendID).delete()
-            return  Response('Success', status=status.HTTP_200_OK)
-        else:
-            return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
+        return  Response('Friend Not Found', status=status.HTTP_400_BAD_REQUEST)
 
 # view for /api/friends/unfollow/
 class UnfollowFriendViewSet(APIView):

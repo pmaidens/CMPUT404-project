@@ -40,16 +40,43 @@
 
 ###Endpoint: /api/author/{AUTHOR_ID}/posts/###
     Available Methods: GET
-    Gets all posts made by {AUTHOR_ID}
+    Gets all posts made by {AUTHOR_ID} that the current authenticated user can see
+
       GET Response properties:
+          count (Posts) - number of posts
+          query - the current query
+          size - the size of the page
           title - the title of the post
           source - the last place this post was
           origin - the original url of the post
           description - the description of the post
           contentType - content type of the post
           content - the text of the post
+          author - the author object that wrote the post
           categories - a list of categories that the post belongs to
-          count - number of posts
+          count - the number of comments that this post has
+          comments - the list of comments of a post
+          published - the date the post was created
+          id - the guid of the post
+          visibility - the visibility level of this post
+
+###Endpoint: /api/author/posts/###
+    Available Methods: GET
+    Gets all posts that the current authenticated user can see
+
+      GET Response properties:
+          count (Posts) - number of posts
+          query - the current query
+          size - the size of the page
+          title - the title of the post
+          source - the last place this post was
+          origin - the original url of the post
+          description - the description of the post
+          contentType - content type of the post
+          content - the text of the post
+          author - the author object that wrote the post
+          categories - a list of categories that the post belongs to
+          count - the number of comments that this post has
           comments - the list of comments of a post
           published - the date the post was created
           id - the guid of the post
@@ -57,7 +84,7 @@
 
 ###Endpoint: /api/posts/###
     Available Methods: GET, POST
-    This endpoint lists the posts that are currently available to the authenticated user.
+    This endpoint lists the posts that have public visibility
     You can also create a new post for the current user.
 
       GET Response objects properties:
@@ -245,13 +272,13 @@
       friend - the author id of the friend you want to befriend.
                the friend should have already sent a request to the
                currently authenticated user.
-    
+
     POST Response properties:
        No JSON is returned. If the id posted is valid, the friend will
        be removed from the currently authenticated author's pending
        friends attribute, and added to their friends attribute. A success
        message is returned alongside an HTTP 200 OK. If the ID is invalid,
-       no database changes are made, and an error message is returned 
+       no database changes are made, and an error message is returned
        alongside an HTTP 400 OK response.
 
 ###Endpoint: /api/author/friends/removefriend/###
@@ -263,30 +290,30 @@
       friend - the author id of the friend you want to un-befriend.
                the friend should already have been accepted by the
                currently authenticated user.
-    
+
     POST Response properties:
        No JSON is returned. If the id posted is valid, the friend will
        be removed from the currently authenticated author's friends attribute.
-       A success message is returned alongside an HTTP 200 OK. If the ID 
-       is invalid, no database changes are made, and an error message is 
+       A success message is returned alongside an HTTP 200 OK. If the ID
+       is invalid, no database changes are made, and an error message is
        returned alongside an HTTP 400 BAD REQUEST response.
 
 ###Endpoint: /api/author/friends/unfollow/###
     Available Methods: POST
 
-    Unfollows a given friend, essentially dropping the friend request 
+    Unfollows a given friend, essentially dropping the friend request
     the currently authenticated author sent.
 
     POST Request properties:
       friend - the author id of the friend you want to unfollow.
-               the currently authenticated user should have already 
+               the currently authenticated user should have already
                sent a friend request to the friend
-    
+
     POST Response properties:
        No JSON is returned. If the id posted is valid, the friend will
        be removed from the currently authenticated author's following
-       attribute. A success message is returned alongside an HTTP 200 OK. 
-       If the ID is invalid, no database changes are made, and an error 
+       attribute. A success message is returned alongside an HTTP 200 OK.
+       If the ID is invalid, no database changes are made, and an error
        message is returned alongside an HTTP 400 BAD REQUEST response.
 
 

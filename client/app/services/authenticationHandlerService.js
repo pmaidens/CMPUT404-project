@@ -21,9 +21,6 @@ angular.module("myApp.services.authenticationHandler", [
                 }.bind(this));
 
                 var token = "Basic " + window.btoa(username+":"+password);
-                // $http.defaults.headers.common.Authorization = "Token " + result.data.key;
-                // this.token = "Token " + result.data.key;
-                // $localStorage.token = this.token;
                 $http.defaults.headers.common.Authorization = token;
                 this.token = token;
                 $localStorage.token = this.token;
@@ -32,22 +29,11 @@ angular.module("myApp.services.authenticationHandler", [
                 reject(err);
             });
         }.bind(this));
-        // return $http.post(url,{"username":username, "password":password}).then(function(result){
-        //     this.determineUser(username).then(function () {
-        //         this.updateWatchers(true);
-        //     }.bind(this));
-        //     $http.defaults.headers.common.Authorization = "Token " + result.data.key;
-        //     this.token = "Token " + result.data.key;
-        //     $localStorage.token = this.token;
-
-        // }.bind(this),function(err){
-        //     console.log(err);
-        // });
     };
 
     this.logout = function() {
         //Keep this wrapped in 'q' just to keep everything consistent.
-        return $q(function(resolve/*, reject*/) {
+        return $q(function(resolve) {
             $http.defaults.headers.common.Authorization = undefined;
             this.token = "";
             delete $localStorage.token;
@@ -70,7 +56,7 @@ angular.module("myApp.services.authenticationHandler", [
     this.determineUser = function (displayname) {
         return $http.get(urlHandler.serviceURL()+"api/author/").then(function (result) {
             result.data.some(function (author) {
-                if(author.displayname === displayname) {
+                if(author.displayName === displayname) {
                     this.user = $localStorage.user = author;
                     $rootScope.loggedIn = true;
                     return true;
@@ -91,5 +77,9 @@ angular.module("myApp.services.authenticationHandler", [
 
     this.updateUser = function(user) {
         this.user = $localStorage.user = user;
+    };
+
+    this.generateToken = function (username, password) {
+        return "Basic " + window.btoa(username+":"+password);
     };
 });

@@ -106,11 +106,12 @@
                                     <br/>
                                     <textarea placeholder="Blog Post Content" data-ng-model="post.content"></textarea>
                                 </div>
-                                <h4>Author: {{post.author.displayname}}</h4>
+                                <h4>Author: {{post.author.displayName}}</h4>
                                 <h3>Description: {{post.description}}</h3>
                                 <h6>Published: {{post.published}}</h6>
                                 <br/>
                                 <div btf-markdown="post.content"></div>
+                                <img data-ng-src="{{post.image}}" style="max-width:100%;max-height:100%;"/>
                             </span>
                         </div>
                         <div class="col-md-4">
@@ -123,7 +124,7 @@
                                 <br/>
                                 <div ng-show="showComments" ng-repeat="comment in post.comments">
                                     <div class="list-group-item">
-                                        <i>Author {{comment.author.displayname}} wrote...</i>
+                                        <i>{{comment.author.displayName}} wrote...</i>
                                         <br/><br/>
                                         <h4 font-align="center">"{{comment.comment}}"</h4>
                                         <br/>

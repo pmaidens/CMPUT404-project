@@ -13,10 +13,24 @@
 
         <div class="panel-body">
             <div class="list-group">
+                <div ng-repeat="friend in localAuthors | orderBy: ['createdate' ,'published']" class="list-group-item ">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <small><i>Local User</i></small><br>
+                            {{friend.displayName}}
+                        </div>
+                        <div class="col-md-2">
+                            <dl class="dl-horizontal">
+                                 <button class="btn btn-success" data-ng-click="makeFriendReq(friend)"><span class="octicon octicon-smiley"></span>  Add as Friend</button>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
             	<div ng-repeat="friend in nodeAuthors | orderBy: ['createdate' ,'published']" class="list-group-item ">
             		<div class="row">
             			<div class="col-md-10">
-            				{{friend.displayname}}
+                            <small><i>Remote User</i></small><br>
+            				{{friend.displayName}}
             			</div>
             			<div class="col-md-2">
                             <dl class="dl-horizontal">

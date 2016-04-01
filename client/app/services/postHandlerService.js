@@ -4,67 +4,54 @@ angular.module("myApp.services.postHandler", [
     "ngRoute",
     "myApp.services.urlHandler",
     "myApp.services.authenticationHandler",
-    "myApp.services.authorHandler"
+    "myApp.services.authorHandler",
+    "myApp.services.nodeHandler"
 ])
-.service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler, authorHandler) {
-    var nodes = [{'url':'http://floating-sands-69681.herokuapp.com/api/','username':'c404','password':'asdf'},{'url':'http://cmput404-team4b.herokuapp.com/api/' , 'username': 'team6', 'password':'team6' }];
-
+.service("postHandler", function($q,$http,$route, urlHandler, authenticationHandler, authorHandler, nodeHandler) {
     this.posts = [];
-    this.getPosts = function (authorId) {
-        //TODO change the url to the proper url
-        /*if(authorId) {
-            var url = urlHandler.serviceURL() + "api/author/" + (authorId || "") + "/posts/";
-        } else {
-            var url = urlHandler.serviceURL() + "api/posts/" + (authorId || "") + "/";//eslint-disable-line no-unused-vars
-        }
-        $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        return $http.get(url, {author: authorId});*/
-
-        return $q(function(resolve, reject) {
+    this.getPosts = function (authorId, nodeURL) {
+        return $q(function(resolve) {
+            var relativeURL;
+            var results = {
+                data: []
+            };
             if(authorId) {
-                var url = urlHandler.serviceURL() + "api/author/" + (authorId ? authorId + "/posts/" : "");
-            } else {
-                var url = urlHandler.serviceURL() + "api/posts/" + (authorId ? authorId + "/" : "");//eslint-disable-line no-unused-vars
-            }
-            $http.defaults.headers.common.Authorization = authenticationHandler.token;
-            $http.get(url, {author: authorId}).then(function(result) {
-                if(result.data instanceof Array) {
-                    authorHandler.getAuthor(authorId).then(function(authorResult) {
-                        var author = authorResult.data;
-                        result.data.forEach(function(post) {
-                            post.author = {
-                                id: author.id,
-                                host: author.host,
-                                displayname: author.displayname,
-                                url: author.url,
-                                github: author.github
-                            };
-                        });
-                        resolve(result);
-                    });
-                } else {
+                relativeURL = "author/" + authorId + "/posts/";
+                nodeHandler.sendTo(nodeURL, "get", relativeURL).then(function (result) {
+                    console.log(result);
                     resolve(result);
-                }
-            }.bind(this), function(err){
-                console.log(err);
-                reject(err);
-            });
+                });
+            } else {
+                // relativeURL = "author/posts/";
+                relativeURL = "posts/";
+                nodeHandler.sendToAll("get", relativeURL/*, undefined, {
+                    url: "https://mighty-cliffs-82717.herokuapp.com/api/",
+                    relativeURL: relativeURL + "?id=" + authenticationHandler.user.id
+                }*/).then(function (result) {
+                    result.forEach(function (r) {
+                        r.data.posts.forEach(function (post) {
+                            results.data.push(post);
+                        });
+                    });
+                    resolve(results);
+                });
+            }
         }.bind(this));
     };
+
+    this.getPost = function (nodeURL, postId) {
+        return nodeHandler.sendTo(nodeURL, "get", "posts/" + postId);
+    };
+
     this.deletePost = function(id) {
-        //TODO change the url to the proper url
-        //make sure you have the slash at the end
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.delete(urlHandler.serviceURL() + "api/posts/"+id+"/").then(function(){
-
             $route.reload();
-
         },function(err){
-
             console.log(err);
-
         });
     };
+
     this.createPost = function(post) {
         //TODO change the url to the proper url
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
@@ -72,42 +59,37 @@ angular.module("myApp.services.postHandler", [
 
     };
 
-    this.commentPost = function(post,urlToPostTo){
-	
-	var urlToCheck = urlToPostTo.split('/');
-	if(urlToCheck[0] !='http:'){
-	    urlToCheck.unshift( "http:/" );
-	}
+    this.commentPost = function(comment, parentPostId, sourceURL){
 
-	var realUrlToCheck = urlToCheck.join('/');
-	var encoded ='';
-
-	var nodes = [{'url':'http://cmput404-team-4b.herokuapp.com/' , 'username': 'team6', 'password':'team6' }];
-	nodes.forEach(function(node){
-
-	    if (urlToCheck[2] == 'cmput404-team-4b.herokuapp.com'){
-	   
-
-		encoded = window.btoa(node.username + ':' + node.password);
-
-	
-		$http.defaults.headers.common.Authorization = 'Basic ' +  encoded;
-	   
-	    }else{
-
-		$http.defaults.headers.common.Authorization = authenticationHandler.token;
-	    }
-
-	});
-        //$http.defaults.headers.common.Authorization = authenticationHandler.token;
-	
-	//TODO check  url root against nodes and then grab the username and password encode it then send it over. 
-	//var 
-        return $http({
-	    method:'POST',
-	    url:realUrlToCheck,
-	    //url:'http://project-c404.rhcloud.com/api/posts/8e4f11cf-8e3f-4468-9a53-8835a1dd65ac/comments/',
-	    data:post});
+        return nodeHandler.sendTo(sourceURL, "post", "posts/" + parentPostId + "/comments/", comment);
+        // var urlToCheck = urlToPostTo.split("/");
+        // if(urlToCheck[0] !="http:"){
+        //     urlToCheck.unshift( "http:/" );
+        // }
+        // var realUrlToCheck = urlToCheck.join("/");
+        // console.log(realUrlToCheck);
+        // var encoded ="";
+        // var nodes = nodeHandler.nodes;
+        // nodes.forEach(function(node){
+        //     if (urlToCheck[2] == "cmput404-team-4b.herokuapp.com"){
+        //         encoded = window.btoa(node.username + ":" + node.password);
+        //         $http.defaults.headers.common.Authorization = "Basic " +  encoded;
+        //     }else{
+        //         $http.defaults.headers.common.Authorization = authenticationHandler.token;
+        //     }
+        // });
+        // //$http.defaults.headers.common.Authorization = authenticationHandler.token;
+        //
+        // //TODO check  url root against nodes and then grab the username and password encode it then send it over.
+        // //var
+        // return $http(
+        //     {
+        //         method:"POST",
+        //         url:realUrlToCheck,
+        //         //url:"http://project-c404.rhcloud.com/api/posts/8e4f11cf-8e3f-4468-9a53-8835a1dd65ac/comments/",
+        //         data:post
+        //     }
+        // );
     };
 
     this.updatePost = function (post) {
@@ -121,55 +103,8 @@ angular.module("myApp.services.postHandler", [
             author: post.author.id,
             categories: post.categories,
             visibility: post.visibility
-        }
+        };
         $http.defaults.headers.common.Authorization = authenticationHandler.token;
         return $http.put(urlHandler.serviceURL() + "api/posts/"+post.id + "/", putParameters);
-    };
-
-    var STUBgetPosts = {
-        "query": "posts",
-        "count": 105,
-        "size": 50,
-        "next": "http://service/author/posts?page=3",
-        "previous": "http://service/author/posts?page=1",
-        "posts":[
-            {
-                "title":"A post title about a post about web dev",
-                "source":"http://lastplaceigotthisfrom.com/post/yyyyy",
-                "origin":"http://whereitcamefrom.com/post/zzzzz",
-                "description":"This post discusses stuff -- brief",
-                "contentType":"text/plain",
-                "content":"Þā wæs on burgum Bēowulf Scyldinga, lēof lēod-cyning, longe þrāge folcum gefrǣge (fæder ellor hwearf, aldor of earde), oð þæt him eft onwōc hēah Healfdene; hēold þenden lifde, gamol and gūð-rēow, glæde Scyldingas. Þǣm fēower bearn forð-gerīmed in worold wōcun, weoroda rǣswan, Heorogār and Hrōðgār and Hālga til; hȳrde ic, þat Elan cwēn Ongenþēowes wæs Heaðoscilfinges heals-gebedde. Þā wæs Hrōðgāre here-spēd gyfen, wīges weorð-mynd, þæt him his wine-māgas georne hȳrdon, oð þæt sēo geogoð gewēox, mago-driht micel. Him on mōd bearn, þæt heal-reced hātan wolde, medo-ærn micel men gewyrcean, þone yldo bearn ǣfre gefrūnon, and þǣr on innan eall gedǣlan geongum and ealdum, swylc him god sealde, būton folc-scare and feorum gumena. Þā ic wīde gefrægn weorc gebannan manigre mǣgðe geond þisne middan-geard, folc-stede frætwan. Him on fyrste gelomp ǣdre mid yldum, þæt hit wearð eal gearo, heal-ærna mǣst; scōp him Heort naman, sē þe his wordes geweald wīde hæfde. Hē bēot ne ālēh, bēagas dǣlde, sinc æt symle. Sele hlīfade hēah and horn-gēap: heaðo-wylma bād, lāðan līges; ne wæs hit lenge þā gēn þæt se ecg-hete āðum-swerian 85 æfter wæl-nīðe wæcnan scolde. Þā se ellen-gǣst earfoðlīce þrāge geþolode, sē þe in þȳstrum bād, þæt hē dōgora gehwām drēam gehȳrde hlūdne in healle; þǣr wæs hearpan swēg, swutol sang scopes. Sægde sē þe cūðe frum-sceaft fīra feorran reccan",
-                "author":{
-                    "id":"de305d54-75b4-431b-adb2-eb6b9e546013",
-                    "host":"http://127.0.0.1:5454/",
-                    "displayName":"Lara Croft",
-                    "url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-                    "github": "http://github.com/laracroft"
-                },
-                "categories":["web","tutorial"],
-                "count": 1023,
-                "size": 50,
-                "next": "http://service/posts/{post_id}/comments",
-                "comments":[
-                    {
-                        "author":{
-                            "id":"de305d54-75b4-431b-adb2-eb6b9e546013",
-                            "host":"http://127.0.0.1:5454/",
-                            "displayName":"Greg Johnson",
-                            "url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-                            "github": "http://github.com/gjohnson"
-                        },
-                        "comment":"Sick Olde English",
-                        "contentType":"text/x-markdown",
-                        "published":"2015-03-09T13:07:04+00:00",
-                        "id":"de305d54-75b4-431b-adb2-eb6b9e546013"
-                    }
-                ],
-                "published":"2015-03-09T13:07:04+00:00",
-                "id":"de305d54-75b4-431b-adb2-eb6b9e546013",
-                "visibility":"PUBLIC"
-            }
-        ]
     };
 });
