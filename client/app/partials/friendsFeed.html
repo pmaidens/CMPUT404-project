@@ -16,13 +16,16 @@
                 <div ng-repeat="friend in localAuthors | orderBy: ['createdate' ,'published']" class="list-group-item ">
                     <div class="row">
                         <div class="col-md-10">
-                            <small><i>Local User</i></small><br>
-                            {{friend.displayName}}
+                            <div style="color:#0000FF"><small><i>Local User</i></small><br></div>
+                            <b>{{friend.displayName}}</b>
                             
                         </div>
                         <div class="col-md-2">
-                            <dl class="dl-horizontal">
+                            <dl class="dl-horizontal" data-ng-show="!showFollowTag(friend)" >
                                  <button class="btn btn-success" data-ng-click="makeFriendReq(friend)"><span class="octicon octicon-smiley"></span>  Add as Friend</button>
+                            </dl>
+                             <dl class="dl-horizontal" data-ng-show="showFollowTag(friend)" >
+                                 <button type="button" class="btn btn-secondary">Friend Request Sent</button>
                             </dl>
                         </div>
                     </div>
@@ -30,13 +33,18 @@
             	<div ng-repeat="friend in nodeAuthors | orderBy: ['createdate' ,'published']" class="list-group-item ">
             		<div class="row">
             			<div class="col-md-10">
-                            <small><i>Remote User</i></small><br>
-            				{{friend.displayName}}
+                            <div style="color:#FF0000"><small><i>Remote User</i></small></div>
+            				<b>{{friend.displayName}}</b>
+                            <br>
+                             <div data-ng-show="showFollowTag(friend)">following</div>
             			</div>
             			<div class="col-md-2">
-                            <dl class="dl-horizontal">
-                            	 <button class="btn btn-success" data-ng-click="makeFriendReq(friend)"><span class="octicon octicon-smiley"></span>  Add as Friend</button>
-                           	</dl>
+                            <dl class="dl-horizontal" data-ng-show="!showFollowTag(friend)" >
+                                 <button class="btn btn-success" data-ng-click="makeFriendReq(friend)"><span class="octicon octicon-smiley"></span>  Add as Friend</button>
+                            </dl>
+                             <dl class="dl-horizontal" data-ng-show="showFollowTag(friend)" >
+                                 <button type="button" class="btn btn-secondary">Friend Request Sent</button>
+                            </dl>
                         </div>
             		</div>
         		</div>
