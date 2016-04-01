@@ -14,8 +14,16 @@ angular.module("myApp.services.nodeHandler", [
             this.nodesRequest.then(function (result) {
                 var nodes = result.data;
                 var allRequest = [];
+		var oldRelativeURL =relativeURL;
 
+		if(relativeURL ==='posts/'){
+		    console.log(urlHandler.apiURL());
+		    relativeURL ='author/posts/';
+		}
+		
                 allRequest.push(this.sendTo(urlHandler.serviceURL(), httpVerb, relativeURL, requestParameters));
+		relativeURL = oldRelativeURL;
+
                 nodes.forEach(function (node) {
                     var currentRelativeURL = relativeURL;
                     if (specialCase && specialCase.url === node.url) {
