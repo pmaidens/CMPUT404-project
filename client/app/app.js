@@ -11,7 +11,8 @@ angular.module("myApp", [
     "myApp.navbar",
     "myApp.login",
     "myApp.friendsFeed",
-    "ngFileUpload"
+    "ngFileUpload",
+    "ngMessages"
 ]).
 config(["$routeProvider", function($routeProvider) {
     $routeProvider.otherwise({redirectTo: "/stream"});

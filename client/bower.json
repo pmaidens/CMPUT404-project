@@ -32,5 +32,8 @@
   },
   "resolutions": {
     "angular": "1.5.3"
+  },
+  "devDependencies": {
+    "angular-messages": "^1.5.3"
   }
 }
