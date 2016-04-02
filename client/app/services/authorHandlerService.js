@@ -80,11 +80,11 @@ angular.module("myApp.services.authorHandler", [
 
     this.unfollow = function(following){
         //stop following
-        return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "friends/unfollow/", {"friend":following.author_id});
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "post", "friends/unfollow/", {"friend":following.author_id});
     };
 
     this.acceptFriend = function(follower){
-        return nodeHandler.sendTo(urlHandler.serviceURL(), "get", "friends/acceptfriend/", {"friend":follower.author_id});
+        return nodeHandler.sendTo(urlHandler.serviceURL(), "post", "friends/acceptfriend/", {"friend":follower.author_id});
     };
 
 });

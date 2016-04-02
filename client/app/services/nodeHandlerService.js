@@ -20,7 +20,7 @@ angular.module("myApp.services.nodeHandler", [
 		    console.log(urlHandler.apiURL());
 		    relativeURL ='author/posts/';
 		}
-		
+
                 allRequest.push(this.sendTo(urlHandler.serviceURL(), httpVerb, relativeURL, requestParameters));
 		relativeURL = oldRelativeURL;
 
@@ -55,7 +55,7 @@ angular.module("myApp.services.nodeHandler", [
                     });
                 } else {
                     var isRemoteNode = nodes.some(function (element) {
-                        if (element.url === nodeURL) {
+                        if (element.url.includes(nodeURL)) {
                             node = element;
                             return true; // break
                         }
