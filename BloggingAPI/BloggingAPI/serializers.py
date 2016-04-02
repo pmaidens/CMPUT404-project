@@ -252,7 +252,7 @@ class AuthorPostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('title', 'source', 'origin', 'description', 'contentType',
           'content', 'categories', 'count', 'comments', 'published',
-          'id', 'visibility')
+                  'id', 'visibility','image')
 
 
     def get_count(self, obj):

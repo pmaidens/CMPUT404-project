@@ -445,7 +445,6 @@ class apiTests(TestCase):
         Url = '/api/posts/'+str(id)+'/comments/'
         commentPost = self.client.get(Url)
         self.assertEqual(commentPost.status_code, status.HTTP_200_OK)
-        print commentPost.data
         self.assertEqual(len(commentPost.data.get('comments')),0) # no comments
 
         # test appending page query, and size query
@@ -454,23 +453,22 @@ class apiTests(TestCase):
         self.assertEqual(commentPost.status_code, status.HTTP_200_OK)
         self.assertEqual(len(commentPost.data.get('comments')),0) # no comments
 
-    def test_author(self):
+    # def test_author(self):
          
-        # Host one author
+    #     # Host one author
+    #     numAuthors = Author.objects.count()
+    #     url = '/rest-auth/registration/'
         
-        numAuthors = Author.objects.count()
-        url = '/rest-auth/registration/'
-        
-        data = {
-            "Username" : "one Author!",
-            "Email" : "email@email.com",
-            "Password1" : "pass",
-            "Password2" : "pass",
-        }
+    #     data =  {
+    #         "username": "TESTER",
+    #         "email": "",
+    #         "password1": "a1b2c31",
+    #         "password2": "a1b2c31"
+    #     }
 
-        post = self.client.post(url,data,format='json')
-        self.assertEqual(post.status_code, status.HTTP_200_OK)
-        self.assertEqual(Author.objects.count(), numAuthors + 1)
+    #     post = self.client.post(url,data,format='json')
+    #     self.assertEqual(post.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(Author.objects.count(), numAuthors + 1)
         
 
     def test_spec_profile(self):
