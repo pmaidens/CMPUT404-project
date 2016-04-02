@@ -8,6 +8,7 @@ angular.module("myApp.services.authenticationHandler", [
     this.loginWatchers = [];
     this.user = $localStorage.user || {};
     this.token = $localStorage.token || "";
+    this.realToken ='';
 
     $rootScope.loggedIn = !!$localStorage.token;
 
@@ -15,12 +16,13 @@ angular.module("myApp.services.authenticationHandler", [
         var url = urlHandler.serviceURL() + "rest-auth/login/";
         return $q(function(resolve, reject) {
             $http.post(url,{"username":username, "password":password}).then(function(result){
+		this.realToken = result.data.key;
                 this.determineUser(username).then(function () {
                     this.updateWatchers(true);
                     resolve(result);
                 }.bind(this));
 
-                var token = "Basic " + window.btoa(username+":"+password);
+                var token = "Token " + this.realToken;
                 $http.defaults.headers.common.Authorization = token;
                 this.token = token;
                 $localStorage.token = this.token;
