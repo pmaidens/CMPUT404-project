@@ -8,6 +8,7 @@ angular.module("myApp.services.authenticationHandler", [
     this.loginWatchers = [];
     this.user = $localStorage.user || {};
     this.token = $localStorage.token || "";
+    this.realToken ='';
 
     $rootScope.loggedIn = !!$localStorage.token;
 
@@ -15,12 +16,13 @@ angular.module("myApp.services.authenticationHandler", [
         var url = urlHandler.serviceURL() + "rest-auth/login/";
         return $q(function(resolve, reject) {
             $http.post(url,{"username":username, "password":password}).then(function(result){
+		this.realToken = result.data.key;
                 this.determineUser(username).then(function () {
                     this.updateWatchers(true);
                     resolve(result);
                 }.bind(this));
 
-                var token = "Basic " + window.btoa(username+":"+password);
+                var token = "Token " + this.realToken;
                 $http.defaults.headers.common.Authorization = token;
                 this.token = token;
                 $localStorage.token = this.token;
@@ -48,9 +50,23 @@ angular.module("myApp.services.authenticationHandler", [
     this.register = function (userInfo) {
         $http.post(urlHandler.serviceURL()+"rest-auth/registration/", userInfo).then(function () {
             this.determineUser(userInfo.displayname).then(function () {
+                 alert('Sucesfully Registered! Awaiting Adminstrator Approval');
                 this.updateWatchers(true);
             }.bind(this));
-        }.bind(this));
+        }.bind(this), function(ERR_AWORD){
+            console.log(ERR_AWORD);
+            var BAD = "COULD NOT REGISTER!\n";
+            var err_keys = Object.keys(ERR_AWORD.data);
+            var description = [];
+            err_keys.forEach(function(key){
+
+                description.push(ERR_AWORD.data[key]);
+            });
+            for(var i = 0; i < description.length; i++){
+                BAD += err_keys[i] +" : "+ description[i]+"\n";
+            }
+            alert(BAD);
+        });
     };
 
     this.determineUser = function (displayname) {
