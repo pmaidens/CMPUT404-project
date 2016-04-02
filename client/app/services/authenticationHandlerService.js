@@ -50,9 +50,23 @@ angular.module("myApp.services.authenticationHandler", [
     this.register = function (userInfo) {
         $http.post(urlHandler.serviceURL()+"rest-auth/registration/", userInfo).then(function () {
             this.determineUser(userInfo.displayname).then(function () {
+                 alert('Sucesfully Registered! Awaiting Adminstrator Approval');
                 this.updateWatchers(true);
             }.bind(this));
-        }.bind(this));
+        }.bind(this), function(ERR_AWORD){
+            console.log(ERR_AWORD);
+            var BAD = "COULD NOT REGISTER!\n";
+            var err_keys = Object.keys(ERR_AWORD.data);
+            var description = [];
+            err_keys.forEach(function(key){
+
+                description.push(ERR_AWORD.data[key]);
+            });
+            for(var i = 0; i < description.length; i++){
+                BAD += err_keys[i] +" : "+ description[i]+"\n";
+            }
+            alert(BAD);
+        });
     };
 
     this.determineUser = function (displayname) {

@@ -18,7 +18,8 @@
                         <div class="col-md-10">
                             <div style="color:#0000FF"><small><i>Local User</i></small><br></div>
                             <b>{{friend.displayName}}</b>
-                            
+                             <br>
+                             <div data-ng-show="showFollowTag(friend)"><small><i>- following</small></i></div>
                         </div>
                         <div class="col-md-2">
                             <dl class="dl-horizontal" data-ng-show="!showFollowTag(friend)" >
@@ -36,7 +37,7 @@
                             <div style="color:#FF0000"><small><i>Remote User</i></small></div>
             				<b>{{friend.displayName}}</b>
                             <br>
-                             <div data-ng-show="showFollowTag(friend)">following</div>
+                             <div data-ng-show="showFollowTag(friend)"><small><i>- following</small></i></div>
             			</div>
             			<div class="col-md-2">
                             <dl class="dl-horizontal" data-ng-show="!showFollowTag(friend)" >
