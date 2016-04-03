@@ -227,7 +227,9 @@ class AuthorSpecificPosts(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PostsPagination
 
     def get_queryset(self):
+        foreign_author_id = self.request.query_params.get('id', '')
         currentUser = self.request.user.username
+
         if currentUser:
             authorFriends = Author.objects.get(user__username=currentUser).friends.all()
             #query set for public posts
@@ -235,11 +237,19 @@ class AuthorSpecificPosts(mixins.ListModelMixin, viewsets.GenericViewSet):
             #query set for private posts (has to be the post owner)
             privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
             #query set for friends
-            #first get only your own 'friends' posts
-            friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
-            #next get all your friends 'friends' posts
-            for friend in authorFriends:
-                friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+            if foreign_author_id:
+                #the list of authors that the foreign author is friends with
+                foreign_author_friends = Author.objects.all().filter(friends__author_id=foreign_author_id)
+                #get the posts for those authors to display to the remote host
+                friendsQuerySet = Post.objects.none()
+                for author in foreign_author_friends:
+                    friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=author.id)
+            else:
+                #first get only your own 'friends' posts
+                friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
+                #next get all your friends 'friends' posts
+                for friend in authorFriends:
+                    friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
             #query set for friends of friends
             # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
             #query set for server only friends
@@ -257,11 +267,11 @@ class AuthorSpecificPosts(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def list(self, request, pk):
         queryset = self.get_queryset().filter(author__id=pk)
-        serializer = AuthorPostSerializer(queryset,many=True)
+        serializer = ViewPostsSerializer(queryset,many=True)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = AuthorPostSerializer(page, many=True)
+            serializer = ViewPostsSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
         return Response(serializer.data)
@@ -292,19 +302,31 @@ class CurrentPostsAvailable(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = PostsPagination
 
     def get_queryset(self):
+        foreign_author_id = self.request.query_params.get('id', '')
         currentUser = self.request.user.username
+
         if currentUser:
             authorFriends = Author.objects.get(user__username=currentUser).friends.all()
+
             #query set for public posts
             publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
             #query set for private posts (has to be the post owner)
             privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
             #query set for friends
-            #first get only your own 'friends' posts
-            friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
-            #next get all your friends 'friends' posts
-            for friend in authorFriends:
-                friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+            #if comming from a remote host
+            if foreign_author_id:
+                #the list of authors that the foreign author is friends with
+                foreign_author_friends = Author.objects.all().filter(friends__author_id=foreign_author_id)
+                #get the posts for those authors to display to the remote host
+                friendsQuerySet = Post.objects.none()
+                for author in foreign_author_friends:
+                    friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=author.id)
+            else:
+                #first get only your own 'friends' posts
+                friendsQuerySet = Post.objects.filter(visibility='FRIENDS', author__user__username=currentUser)
+                #next get all your friends 'friends' posts
+                for friend in authorFriends:
+                    friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
             #query set for friends of friends
             # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
             #query set for server only friends
@@ -322,11 +344,11 @@ class CurrentPostsAvailable(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def list(self, request):
         queryset = self.get_queryset()
-        serializer = AuthorPostSerializer(queryset,many=True)
+        serializer = ViewPostsSerializer(queryset,many=True)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = AuthorPostSerializer(page, many=True)
+            serializer = ViewPostsSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
         return Response(serializer.data)

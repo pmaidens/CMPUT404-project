@@ -240,26 +240,6 @@ class UpdateCommentSerializer(serializers.ModelSerializer):
         comment = Comment.objects.create(post=post_id, author=author, **validated_data)
         return comment
 
-
-class AuthorPostSerializer(serializers.ModelSerializer):
-    count = serializers.SerializerMethodField()
-    comments = PostCommentSerializer(many=True, read_only=True)
-    #For GET request show the author object
-    #author = PostAuthorSerializer(read_only=True)
-    published = serializers.DateTimeField(source='date_created')
-
-    class Meta:
-        model = Post
-        fields = ('title', 'source', 'origin', 'description', 'contentType',
-          'content', 'categories', 'count', 'comments', 'published',
-                  'id', 'visibility','image')
-
-
-    def get_count(self, obj):
-        if obj.comments == None:
-            return 0
-        return obj.comments.count()
-
 class ViewFriendSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Friend
