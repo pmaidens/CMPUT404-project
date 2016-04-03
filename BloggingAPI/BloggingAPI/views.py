@@ -601,10 +601,15 @@ class FriendRequestViewSet(APIView):
 
             friend = Author.objects.get(id=request.data['friend']['id'])
 
+            if 'url' in request.data['author']:
+                pendingObjURL = request.data['author']['url']
+            else:
+                pendingObjURL = 'remote_url'
+
             pendingObj = Friend.objects.create(author_id = request.data['author']['id'],
                                                host = authorHost,
                                                displayName = request.data['author']['displayName'],
-                                               url = request.data['author']['url'])
+                                               url = pendingObjURL)
 
             try:
                 friend.pendingFriends.add(pendingObj)
