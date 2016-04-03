@@ -490,6 +490,7 @@ class FriendRequestViewSet(APIView):
     def post(self,request,format=None):
         authorHost = request.data['author']['host']
         friendHost = request.data['friend']['host']
+
         currentUser = self.request.user.username
         requester = Author.objects.get(user__username=currentUser)
 
@@ -499,14 +500,10 @@ class FriendRequestViewSet(APIView):
             # Get Requester
             author = Author.objects.get(id=request.data['author']['id'])
 
-            # may need this?
-            # if requester != author:
-            #     return Response('Invalid', status=status.HTTP_400_BAD_REQUEST)
-
             # Get Requested
             friend = Author.objects.get(id=request.data['friend']['id'])
 
-
+            # Friend to go to the Author
             followingObj = Friend.objects.create(author_id = request.data['friend']['id'],
                                           host = friendHost,
                                           displayName = request.data['friend']['displayName'],
@@ -522,7 +519,6 @@ class FriendRequestViewSet(APIView):
                                           host = authorHost,
                                           displayName = request.data['author']['displayName'],
                                           url = pendingObjURL)
-
 
             try:
                 author.following.add(followingObj)
