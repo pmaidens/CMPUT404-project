@@ -143,10 +143,14 @@ angular.module("myApp.friendsFeed", [
 
         authorHandler.postFriendRequest(friend).then(function() {
             $http.defaults.headers.common.Authorization = authenticationHandler.token;
-            $http.post(urlHandler.serviceURL() + "api/addfollower/",requestObject).then(function(){
-
+                      alert("Friend Request Sent");
+                      console.log(urlHandler.serviceURL());
+                      console.log(author.host);
+            if(urlHandler.apiURL().indexOf(author.host) == -1){
+                $http.post(urlHandler.serviceURL() + "api/addfollower/",requestObject).then(function(){
+                    $route.reload();
             });
-            alert("Friend Request Sent");
+            }
         }, function() {
             alert("uh-oh, something went wrong");
         });
@@ -171,12 +175,15 @@ angular.module("myApp.friendsFeed", [
     };
 
     $scope.acceptFriend = function(follower){
+          $route.reload();
         authorHandler.acceptFriend(follower).then(function(){
+    
             alert("friend accepted!");
-
+       
             authenticationHandler.determineUser($scope.user.displayName);
-            $route.reload();
+        
         });
+                   $route.reload();
     };
 
 

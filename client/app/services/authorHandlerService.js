@@ -5,7 +5,7 @@ angular.module("myApp.services.authorHandler", [
     "myApp.services.authenticationHandler",
     "myApp.services.nodeHandler"
 ])
-.service("authorHandler", function($q, $http, urlHandler, authenticationHandler, nodeHandler) {
+.service("authorHandler", function($q, $http, $route, urlHandler, authenticationHandler, nodeHandler) {
     this.getAllAuthors = function(){
         return $q(function (resolve) {
             nodeHandler.sendToAll("get", "author/", undefined, {
@@ -84,6 +84,7 @@ angular.module("myApp.services.authorHandler", [
     };
 
     this.acceptFriend = function(follower){
+                    $route.reload();
         return nodeHandler.sendTo(urlHandler.serviceURL(), "post", "friends/acceptfriend/", {"friend":follower.author_id});
     };
 

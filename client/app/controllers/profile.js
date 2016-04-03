@@ -79,18 +79,22 @@ angular.module("myApp.profile", [
     $scope.unfriend = function(friend){
         authorHandler.unfriend(friend).then(function(result){//eslint-disable-line no-unused-vars
             //success!
+            $route.reload();
         });
     };
 
     $scope.unfollow = function(following){
         authorHandler.unfollow(following).then(function(result){//eslint-disable-line no-unused-vars
+        $route.reload();
         });
     };
 
     $scope.acceptFriend = function(follower){
         authorHandler.acceptFriend(follower).then(function(result){//eslint-disable-line no-unused-vars
+
             alert("friend request accepted!");
-            $window.location.reload();
+
         });
+            $route.reload();
     };
 });
