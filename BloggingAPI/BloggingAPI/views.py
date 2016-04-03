@@ -155,11 +155,14 @@ class PostsViewSet(viewsets.ModelViewSet):
 
         if currentUser:
             authorFriends = Author.objects.get(user__username=currentUser).friends.all()
+
             #query set for public posts
             publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
             #query set for private posts (has to be the post owner)
             privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+
             #query set for friends
+            #if comming from a remote host
             if foreign_author_id:
                 #the list of authors that the foreign author is friends with
                 foreign_author_friends = Author.objects.all().filter(friends__author_id=foreign_author_id)
@@ -173,8 +176,17 @@ class PostsViewSet(viewsets.ModelViewSet):
                 #next get all your friends 'friends' posts
                 for friend in authorFriends:
                     friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+
             #query set for friends of friends
-            # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+            friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF', author__user__username=currentUser)
+            for friend in authorFriends:
+                #get each friend (user2) of the current author (user1)
+                currentAuthorFriend = Author.objects.get(id=friend.author_id)
+                #get the posts of the friends that are friends with (user2)
+                friendList = currentAuthorFriend.friends.all()
+                for friendOfMyFriend in friendList:
+                    friendsOfFriendsQuerySet = friendsOfFriendsQuerySet | Post.objects.all().filter(visibility='FOAF', author__id=friendOfMyFriend.author_id)
+
             #query set for server only friends
             #first get the current user server only posts
             serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY', author__user__username=currentUser)
@@ -183,7 +195,7 @@ class PostsViewSet(viewsets.ModelViewSet):
                 if friend.host in Site.objects.get_current().domain:
                     serverOnlyQuerySet = serverOnlyQuerySet | Post.objects.all().filter(visibility='SERVERONLY', author__id=friend.author_id)
 
-            return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+            return publicQuerySet | privateQuerySet | friendsQuerySet | friendsOfFriendsQuerySet | serverOnlyQuerySet
 
         else:
             return Post.objects.all().filter(visibility='PUBLIC')
@@ -242,11 +254,14 @@ class AuthorSpecificPosts(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if currentUser:
             authorFriends = Author.objects.get(user__username=currentUser).friends.all()
+
             #query set for public posts
             publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
             #query set for private posts (has to be the post owner)
             privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+
             #query set for friends
+            #if comming from a remote host
             if foreign_author_id:
                 #the list of authors that the foreign author is friends with
                 foreign_author_friends = Author.objects.all().filter(friends__author_id=foreign_author_id)
@@ -260,8 +275,17 @@ class AuthorSpecificPosts(mixins.ListModelMixin, viewsets.GenericViewSet):
                 #next get all your friends 'friends' posts
                 for friend in authorFriends:
                     friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+
             #query set for friends of friends
-            # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+            friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF', author__user__username=currentUser)
+            for friend in authorFriends:
+                #get each friend (user2) of the current author (user1)
+                currentAuthorFriend = Author.objects.get(id=friend.author_id)
+                #get the posts of the friends that are friends with (user2)
+                friendList = currentAuthorFriend.friends.all()
+                for friendOfMyFriend in friendList:
+                    friendsOfFriendsQuerySet = friendsOfFriendsQuerySet | Post.objects.all().filter(visibility='FOAF', author__id=friendOfMyFriend.author_id)
+
             #query set for server only friends
             #first get the current user server only posts
             serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY', author__user__username=currentUser)
@@ -270,7 +294,7 @@ class AuthorSpecificPosts(mixins.ListModelMixin, viewsets.GenericViewSet):
                 if friend.host in Site.objects.get_current().domain:
                     serverOnlyQuerySet = serverOnlyQuerySet | Post.objects.all().filter(visibility='SERVERONLY', author__id=friend.author_id)
 
-            return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+            return publicQuerySet | privateQuerySet | friendsQuerySet | friendsOfFriendsQuerySet | serverOnlyQuerySet
 
         else:
             return Post.objects.all().filter(visibility='PUBLIC')
@@ -322,6 +346,7 @@ class CurrentPostsAvailable(mixins.ListModelMixin, viewsets.GenericViewSet):
             publicQuerySet = Post.objects.all().filter(visibility='PUBLIC')
             #query set for private posts (has to be the post owner)
             privateQuerySet = Post.objects.all().filter(visibility='PRIVATE', author__user__username=currentUser)
+
             #query set for friends
             #if comming from a remote host
             if foreign_author_id:
@@ -337,8 +362,17 @@ class CurrentPostsAvailable(mixins.ListModelMixin, viewsets.GenericViewSet):
                 #next get all your friends 'friends' posts
                 for friend in authorFriends:
                     friendsQuerySet = friendsQuerySet | Post.objects.all().filter(visibility='FRIENDS', author__id=friend.author_id)
+
             #query set for friends of friends
-            # friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF')
+            friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF', author__user__username=currentUser)
+            for friend in authorFriends:
+                #get each friend (user2) of the current author (user1)
+                currentAuthorFriend = Author.objects.get(id=friend.author_id)
+                #get the posts of the friends that are friends with (user2)
+                friendList = currentAuthorFriend.friends.all()
+                for friendOfMyFriend in friendList:
+                    friendsOfFriendsQuerySet = friendsOfFriendsQuerySet | Post.objects.all().filter(visibility='FOAF', author__id=friendOfMyFriend.author_id)
+
             #query set for server only friends
             #first get the current user server only posts
             serverOnlyQuerySet = Post.objects.all().filter(visibility='SERVERONLY', author__user__username=currentUser)
@@ -347,7 +381,7 @@ class CurrentPostsAvailable(mixins.ListModelMixin, viewsets.GenericViewSet):
                 if friend.host in Site.objects.get_current().domain:
                     serverOnlyQuerySet = serverOnlyQuerySet | Post.objects.all().filter(visibility='SERVERONLY', author__id=friend.author_id)
 
-            return publicQuerySet | privateQuerySet | friendsQuerySet | serverOnlyQuerySet
+            return publicQuerySet | privateQuerySet | friendsQuerySet | friendsOfFriendsQuerySet | serverOnlyQuerySet
 
         else:
             return Post.objects.all().filter(visibility='PUBLIC')
