@@ -14,11 +14,12 @@ angular.module("myApp.friendsFeed", [
     });
 }])
 
-.controller("FriendsFeedController", function($scope, $http, $location, $q, authenticationHandler, urlHandler, authorHandler) {
+.controller("FriendsFeedController", function($scope, $http, $location, $q, $route, authenticationHandler, urlHandler, authorHandler) {
     $scope.localAuthors = [];
     $scope.user = authenticationHandler.user;
     $scope.isFollowing = false;
     $scope.hasFollowers = false;
+    $scope.request = false;
     $scope.friends = $scope.user.friends;
     var friends = $scope.friends;
     console.log($scope.user);
@@ -59,6 +60,7 @@ angular.module("myApp.friendsFeed", [
     //     //STEP 2
     //     //console.log($scope.nodeAuthors);
     // });
+
 
 
      $scope.getfollowers2 = function(){
@@ -141,32 +143,42 @@ angular.module("myApp.friendsFeed", [
 
         authorHandler.postFriendRequest(friend).then(function() {
             $http.defaults.headers.common.Authorization = authenticationHandler.token;
-            $http.post(urlHandler.serviceURL() + "api/addfollower/",requestObject);
+            $http.post(urlHandler.serviceURL() + "api/addfollower/",requestObject).then(function(){
+
+            });
             alert("Friend Request Sent");
         }, function() {
             alert("uh-oh, something went wrong");
         });
+               $route.reload();
+
     };
     $scope.unfriend = function(friend){
         authorHandler.unfriend(friend).then(function(){
             alert("unfriended!");
             authenticationHandler.determineUser($scope.user.displayName);
+            $route.reload();
         });
     };
 
     $scope.unfollow = function(following){
         authorHandler.unfollow(following).then(function(){
             alert("unfollowed!");
+
             authenticationHandler.determineUser($scope.user.displayName);
+            $route.reload();
         });
     };
 
     $scope.acceptFriend = function(follower){
         authorHandler.acceptFriend(follower).then(function(){
             alert("friend accepted!");
+
             authenticationHandler.determineUser($scope.user.displayName);
+            $route.reload();
         });
     };
+
 
     $scope.showFollowTag = function(friend){
 	var show = false;
