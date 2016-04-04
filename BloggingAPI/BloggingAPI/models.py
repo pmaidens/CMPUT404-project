@@ -70,7 +70,7 @@ class Post(models.Model):
     categories = ArrayField(models.CharField(default=None, max_length=255, blank=True), default=None, blank=True)
     #image = models.ImageField(default=None)
     visibility = models.CharField(default='PUBLIC', max_length=255, choices=visibility_choices)
-    image = models.CharField(default="", max_length=2000, null=True)
+    image = models.CharField(default="", max_length=2000, null=True, blank=True)
 
 class CommentAuthor(models.Model):
     author_id = models.UUIDField()
