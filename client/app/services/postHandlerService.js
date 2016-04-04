@@ -62,34 +62,6 @@ angular.module("myApp.services.postHandler", [
     this.commentPost = function(comment, parentPostId, sourceURL){
 
         return nodeHandler.sendTo(sourceURL, "post", "posts/" + parentPostId + "/comments/", comment);
-        // var urlToCheck = urlToPostTo.split("/");
-        // if(urlToCheck[0] !="http:"){
-        //     urlToCheck.unshift( "http:/" );
-        // }
-        // var realUrlToCheck = urlToCheck.join("/");
-        // console.log(realUrlToCheck);
-        // var encoded ="";
-        // var nodes = nodeHandler.nodes;
-        // nodes.forEach(function(node){
-        //     if (urlToCheck[2] == "cmput404-team-4b.herokuapp.com"){
-        //         encoded = window.btoa(node.username + ":" + node.password);
-        //         $http.defaults.headers.common.Authorization = "Basic " +  encoded;
-        //     }else{
-        //         $http.defaults.headers.common.Authorization = authenticationHandler.token;
-        //     }
-        // });
-        // //$http.defaults.headers.common.Authorization = authenticationHandler.token;
-        //
-        // //TODO check  url root against nodes and then grab the username and password encode it then send it over.
-        // //var
-        // return $http(
-        //     {
-        //         method:"POST",
-        //         url:realUrlToCheck,
-        //         //url:"http://project-c404.rhcloud.com/api/posts/8e4f11cf-8e3f-4468-9a53-8835a1dd65ac/comments/",
-        //         data:post
-        //     }
-        // );
     };
 
     this.updatePost = function (post) {
