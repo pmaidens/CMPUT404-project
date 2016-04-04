@@ -367,11 +367,12 @@ class CurrentPostsAvailable(mixins.ListModelMixin, viewsets.GenericViewSet):
             friendsOfFriendsQuerySet = Post.objects.all().filter(visibility='FOAF', author__user__username=currentUser)
             for friend in authorFriends:
                 #get each friend (user2) of the current author (user1)
-                currentAuthorFriend = Author.objects.get(id=friend.author_id)
-                #get the posts of the friends that are friends with (user2)
-                friendList = currentAuthorFriend.friends.all()
-                for friendOfMyFriend in friendList:
-                    friendsOfFriendsQuerySet = friendsOfFriendsQuerySet | Post.objects.all().filter(visibility='FOAF', author__id=friendOfMyFriend.author_id)
+                if friend.host in Site.objects.get_current().domain:
+                    currentAuthorFriend = Author.objects.get(id=friend.author_id)
+                    #get the posts of the friends that are friends with (user2)
+                    friendList = currentAuthorFriend.friends.all()
+                    for friendOfMyFriend in friendList:
+                        friendsOfFriendsQuerySet = friendsOfFriendsQuerySet | Post.objects.all().filter(visibility='FOAF', author__id=friendOfMyFriend.author_id)
 
             #query set for server only friends
             #first get the current user server only posts
