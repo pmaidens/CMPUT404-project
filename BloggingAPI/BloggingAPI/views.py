@@ -558,8 +558,8 @@ class FriendRequestViewSet(APIView):
         authorHost = request.data['author']['host']
         friendHost = request.data['friend']['host']
 
-        currentUser = self.request.user.username
-        requester = Author.objects.get(user__username=currentUser)
+       # currentUser = self.request.user.username
+       # requester = Author.objects.get(user__username=currentUser)
 
         # Assume local author, and thus local friend
         if (authorHost == friendHost):
