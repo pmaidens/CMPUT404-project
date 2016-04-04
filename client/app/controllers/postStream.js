@@ -29,6 +29,7 @@ angular.module("myApp.postStream", [
         }
 
         results.data.forEach(function (post) {
+	    console.log(post.image);
             $scope.allPost.push(post);
         });
 

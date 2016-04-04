@@ -51,18 +51,23 @@ angular.module("myApp.postWriter", [
 
     $scope.SubmitPost = function() {
       // TODO: Change this object to whatever it needs to be
+	console.log('am i hwere atleast????????');
       uploadImage().then(function(data) {
-        postHandler.createPost({
-          author: authenticationHandler.user.id,
-          source: "someSource",
-          origin: "anOrigin",
-          title: $scope.title || "",
-          description: $scope.description || "",
-          contentType: $scope.contentType,
-          categories: separateCategories($scope.categories || ""),
-          visibility: $scope.visibility,
-          content: $scope.content || "",
-          image: data.url || ""
+	  
+	  console.log('DATA from uploadImage printing below!');
+	  console.log(data.url);
+          
+	  postHandler.createPost({
+              author: authenticationHandler.user.id,
+              source: "someSource",
+              origin: "anOrigin",
+              title: $scope.title || "",
+              description: $scope.description || "",
+              contentType: $scope.contentType,
+              categories: separateCategories($scope.categories || ""),
+              visibility: $scope.visibility,
+              content: $scope.content || "",
+              image: data.url
         });
 
         $location.url("/#/stream");
