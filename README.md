@@ -4,6 +4,10 @@ Group Project for CMPUT 404 Web Applications and Architecture
 
 Current Build Status: <img src="https://travis-ci.org/pmaidens/CMPUT404-project.svg">
 
+VIDEO TRAILER
+------
+https://drive.google.com/open?id=0B3DFHDeEnwg5OXQ1akFUbllCbkU
+
 TEST
 ------
 
