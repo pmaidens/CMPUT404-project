@@ -8,29 +8,9 @@ from rest_framework import status
 from rest_framework.test import  APITestCase, APIClient
 from django.test.client import Client
 
-# This class tests some functionality of the backend, and
+# This class tests the functionality of the backend, and
 # attempts to simulate handling the requests the client
 # will make to the API
-
-# Specific user stories tested
-
-    # US01 As an author I want to make posts
-    # https://github.com/pmaidens/CMPUT404-project/issues/1
-    
-    # US09 As an author, posts I create can be public
-    # https://github.com/pmaidens/CMPUT404-project/issues/9
-
-    # US10 As an author, posts I make can be simple plain text
-    # https://github.com/pmaidens/CMPUT404-project/issues/10
-
-    # US11 As an author, posts I make can be in markdown
-    # https://github.com/pmaidens/CMPUT404-project/issues/11
-
-    # US30 - As an Author I want to comment on Posts I can access
-    # https://github.com/pmaidens/CMPUT404-project/issues/30
-
-    # US18 As an author, I want to delete my own posts.
-    # https://github.com/pmaidens/CMPUT404-project/issues/18
 
 # Other functionality is also tested, but does not subscribe to
 # specific user stories
@@ -49,6 +29,8 @@ class apiTests(TestCase):
         self.client.force_authenticate(user=self.authorUser)
 
 
+    # Tests the functionality of making and editing posts.
+    # Includes some API spec testing
     def test_Posts(self):
         # Test that a get from nothing returns a 404
         randID = str(uuid.uuid4())
@@ -63,7 +45,6 @@ class apiTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Post.objects.count(),response.data.get('count'))
         self.assertEqual(response.data.get('count'),0)
-
 
         # make a private post in plain text
         now = str(datetime.now())
@@ -172,9 +153,9 @@ class apiTests(TestCase):
         self.assertEqual(delResp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Post.objects.count(),2)
 
-
-
-
+    # Tests the services ability to handle friendship between authors, and that their
+    # interactions are limited appropriately
+    # Contains much API SPEC testing
     def test_Friends(self):
 
         # create two authors for the authorObj, one is a friend one isn't
@@ -307,6 +288,7 @@ class apiTests(TestCase):
         self.assertEqual(len(self.testEnemy.friends.all()),0) # Friend removed
 
 
+    # Tests that we match  specifications related to making posts
     def test_spec_posts(self):
 
         # Create Author for testing
@@ -394,7 +376,6 @@ class apiTests(TestCase):
         }
         post = self.client.post(postUrl,data,format='json')
         self.assertEqual(post.status_code, status.HTTP_201_CREATED)
-
         
         # get posts test author has made which are visible to me should be 1
         posts = self.client.get(url)
@@ -402,35 +383,6 @@ class apiTests(TestCase):
         self.assertEqual(len(response.data.get('posts')),1)
         self.assertEqual(response.data.get('posts')[0].get('title'),"public post")
 
-        # now become friends, and that number should change to 2
-
-        reqUrl =  '/api/friendrequest/'
-        data = {"query":"friends",
-                "author": { "id":str(testAuthor.id),
-                            "host":str(testAuthor.host),
-                            "displayName": "testAuthor",
-                        },
-                "friend":{ "id": str(self.specAuthor.id),
-                           "host": str(self.specAuthor.host),
-                           "displayName": "Author",
-                           "url":str(self.specAuthor.url),
-                           }
-                }
-
-        post = self.client.post(reqUrl,data,format='json')
-        self.assertEqual(post.status_code, status.HTTP_200_OK)
-          
-        data = {'friend':str(testAuthor.id)}
-        ackUrl = '/api/friends/acceptfriend/'
-        
-        post = self.client.post(ackUrl,data,format='json')
-        self.assertEqual(post.status_code, status.HTTP_200_OK)
-
-        url = '/api/author/' + str(testAuthor.id) +'/posts/'
-        posts = self.client.get(url)
-        self.assertEqual(posts.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data.get('posts')),1)#_____________CHANGED---------
-        self.assertEqual(response.data.get('posts')[0].get('title'),"public post")#["public post","friend post"])
 
         # 4 - get individual post
         # Get postID 
@@ -439,7 +391,6 @@ class apiTests(TestCase):
         singlePost = self.client.get(Url)
         self.assertEqual(singlePost.status_code, status.HTTP_200_OK)
         self.assertEqual(len(singlePost.data),14) # fields in 1 post
-        
         
         # 5 - see test_posts for more detailed test
         Url = '/api/posts/'+str(id)+'/comments/'
@@ -453,24 +404,47 @@ class apiTests(TestCase):
         self.assertEqual(commentPost.status_code, status.HTTP_200_OK)
         self.assertEqual(len(commentPost.data.get('comments')),0) # no comments
 
-    # def test_author(self):
-         
-    #     # Host one author
-    #     numAuthors = Author.objects.count()
-    #     url = '/rest-auth/registration/'
-        
-    #     data =  {
-    #         "username": "TESTER",
-    #         "email": "",
-    #         "password1": "a1b2c31",
-    #         "password2": "a1b2c31"
-    #     }
 
-    #     post = self.client.post(url,data,format='json')
-    #     self.assertEqual(post.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(Author.objects.count(), numAuthors + 1)
+    # Tests the ability of the backend to handle authors
+    def test_author(self):
+        # Host one author
+        numAuthors = Author.objects.count()
+        url = '/rest-auth/registration/'
+
+        data= {"username":"Dont_Activate","password1":"asdfasdf","password2":"asdfasdf"}
+        post = self.client.post(url,data,format='json')
+        self.assertEqual(post.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Author.objects.count(), numAuthors + 1)
+
+        # Host another
+        data= {"username":"Dont_Activate2","password1":"pasdfasdf","password2":"pasdfasdf"}
+        post = self.client.post(url,data,format='json')
+        self.assertEqual(post.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Author.objects.count(), numAuthors + 2)
+
+        # Get new author, edit it
+        author = Author.objects.all()
+        author = author[1]
+
+        data = {"github":"github.com/asdf",
+                "first_name":"Benjamin",
+                "last_name":"Guten-Free-Berg",
+                "email":"ben@compuserve.net",
+                "bio":"I like apples."}
+        
+        self.client.login(username='Dont_Activate', password='asdfasdf')
+        User = author.user
+        self.client.force_authenticate(user=User)
+
+        url = '/api/author/' + str(author.id) +'/'
+
+        response = self.client.put(url,data,format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        print response.data
+        self.assertEqual(response.data.get('bio'),"I like apples.")
         
 
+    # Tests the API specification for retrieving author informations
     def test_spec_profile(self):
         
         url = '/api/author/' + str(self.author.id) + '/'
@@ -481,62 +455,3 @@ class apiTests(TestCase):
         self.assertNotEqual(response.data.get('displayName'),None)
         self.assertNotEqual(response.data.get('url'),None)
         self.assertNotEqual(response.data.get('friends'),None)
-        
-        # Response
-
-        '''
-        {
-            "id":"9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            "host":"http://127.0.0.1:5454/",
-            "displayName":"Lara",
-            "url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            "friends": [
-                {
-                    "id":"8d919f29c12e8f97bcbbd34cc908f19ab9496989",
-                    "host":"http://127.0.0.1:5454/",
-                    "displayName":"Greg",
-                    "url": "http://127.0.0.1:5454/author/8d919f29c12e8f97bcbbd34cc908f19ab9496989"
-                }
-            ],
-            
-            # Optional attributes
-            "github_username": "lara",
-            "first_name": "Lara",
-            "last_name": "Smith",
-            "email": "lara@lara.com",
-            "bio": "Hi, I'm Lara"
-        }
-        '''
-
-
-    #     url = '/api/author/'
-
-    #     post = self.client.post(url, data, format='json')
-    #     self.assertEqual(post.status_code, status.HTTP_201_CREATED)
-
-    #     # Modify the author
-    #     prevBio = author.bio
-    #     data['bio'] = 'This guy did something amazing; it will define their existence!'
-        
-    #     put = self.client.put(url, data, format='json')
-    #     self.assertEqual(put.status_code, status.HTTP_200_OK)
-
-    #     getAuth = self.client.get(url)
-    #     getAuth = getAuth.data.get("bio")
-    #     self.assertNotEqual(getAuth.bio,None)#prevBio)
-
-    #     # Make/Host a second author
-    #     authorUser2 = User.objects.create_user('tempAuthor', 'tmep@post.com','secret2')
-    #     author2 = Author.objects.get(user = authorUser2)
-    #     data = {"user":author2.user.id, "id":author2.id, "host":author2.host, "url":author2.url, "bio":author2.bio}
-    #     url2 = '/api/author/'
-
-    #     self.client.force_authenticate(user = authorUser2)
-
-    #     post = self.client.post(url2, data, format='json')
-    #     self.assertEqual(post.status_code, status.HTTP_201_CREATED)
-    #     self.assertEqual(Author.objects.count(), prevCount+2)
-
-        
-        
-
