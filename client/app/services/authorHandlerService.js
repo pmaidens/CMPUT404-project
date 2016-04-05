@@ -8,10 +8,10 @@ angular.module("myApp.services.authorHandler", [
 .service("authorHandler", function($q, $http, $route, urlHandler, authenticationHandler, nodeHandler) {
     this.getAllAuthors = function(){
         return $q(function (resolve) {
-            nodeHandler.sendToAll("get", "author/", undefined, {
+            nodeHandler.sendToAll("get", "author/", undefined, [{
                 url: "https://mighty-cliffs-82717.herokuapp.com/api/",
                 relativeURL: "authors/"
-            }).then(function (results) {
+            }]).then(function (results) {
                 var returnValue = {
                     data:[]
                 };

@@ -9,28 +9,23 @@ angular.module("myApp.services.nodeHandler", [
     $http.defaults.headers.common.Authorization = authenticationHandler.token;
     this.nodesRequest = $http.get(urlHandler.apiURL() + "nodes/");
 
-    this.sendToAll = function (httpVerb, relativeURL, requestParameters, specialCase) {
+    this.sendToAll = function (httpVerb, relativeURL, requestParameters, specialCases) {
         return $q(function (resolve, reject) {
             this.nodesRequest.then(function (result) {
                 var nodes = result.data;
                 var allRequest = [];
-		var oldRelativeURL =relativeURL;
-
-		if(relativeURL ==='posts/'){
-		    console.log(urlHandler.apiURL());
-		    relativeURL ='author/posts/';
-		}
 
                 allRequest.push(this.sendTo(urlHandler.serviceURL(), httpVerb, relativeURL, requestParameters));
-		relativeURL = oldRelativeURL;
 
                 nodes.forEach(function (node) {
                     var currentRelativeURL = relativeURL;
-                    if (specialCase && specialCase.url === node.url) {
-                        if (specialCase.relativeURL) {
-                            currentRelativeURL = specialCase.relativeURL;
+                    specialCases.forEach(function (specialCase) {
+                        if (specialCase && specialCase.url === node.url) {
+                            if (specialCase.relativeURL) {
+                                currentRelativeURL = specialCase.relativeURL;
+                            }
                         }
-                    }
+                    });
                     allRequest.push(this.sendTo(node.url, httpVerb, currentRelativeURL, requestParameters));
                 }.bind(this));
 

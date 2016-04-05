@@ -16,7 +16,7 @@
         </div>
         <div class="panel-body">
             <div class="list-group">
-                <div ng-repeat="post in allPost | orderBy: ['createdate' ,'published']" class="list-group-item ">
+                <div ng-repeat="post in allPost | orderBy: ['createdate' ,'published']:false" class="list-group-item ">
                     <div ng-if="post.type" class="row">
                         <div class="col-md-8">
                             <small ng-if="post.type == 'PushEvent'">
@@ -107,7 +107,7 @@
                                     <textarea placeholder="Blog Post Content" data-ng-model="post.content"></textarea>
                                 </div>
                                 <h4>Author: {{post.author.displayName}}</h4>
-                                <h3>Description: {{post.description}}</h3>
+                                <h4>Description: {{post.description}}</h4>
                                 <h6>Published: {{post.published}}</h6>
                                 <br/>
                                 <div btf-markdown="post.content"></div>
