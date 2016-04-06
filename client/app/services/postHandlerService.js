@@ -26,7 +26,8 @@ angular.module("myApp.services.postHandler", [
                 relativeURL = "author/posts/";
                 nodeHandler.sendToAll("get", relativeURL, undefined, [{
                     url: "https://mighty-cliffs-82717.herokuapp.com/api/",
-                    relativeURL: relativeURL + "?id=" + authenticationHandler.user.id
+                    //relativeURL: relativeURL + "?id=" + authenticationHandler.user.id
+		    relativeURL: "/posts"
                 },{
                     url: "http://cmput404-team-4b.herokuapp.com/api/",
                     relativeURL: "author/posts"
