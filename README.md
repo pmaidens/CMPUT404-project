@@ -7,7 +7,7 @@ Current Build Status: <img src="https://travis-ci.org/pmaidens/CMPUT404-project.
 VIDEO TRAILER
 ------
 Archive.Org
-https://archive.org/details/BlogFace
+https://archive.org/details/RealBlogFace
 
 Google Drive
 https://drive.google.com/open?id=0B3DFHDeEnwg5OXQ1akFUbllCbkU
